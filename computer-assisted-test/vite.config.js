@@ -8,6 +8,7 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
+            buildDirectory: 'build',
         }),
         vue({
             template: {
@@ -18,6 +19,10 @@ export default defineConfig({
             }
         })
     ],
+    build: {
+        outDir: '../build',
+        emptyOutDir: true,
+    },
     resolve: {
         alias: {
             '#minpath': path.resolve(__dirname, 'node_modules/vfile/lib/minpath.browser.js'),
