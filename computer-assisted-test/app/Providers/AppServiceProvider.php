@@ -28,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        \Illuminate\Database\Eloquent\Relations\Relation::morphMap([
+            'TopupBalance' => \App\Models\TopupBalance::class,
+        ]);
         try {
             $setting = Setting::firstOrFail();
             date_default_timezone_set($setting->timezone);

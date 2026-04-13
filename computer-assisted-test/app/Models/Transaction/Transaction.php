@@ -60,6 +60,13 @@ class Transaction extends Model
         return ($date != null) ?  $date : null;
     }
 
+    protected function itemId(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => empty($value) ? null : $value,
+        );
+    }
+
     public static function generateCode()
     {
         $code = 'INV';
