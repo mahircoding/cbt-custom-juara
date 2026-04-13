@@ -15,6 +15,12 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+$app->usePublicPath(
+    file_exists($app->basePath('../public_html'))
+        ? $app->basePath('../public_html')
+        : $app->basePath('../')
+);
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
