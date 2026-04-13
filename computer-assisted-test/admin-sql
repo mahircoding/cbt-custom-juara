@@ -1,0 +1,56 @@
+SET FOREIGN_KEY_CHECKS=0;
+
+ALTER TABLE `activity_log` AUTO_INCREMENT = 1;
+
+ALTER TABLE `banners` AUTO_INCREMENT = 0;
+
+ALTER TABLE `category_user` AUTO_INCREMENT = 1;
+
+ALTER TABLE `cities` AUTO_INCREMENT = 0;
+
+ALTER TABLE `classroom_member_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `course_goals` AUTO_INCREMENT = 1;
+
+ALTER TABLE `course_member_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `districts` AUTO_INCREMENT = 0;
+
+ALTER TABLE `exam_group_member_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `exam_group_sub_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `exam_member_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `exam_sub_category` AUTO_INCREMENT = 1;
+
+ALTER TABLE `failed_jobs` AUTO_INCREMENT = 1;
+
+ALTER TABLE `member_categories` AUTO_INCREMENT = 0;
+
+ALTER TABLE `member_category_module` AUTO_INCREMENT = 1;
+
+ALTER TABLE `member_category_user` AUTO_INCREMENT = 1;
+
+ALTER TABLE `member_category_video_module` AUTO_INCREMENT = 1;
+
+ALTER TABLE `member_category_voucher` AUTO_INCREMENT = 1;
+
+ALTER TABLE `migrations` AUTO_INCREMENT = 74;
+
+ALTER TABLE `personal_access_tokens` AUTO_INCREMENT = 1;
+
+ALTER TABLE `provinces` AUTO_INCREMENT = 0;
+
+ALTER TABLE `settings` AUTO_INCREMENT = 0;
+
+CREATE TABLE `topup_balances`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+ALTER TABLE `villages` AUTO_INCREMENT = 0;
+
+SET FOREIGN_KEY_CHECKS=1;
