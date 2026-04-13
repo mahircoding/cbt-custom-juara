@@ -82,7 +82,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <h6 class="mb-3">Riwayat Transaksi Terbaru</h6>
+                            <h6 class="mb-3">Riwayat Transaksi Terbaru ddd</h6>
                         </div>
                     </div>
                     <div class="table-responsive">

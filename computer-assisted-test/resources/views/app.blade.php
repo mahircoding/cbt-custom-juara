@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="id" translate="no" class="{{ isset($setting) && $setting->sidebar_color ? 'color-sidebar '.$setting->sidebar_color : '' }} {{ isset($setting) && $setting->header_color ? 'color-header '.$setting->header_color : '' }}">
     <head>
@@ -15,10 +14,13 @@
         <!-- Bootstrap CSS -->
         <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/bootstrap-extended.css') }}" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
         <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/header-colors.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets/css/modern-dashboard.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5-editor.css" />
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5-content.css" />
         @if (isset($setting) && $setting->add_custom_css == 1)

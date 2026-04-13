@@ -1,11 +1,14 @@
 <template>
     <div class="wrapper" :class="{ toggled : isToggleActive }">
         <!-- sidebar -->
-        <Sidebar/>
+        <Sidebar :isCollapsed="isToggleActive"/>
         <!-- header -->
         <Header/>
         <!-- content -->
         <slot />
+
+        <!-- backdrop for mobile -->
+        <div class="sidebar-overlay d-lg-none" :class="{ show: isToggleActive }" @click="toggleMenu"></div>
 
         <Footer/>
     </div>
@@ -29,23 +32,38 @@
             Header,
             Footer
         },
+        data() {
+            return {
+                isToggleActive: false
+            }
+        },
+        methods: {
+            toggleMenu() {
+                this.isToggleActive = !this.isToggleActive;
+                if (this.isToggleActive) {
+                    $(".wrapper").addClass("toggled");
+                } else {
+                    $(".wrapper").removeClass("toggled");
+                }
+            }
+        },
         mounted() {
+            const self = this;
             $("#menu").metisMenu();
 
             $(".mobile-toggle-menu").on("click", function() {
-                $(".wrapper").addClass("toggled")
+                self.toggleMenu();
             });
 
             $(".menu-clicked").on("click", function() {
-                $(".wrapper").removeClass("toggled")
+                if (window.innerWidth < 1025) {
+                    self.isToggleActive = false;
+                    $(".wrapper").removeClass("toggled");
+                }
             });
 
-            $(".toggle-icon").click(function() {
-                $(".wrapper").hasClass("toggled") ? ($(".wrapper").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover")) : ($(".wrapper").addClass("toggled"), $(".sidebar-wrapper").hover(function() {
-                    $(".wrapper").addClass("sidebar-hovered")
-                }, function() {
-                    $(".wrapper").removeClass("sidebar-hovered")
-                }))
+            $(".toggle-icon").on("click", function() {
+                self.toggleMenu();
             });
         }
     }
