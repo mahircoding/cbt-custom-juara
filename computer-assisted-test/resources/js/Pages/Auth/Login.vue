@@ -3,82 +3,99 @@
         <title>{{ $page.props.setting?.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Login</title>
     </Head>
 
-    <div class="login-wrapper bg-red-800">
-        <div class="login-container">
-            <!-- Left Side: Branding/Image -->
-            <div class="login-image-side d-none d-lg-flex">
-                <div class="image-content">
-                    <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo" alt="Logo" />
-                    <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-image" alt="Login Graphic" />
-                    <div class="welcome-text">
-                        <h2>Selamat Datang di {{ $page.props.setting?.app_name ?? 'Aplikasi Kami' }}</h2>
-                        <p>Persiapkan diri Anda untuk meraih kesuksesan bersama kami.</p>
+    <div class="login-wrapper bg-auth-layout min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="login-container shadow-premium overflow-hidden d-flex">
+            <!-- Left Side: Branding/Image (60% wide on desktop) -->
+            <div class="login-branding-side d-none d-lg-flex position-relative">
+                <div class="branding-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+                <div class="branding-content position-relative z-1 text-white p-5 d-flex flex-column justify-content-between h-100">
+                    <div class="brand-top">
+                        <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo-img mb-3" alt="Logo" />
+                    </div>
+                    
+                    <div class="brand-hero text-center my-4 animate-float">
+                        <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-img-login" alt="Hero" />
+                    </div>
+
+                    <div class="brand-bottom px-4">
+                        <h2 class="fw-bold mb-3 display-6 text-white">Siap Meraih Kesuksesan Bersama Kami?</h2>
+                        <p class="opacity-75 lead fs-6">Satu langkah lebih dekat menuju masa depan impian Anda. Masuk ke dashboard untuk memulai perjalanan.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Side: Login Form -->
-            <div class="login-form-side">
-                <div class="form-content">
-                    <div class="form-header text-center text-lg-start">
-                        <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="mobile-logo d-lg-none mx-auto mb-4" alt="Logo" />
-                        <h1>Login</h1>
-                        <p class="text-muted">Silakan masukkan {{ loginTitle }} untuk masuk ke akun Anda.</p>
+            <!-- Right Side: Login Form (40% wide on desktop) -->
+            <div class="login-form-side bg-white p-4 p-lg-5 d-flex align-items-center">
+                <div class="form-wrapper w-100 animate-fade-in">
+                    <div class="mobile-brand d-lg-none text-center mb-4">
+                        <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="mobile-logo-img" alt="Logo" />
                     </div>
 
-                    <div v-if="$page.props.session.error" class="alert custom-alert alert-danger border-0">
-                        <i class="bx bx-error-circle"></i> <div v-html="$page.props.session.error"></div>
-                    </div>
-                    <div v-if="$page.props.session.warning" class="alert custom-alert alert-warning border-0">
-                        <i class="bx bx-error"></i> <div v-html="$page.props.session.warning"></div>
-                    </div>
-                    <div v-if="$page.props.session.success" class="alert custom-alert alert-success border-0">
-                        <i class="bx bx-check-circle"></i> <div v-html="$page.props.session.success"></div>
+                    <div class="text-center text-lg-start mb-5">
+                        <h1 class="fw-black text-dark mb-2">Selamat Datang</h1>
+                        <p class="text-secondary small-text">Gunakan {{ loginTitle }} Anda untuk mengakses kursus dan materi belajar.</p>
                     </div>
 
-                    <form @submit.prevent="submit" class="mt-4">
-                        <div class="form-group mb-4">
-                            <label class="form-label">{{ loginTitle }}</label>
-                            <div class="input-wrapper">
-                                <i class="bx bx-user-circle input-icon"></i>
-                                <input type="text" v-model="form.email" :class="{ 'is-invalid': errors.email }" class="form-control custom-input" :placeholder="loginPlaceholder">
+                    <!-- Alert Sessions -->
+                    <div v-if="$page.props.session.error" class="alert-modern alert-danger animate-shake mb-4">
+                        <i class="bx bx-error-circle fs-5"></i>
+                        <div v-html="$page.props.session.error"></div>
+                    </div>
+                    <div v-if="$page.props.session.success" class="alert-modern alert-success animate-fade-in mb-4">
+                        <i class="bx bx-check-circle fs-5"></i>
+                        <div v-html="$page.props.session.success"></div>
+                    </div>
+                    <div v-if="$page.props.session.warning" class="alert-modern alert-warning animate-fade-in mb-4">
+                        <i class="bx bx-info-circle fs-5"></i>
+                        <div v-html="$page.props.session.warning"></div>
+                    </div>
+
+                    <form @submit.prevent="submit" class="auth-form mt-2">
+                        <!-- Email Input -->
+                        <div class="input-group-modern mb-4">
+                            <label class="form-label-auth">{{ loginTitle }}</label>
+                            <div class="input-inner">
+                                <i class="bx bx-envelope input-icon"></i>
+                                <input type="text" v-model="form.email" :class="{ 'is-invalid': errors.email }" 
+                                       class="form-control input-auth" :placeholder="loginPlaceholder">
                             </div>
-                            <div v-if="errors.email" class="error-text text-danger">{{ errors.email }}</div>
+                            <div v-if="errors.email" class="error-msg">{{ errors.email }}</div>
                         </div>
 
-                        <div class="form-group mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <label class="form-label mb-0">{{ passwordTitle }}</label>
-                                <Link href="/user/forgot-password" class="forgot-link">Lupa {{ passwordTitle }}?</Link>
+                        <!-- Password Input -->
+                        <div class="input-group-modern mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label class="form-label-auth">{{ passwordTitle }}</label>
+                                <Link href="/user/forgot-password" class="forgot-pwd-link">Lupa {{ passwordTitle }}?</Link>
                             </div>
-                            <div class="input-wrapper">
+                            <div class="input-inner">
                                 <i class="bx bx-lock-alt input-icon"></i>
-                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }" class="form-control custom-input" :placeholder="passwordPlaceholder">
-                                <button type="button" class="btn-toggle-password" @click="toggleShow">
-                                    <i :class="{ 'bx bx-show': showPassword, 'bx bx-hide': !showPassword }"></i>
+                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }" 
+                                       class="form-control input-auth" :placeholder="passwordPlaceholder">
+                                <button type="button" class="btn-eye-toggle" @click="toggleShow">
+                                    <i :class="showPassword ? 'bx bx-show' : 'bx bx-hide'"></i>
                                 </button>
                             </div>
-                            <div v-if="errors.password" class="error-text text-danger">{{ errors.password }}</div>
+                            <div v-if="errors.password" class="error-msg">{{ errors.password }}</div>
                         </div>
 
-                        <div class="form-actions mt-5">
-                            <button type="submit" class="btn btn-primary btn-login w-100" :disabled="form.processing">
-                                <span>Masuk Sekarang</span>
-                                <i class="bx bx-right-arrow-alt ms-2"></i>
-                            </button>
+                        <button type="submit" class="btn btn-auth-primary w-100 mt-4" :disabled="form.processing">
+                            <span v-if="!form.processing">Masuk Dashboard</span>
+                            <span v-else class="spinner-border spinner-border-sm me-2"></span>
+                            <i v-if="!form.processing" class="bx bx-chevron-right ms-2 animate-bounce-right"></i>
+                        </button>
+
+                        <div v-if="$page.props.setting?.add_user_registration == 1" class="register-cta text-center mt-5">
+                            <p class="text-secondary small mb-3">Belum memiliki akun?</p>
+                            <Link href="/register" class="btn btn-outline-auth w-100">Registrasi Akun Baru</Link>
                         </div>
                     </form>
 
-                    <div class="form-footer mt-5 text-center">
-                        <div v-if="$page.props.setting?.add_user_registration == 1" class="register-hint">
-                            <p class="mb-2">Belum punya akun?</p>
-                            <Link href="/register" class="btn btn-outline-primary btn-register w-100">Daftar Akun Baru</Link>
-                        </div>
-                        
-                        <a :href="`https://wa.me/${$page.props.setting?.whatsapp_number}?text=${encodeURI('Hallo, Admin. saya ingin bertanya....')}`" 
-                           target="_blank" class="wa-float-btn mt-4">
+                    <div class="contact-admin text-center mt-4">
+                        <a :href="`https://wa.me/${$page.props.setting?.whatsapp_number}?text=${encodeURI('Hallo, Admin. saya memiliki kendala saat login....')}`" 
+                           target="_blank" class="wa-admin-link">
                             <i class="bx bxl-whatsapp"></i>
-                            <span>Butuh bantuan? Chat Admin</span>
+                            Bantuan Chat Admin
                         </a>
                     </div>
                 </div>
@@ -88,117 +105,77 @@
 </template>
 
 <style scoped>
-/* Modern CSS Variable Palette */
+/* Redefined Variables for Login context */
 :root {
-    --primary-color: #4e73df;
-    --primary-hover: #2e59d9;
-    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --text-main: #2d3436;
-    --text-muted: #636e72;
-    --input-bg: #f8f9fa;
-}
-
-.login-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --auth-accent: #4f46e5;
+    --auth-accent-hover: #4338ca;
+    --transition: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .login-container {
     width: 100%;
     max-width: 1100px;
-    display: flex;
+    height: auto;
+    min-height: 700px;
     background: #fff;
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border-radius: 28px;
+    box-shadow: 0 40px 100px -10px rgba(0, 0, 0, 0.1), 0 20px 50px -10px rgba(0, 0, 0, 0.05);
 }
 
-/* Left Side Styles */
-.login-image-side {
-    flex: 1.1;
-    background: var(--bg-gradient);
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    position: relative;
+/* Left Section Styles */
+.login-branding-side {
+    flex: 1.2;
+    background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
 }
 
-.image-content {
-    text-align: center;
-    max-width: 480px;
-    z-index: 2;
+.branding-overlay {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(124, 58, 237, 0.9) 100%);
 }
 
-.brand-logo {
-    max-width: 160px;
-    margin-bottom: 40px;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+.brand-logo-img {
+    height: 50px;
+    filter: brightness(0) invert(1);
 }
 
-.hero-image {
-    width: 100%;
-    margin-bottom: 40px;
-    animation: float 6s ease-in-out infinite;
+.hero-img-login {
+    max-width: 320px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
 }
 
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
+/* Animation context */
+.animate-float {
+    animation: floating 4s ease-in-out infinite;
 }
 
-.welcome-text h2 {
-    font-weight: 700;
-    margin-bottom: 15px;
+@keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
 }
 
-.welcome-text p {
-    opacity: 0.9;
-    font-size: 1.1rem;
-    line-height: 1.6;
-}
-
-/* Right Side Styles */
+/* Right Section Form Styles */
 .login-form-side {
     flex: 1;
-    padding: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
-.form-content {
+.fw-black { font-weight: 850; }
+.small-text { font-size: 0.92rem; }
+
+.form-wrapper {
     max-width: 420px;
     margin: 0 auto;
-    width: 100%;
 }
 
-.mobile-logo {
-    height: 60px;
-}
-
-.form-header h1 {
-    font-weight: 800;
-    font-size: 2.5rem;
-    color: var(--text-main);
-    margin-bottom: 10px;
-}
-
-/* Custom Input Styles */
-.form-label {
+/* Modern Input System */
+.form-label-auth {
+    font-size: 0.88rem;
     font-weight: 600;
-    font-size: 1rem;
-    color: var(--text-main);
+    color: #475569;
+    margin-bottom: 8px;
 }
 
-.input-wrapper {
+.input-inner {
     position: relative;
     display: flex;
     align-items: center;
@@ -206,136 +183,148 @@
 
 .input-icon {
     position: absolute;
-    left: 20px;
-    font-size: 1.4rem;
-    color: #bfc5d1;
-    transition: color 0.3s;
+    left: 18px;
+    font-size: 1.35rem;
+    color: #94a3b8;
+    transition: var(--transition);
 }
 
-.custom-input {
+.input-auth {
+    height: 58px;
+    padding-left: 52px;
+    padding-right: 20px;
+    border: 2px solid #f1f5f9;
     background-color: #f8fafc;
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 14px 20px 14px 55px;
-    height: 60px;
+    border-radius: 16px;
     font-size: 1rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    transition: all 0.3s var(--transition);
 }
 
-.custom-input:focus {
+.input-auth:focus {
     background-color: #fff;
-    border-color: #4e73df;
-    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.1);
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    color: #1e293b;
 }
 
-.custom-input:focus + .input-icon {
-    color: #4e73df;
+.input-auth:focus + .input-icon {
+    color: #4f46e5;
 }
 
-.btn-toggle-password {
+.btn-eye-toggle {
     position: absolute;
-    right: 15px;
+    right: 18px;
     background: none;
     border: none;
-    font-size: 1.4rem;
     color: #94a3b8;
+    font-size: 1.35rem;
     cursor: pointer;
-    transition: color 0.2s;
     display: flex;
     align-items: center;
 }
 
-.btn-toggle-password:hover {
-    color: #4e73df;
-}
-
-/* Button & Link Styles */
-.forgot-link {
-    font-size: 0.9rem;
-    color: #4e73df;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.btn-login {
+/* Buttons */
+.btn-auth-primary {
     height: 60px;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    color: #fff;
+    border: none;
+    border-radius: 16px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-gradient);
-    border: none;
-    box-shadow: 0 10px 20px rgba(78, 115, 223, 0.2);
-    transition: all 0.3s;
+    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+    transition: all 0.3s var(--transition);
 }
 
-.btn-login:hover {
+.btn-auth-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(78, 115, 223, 0.3);
-}
-
-.btn-register {
-    height: 55px;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.wa-float-btn {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    color: #075e54;
-    font-weight: 600;
-    background: #e7f5f4;
-    padding: 10px 20px;
-    border-radius: 50px;
-    transition: all 0.3s;
-}
-
-.wa-float-btn i {
-    font-size: 1.6rem;
-    margin-right: 8px;
-}
-
-.wa-float-btn:hover {
-    background: #075e54;
+    box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.5);
+    background: linear-gradient(135deg, #4338ca 0%, #312e81 100%);
     color: #fff;
 }
 
-.custom-alert {
-    border-radius: 12px;
-    padding: 15px 20px;
+.btn-outline-auth {
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    color: #64748b;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-outline-auth:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+/* Modern Alerts */
+.alert-modern {
+    padding: 16px 20px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
 }
 
-.custom-alert i {
-    font-size: 1.4rem;
-    margin-right: 12px;
+.alert-danger { background-color: #fef2f2; color: #b91c1c; border-left: 4px solid #ef4444; }
+.alert-success { background-color: #f0fdf4; color: #15803d; border-left: 4px solid #22c55e; }
+.alert-warning { background-color: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; }
+
+.forgot-pwd-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4f46e5;
+    text-decoration: none;
 }
 
-.tesssss-fdsfdsf{
-    background-color: #075e54;
+.wa-admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #15803d;
+    font-weight: 600;
+    font-size: 0.88rem;
+    padding: 10px 20px;
+    background-color: #f0fdf4;
+    border-radius: 50px;
+    transition: all 0.2s;
 }
 
-/* Responsive Overrides */
+.wa-admin-link:hover {
+    background-color: #15803d;
+    color: #fff;
+}
+
+/* Animations */
+.animate-fade-in { animation: fadeIn 0.8s var(--transition); }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-right {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+}
+.animate-bounce-right { animation: bounce-right 1s infinite; }
+
+/* Mobile Logic */
 @media (max-width: 991px) {
-    .login-wrapper {
-        padding: 0;
-    }
     .login-container {
-        max-width: 100%;
         border-radius: 0;
+        box-shadow: none;
         min-height: 100vh;
+        width: 100%;
     }
-    .login-form-side {
-        padding: 30px;
-    }
+    .mobile-logo-img { height: 50px; }
 }
 </style>
 
@@ -390,7 +379,7 @@
                 return this.$page.props.setting;
             },
             loginTitle() {
-                if (!this.setting?.login_type || !this.setting?.authentication_field) return "Email";
+                if (!this.setting?.login_type || !this.setting?.authentication_field) return "Email / Username";
                 
                 const loginTypes = this.setting.login_type;
                 const fields = this.setting.authentication_field;

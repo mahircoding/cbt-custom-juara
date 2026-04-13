@@ -134,7 +134,7 @@
                 </div>
             </div>
 
-            <div class="card radius-10 border-start border-0 border-3 border-success" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'announcement'))">
+            <div class="card radius-10 border-start border-0 border-3 border-success" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'announcement'))">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
@@ -189,32 +189,32 @@
                                 <div class="card-body">
                                     <table class="table table-sm mb-0">
                                         <tbody>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'tryout'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'tryout'))">
                                                 <td><i class='bx bx-edit text-info font-20'></i> Tryout</td>
                                                 <td>{{ totalDataInCategory.exam_group_count }}</td>
                                                 <td><Link class="badge bg-info" :href="`/user/exam-groups/${totalDataInCategory.id}/lesson-categories`">Lihat</Link></td>
                                             </tr>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'exam'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'exam'))">
                                                 <td><i class='bx bx-book text-success font-20'></i> Latihan Soal</td>
                                                 <td>{{ totalDataInCategory.exam_count }}</td>
                                                 <td><Link class="badge bg-info" :href="`/user/categories/${totalDataInCategory.id}/lesson-categories`">Lihat</Link></td>
                                             </tr>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'module'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'module'))">
                                                 <td><i class='bx bx-file text-warning font-20'></i> Modul / Materi</td>
                                                 <td>{{ totalDataInCategory.module_count }}</td>
                                                 <td><Link class="badge bg-info" href="/user/modules">Lihat</Link></td>
                                             </tr>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'video_module'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'video_module'))">
                                                 <td><i class='bx bx-video-recording text-danger font-20'></i> Video Pembelajaran</td>
                                                 <td>{{ totalDataInCategory.video_module_count }}</td>
                                                 <td><Link class="badge bg-info" href="/user/video-modules">Lihat</Link></td>
                                             </tr>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'course'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'course'))">
                                                 <td><i class='bx bx-video-plus text-success font-20'></i> Course</td>
                                                 <td>{{ totalDataInCategory.course_count }}</td>
                                                 <td><Link class="badge bg-info" href="/user/courses">Lihat</Link></td>
                                             </tr>
-                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code === 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code === 'classroom'))">
+                                            <tr v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'classroom'))">
                                                 <td><i class='bx bx-chalkboard text-default font-20'></i> Ruang Kelas</td>
                                                 <td>{{ totalDataInCategory.classroom_count }}</td>
                                                 <td><Link class="badge bg-info" href="/user/classrooms">Lihat</Link></td>

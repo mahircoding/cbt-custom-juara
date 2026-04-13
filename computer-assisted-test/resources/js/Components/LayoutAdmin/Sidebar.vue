@@ -81,68 +81,68 @@
 						<div class="menu-title">Paket Soal</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'exam' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'exam' && item.is_active == '1')">
                     <Link href="/admin/exams" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-file'></i>
 						</div>
 						<div class="menu-title">Latihan Soal</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'tryout' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'tryout' && item.is_active == '1')">
                     <Link href="/admin/exam-groups" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-edit'></i>
 						</div>
 						<div class="menu-title">Tryout</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'announcement' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'announcement' && item.is_active == '1')">
                     <Link href="/admin/announcements" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-message-square-detail'></i>
 						</div>
 						<div class="menu-title">Pengumuman</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'faq' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'faq' && item.is_active == '1')">
                     <Link href="/admin/faqs" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-message-add'></i>
 						</div>
 						<div class="menu-title">Faq</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'news' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'news' && item.is_active == '1')">
                     <Link href="/admin/news" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-news'></i>
 						</div>
 						<div class="menu-title">Berita</div>
 					</Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'psychology_calculator' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'psychology_calculator' && item.is_active == '1')">
                     <Link href="/admin/psychology-calculators" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-calculator'></i></div>
                         <div class="menu-title">Kalkulator Psikologi</div>
                     </Link>
                 </li> 
-                <li v-if="$page.props.menu_users.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code) && item.is_active == '1')" class="menu-label">Materi</li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'module' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code) && item.is_active == '1')" class="menu-label">Materi</li>
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'module' && item.is_active == '1')">
                     <Link href="/admin/modules" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-book'></i>
 						</div>
 						<div class="menu-title">Modul / Materi</div>
 					</Link>
                 </li> 
-                <li v-if="$page.props.menu_users.some(item => item.code == 'video_module' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'video_module' && item.is_active == '1')">
                     <Link href="/admin/video-modules" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-video-recording'></i></div>
                         <div class="menu-title">Video Pembelajaran</div>
                     </Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'course' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'course' && item.is_active == '1')">
                     <Link href="/admin/courses" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-video-plus'></i></div>
                         <div class="menu-title">Course</div>
                     </Link>
                 </li>
-                <li v-if="$page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
+                <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
                     <Link href="/admin/classrooms" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-chalkboard'></i></div>
                         <div class="menu-title">Ruang Kelas</div>
@@ -254,8 +254,8 @@
             <ul class="metismenu" id="menu" v-if="$page.props.auth.user.level == 2">
                 <li class="px-2">
                     <p class="text-center" :class="[$page.props.setting.sidebar_color && $page.props.setting.header_color ? 'text-white' : '']"><b>{{ $page.props.auth.user.name }}</b></p>
-                    <p v-if="canDisplayTransactions && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" class="text-center" :class="[$page.props.setting.sidebar_color && $page.props.setting.header_color ? 'text-white' : '']">Saldo<br><b>Rp. {{ formatPrice($page.props.auth.user.account_balance) }}</b></p>
-                    <button v-if="canDisplayTransactions && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" class="btn btn-primary radius-10 btn-sm menu-clicked" @click="topUp()">Top Up +</button>
+                    <p v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" class="text-center" :class="[$page.props.setting.sidebar_color && $page.props.setting.header_color ? 'text-white' : '']">Saldo<br><b>Rp. {{ formatPrice($page.props.auth.user.account_balance) }}</b></p>
+                    <button v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" class="btn btn-primary radius-10 btn-sm menu-clicked" @click="topUp()">Top Up +</button>
                     <button v-if="$page.props.setting.social_group_mode == 1" class="btn btn-success radius-10 btn-sm menu-clicked mt-2" @click="socialGroup()"><i class='bx bx-user-voice'></i>Grup Media Sosial</button>
                     <button @click="changeCategorySelected($page.props.auth.user.id)" v-if="$page.props.auth.user.level == 2 && $page.props.setting.category_access == 2 && $page.props.setting.allow_category_access_changes == 1" :href="`/user/users/${$page.props.auth.user.id}/edit`" class="btn btn-outline-primary radius-10 btn-sm mt-2 menu-clicked show-on-mobile">Ubah Kategori Terpilih</button>
 				</li>
@@ -266,32 +266,32 @@
 						<div class="menu-title">Dashboard</div>
 					</Link>
 				</li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'announcement'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'announcement'))">
                     <Link href="/user/announcements" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-message-square-detail'></i></div>
 						<div class="menu-title">Pengumuman</div>
 					</Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'faq')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'faq'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'faq')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'faq'))">
                     <Link href="/user/faqs" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-message-add'></i></div>
 						<div class="menu-title">Faq</div>
 					</Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'news')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'news'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'news')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'news'))">
                     <Link href="/user/news" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-news'></i></div>
 						<div class="menu-title">Berita</div>
 					</Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'psychology_calculator')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'psychology_calculator'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'psychology_calculator')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'psychology_calculator'))">
 					<Link href="/user/psychology-calculators" class="menu-clicked">
 						<div class="parent-icon"><i class='bx bx-calculator'></i></div>
 						<div class="menu-title">Kalkulator Psikologi</div>
 					</Link>
 				</li> 
-                <li class="menu-label" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))">Ujian</li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'tryout'))">
+                <li class="menu-label" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))">Ujian</li>
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout'))">
 					<a href="javascript:;" class="has-arrow">
 						<div class="parent-icon"><i class='bx bx-intersect'></i></div>
 						<div class="menu-title">Tryout</div>
@@ -314,7 +314,7 @@
                         </li>
 					</ul>
 				</li>  
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))">
 					<a href="javascript:;" class="has-arrow">
 						<div class="parent-icon"><i class='bx bx-message-square-edit'></i></div>
 						<div class="menu-title">Latihan Soal</div>
@@ -337,26 +337,26 @@
                         </li>
 					</ul>
 				</li>
-                <li class="menu-label" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code)))">Materi</li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'module'))">
+                <li class="menu-label" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code)))">Materi</li>
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'module'))">
                     <Link href="/user/modules" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-book'></i></div>
                         <div class="menu-title">Modul / Materi</div>
                     </Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'video_module'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'video_module'))">
                     <Link href="/user/video-modules" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-video-recording'></i></div>
                         <div class="menu-title">Video Pembelajaran</div>
                     </Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'course'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'course'))">
                     <Link href="/user/courses" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-video-plus'></i></div>
                         <div class="menu-title">Course</div>
                     </Link>
                 </li>
-                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access.some(item => item.code == 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access.some(item => item.code == 'classroom'))">
+                <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'classroom'))">
                     <Link href="/user/classrooms" class="menu-clicked">
                         <div class="parent-icon"><i class='bx bx-chalkboard'></i></div>
                         <div class="menu-title">Ruang Kelas</div>
@@ -500,7 +500,7 @@
                     return isMembership(setting);
                 }
 
-                return this.$page.props.voucherCategories.some(category => isMembership(category));
+                return this.$page.props.voucherCategories && this.$page.props.voucherCategories.some(category => isMembership(category));
             }
         }
     }
