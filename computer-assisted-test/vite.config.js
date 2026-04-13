@@ -2,6 +2,9 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
+import fs from 'fs';
+
+const outDir = fs.existsSync('../public_html') ? '../public_html/build' : '../build';
 
 export default defineConfig({
     plugins: [
@@ -20,7 +23,7 @@ export default defineConfig({
         })
     ],
     build: {
-        outDir: '../build',
+        outDir: outDir,
         emptyOutDir: true,
     },
     resolve: {
