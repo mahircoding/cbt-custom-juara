@@ -341,7 +341,7 @@
         Head
     } from '@inertiajs/inertia-vue3';
 
-    import Multiselect from '@suadelabs/vue3-multiselect'
+    import Multiselect from '@suadelabs/vue3-multiselect/src/Multiselect.vue'
 
     import { Inertia } from '@inertiajs/inertia';
 

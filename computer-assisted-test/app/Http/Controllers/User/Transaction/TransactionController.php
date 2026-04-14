@@ -95,7 +95,7 @@ class TransactionController extends Controller
             'App\Models\Transaction\Voucher' => 'Voucher',
             'App\Models\Exam\Exam' => 'Latihan Soal',
             'App\Models\Exam\ExamGroup' => 'Tryout',
-            'App\Models\Material\Classroom' => 'Ruang Kelas',
+            'App\Models\Material\Classroom' => 'Live Class',
             'App\Models\Material\Module' => 'Modul / Materi',
             'App\Models\Material\VideoModule' => 'Video Pembelajaran',
             'App\Models\Course\Course' => 'Course',

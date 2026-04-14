@@ -1,19 +1,19 @@
 <template>
     <Head>
-        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Data Ruang Kelas</title>
+        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Data Live Class</title>
     </Head>
     <!--start page wrapper -->
     <div class="page-wrapper">
         <div class="page-content">
             <!--breadcrumb-->
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">Ruang Kelas</div>
+                <div class="breadcrumb-title pe-3">Live Class</div>
                 <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Data Ruang Kelas</li>
+                            <li class="breadcrumb-item active" aria-current="page">Data Live Class</li>
                         </ol>
                     </nav>
                 </div>
@@ -33,8 +33,8 @@
                     <form>
                         <div class="row">
                             <div class="col-lg-5 col-md-6 mb-1">
-                                <label for="search">Nama / Judul Ruang Kelas</label>
-                                <input type="text" v-model="form.search" class="form-control form-control-sm" id="search" placeholder="Nama / Judul Ruang Kelas....">
+                                <label for="search">Nama / Judul Live Class</label>
+                                <input type="text" v-model="form.search" class="form-control form-control-sm" id="search" placeholder="Nama / Judul Live Class....">
                             </div>
 
                             <div class="col-lg-3 col-md-6 mb-1">
@@ -75,11 +75,11 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <div>
-                            <h6 class="mb-0">Ruang Kelas</h6>
+                            <h6 class="mb-0">Live Class</h6>
                         </div>
                         <div class="ms-auto">
                             <Link href="/admin/classrooms/create" class="btn btn-primary btn-sm me-2">
-                                <i class="bx bxs-plus-square"></i>Tambah Ruang Kelas
+                                <i class="bx bxs-plus-square"></i>Tambah Live Class
                             </Link>
                         </div>
                     </div>
@@ -225,7 +225,7 @@
 
                         Swal.fire({
                             title: 'Deleted!',
-                            text: 'Ruang Kelas Berhasil Dihapus!.',
+                            text: 'Live Class Berhasil Dihapus!.',
                             icon: 'success',
                             timer: 1000,
                             showConfirmButton: false,

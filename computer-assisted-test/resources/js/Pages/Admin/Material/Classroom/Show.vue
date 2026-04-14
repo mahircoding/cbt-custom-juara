@@ -1,19 +1,19 @@
 <template>
     <Head>
-        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Ruang Kelas</title>
+        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Live Class</title>
     </Head>
     <!--start page wrapper -->
     <div class="page-wrapper">
         <div class="page-content">
             <!--breadcrumb-->
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">Ruang Kelas</div>
+                <div class="breadcrumb-title pe-3">Live Class</div>
                 <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
                             </li>
-                            <li class="breadcrumb-item active" aria-current="page">Detail Ruang Kelas</li>
+                            <li class="breadcrumb-item active" aria-current="page">Detail Live Class</li>
                         </ol>
                     </nav>
                 </div>
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="d-lg-flex align-items-center">
                         <div class="ms-auto">
-                            <Link :href="`/admin/classrooms/${classroom.id}/edit`" class="btn btn-danger btn-sm mt-2 mx-2 mt-lg-0">Edit Ruang Kelas</Link>
+                            <Link :href="`/admin/classrooms/${classroom.id}/edit`" class="btn btn-danger btn-sm mt-2 mx-2 mt-lg-0">Edit Live Class</Link>
                             <Link href="/admin/classrooms" class="btn btn-primary btn-sm mt-2 mt-lg-0">Kembali</Link>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Nama Ruang Kelas</th>
+                                <th>Nama Live Class</th>
                                 <td>:</td>
                                 <td>{{ classroom.name }}</td>
                             </tr>
@@ -99,7 +99,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th>Tipe Harga Ruang Kelas</th>
+                                <th>Tipe Harga Live Class</th>
                                 <td>:</td>
                                 <td>
                                     <span v-if="classroom.price_type == 1" class="badge bg-primary">Gratis</span>
@@ -107,21 +107,21 @@
                                 </td>
                             </tr>
                             <tr v-if="classroom.price_type == 2">
-                                <th>Harga Ruang Kelas Sebelum Diskon</th>
+                                <th>Harga Live Class Sebelum Diskon</th>
                                 <td>:</td>
                                 <td>
                                     {{ formatPrice(classroom.price_before_discount) }}
                                 </td>
                             </tr>
                             <tr v-if="classroom.price_type == 2">
-                                <th>Harga Ruang Kelas Sesudah Diskon</th>
+                                <th>Harga Live Class Sesudah Diskon</th>
                                 <td>:</td>
                                 <td>
                                     {{ formatPrice(classroom.price_after_discount) }}
                                 </td>
                             </tr>
                             <tr>
-                                <th>Status Ruang Kelas</th>
+                                <th>Status Live Class</th>
                                 <td>:</td>
                                 <td>
                                     <span v-if="classroom.status == 'active'" class="badge bg-primary">Active</span>

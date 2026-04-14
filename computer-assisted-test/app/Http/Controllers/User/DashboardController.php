@@ -41,6 +41,25 @@ class DashboardController extends Controller
             'totalTransactionFailed' => number_format($this->transactionRepository->getTotalTransactionFailedByUser()),
             'transactions' => $this->transactionRepository->getSummaryTransactionByUser(),
             'announcementSummaries' =>  (new announcementRepository())->getAnnouncementSummaries(),
+            'recentExamGroupUsers' => \App\Models\Exam\ExamGroupUser::where('user_id', Auth::id())
+                ->with(['examGroup', 'examGroup.category', 'examGroup.lessonCategory'])
+                ->where('is_finished', 1)
+                ->orderBy('created_at', 'DESC')
+                ->limit(5)
+                ->get(),
+            'recentGrades' => \App\Models\Exam\Grade::where('user_id', Auth::id())
+                ->whereNull('exam_group_id')
+                ->with(['exam', 'category', 'lessonCategory'])
+                ->where('is_finished', 1)
+                ->orderBy('created_at', 'DESC')
+                ->limit(5)
+                ->get(),
+            'todayLiveClasses' => \App\Models\Material\Classroom::where('status', 'active')
+                ->with(['category', 'user'])
+                ->whereDate('start_time', '>=', \Carbon\Carbon::today())
+                ->orderBy('start_time', 'ASC')
+                ->limit(5)
+                ->get(),
             'totalDataInCategories' => optional($setting)->category_access == 1
                 ? Category::withCount([
                     'exam as exam_count' => fn($query) => $query->whereNull('exam_group_id'),

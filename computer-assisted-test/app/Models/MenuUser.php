@@ -9,12 +9,15 @@ class MenuUser extends Model
 {
     use HasFactory;
     
+    protected $primaryKey = 'code';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'code',
         'description',
         'order',
         'is_active',
+        'type',
     ];
 }

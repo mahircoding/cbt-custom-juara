@@ -345,7 +345,7 @@
                                             </div>
 
                                             <div class="col-12" v-if="$page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
-                                                <label class="form-label">Tampilkan Ruang Kelas Dengan Status :</label>
+                                                <label class="form-label">Tampilkan Live Class Dengan Status :</label>
                                                 <multiselect
                                                     v-model="form.classroom_statuses"
                                                     :options="dataStatus"
@@ -394,7 +394,7 @@
         Head
     } from '@inertiajs/inertia-vue3';
 
-    import Multiselect from '@suadelabs/vue3-multiselect'
+    import Multiselect from '@suadelabs/vue3-multiselect/src/Multiselect.vue'
 
     import { Inertia } from '@inertiajs/inertia';
 
@@ -416,42 +416,41 @@
         props: {
             errors: Object,
             setting: Object,
-            dataStatus: Object,
+            dataStatus: Array,
         },
 
         // initialization composition API
         setup(props) {
+            const setting = props.setting || {};
             const form = reactive({
-                app_name: props.setting.app_name,
-                app_url: props.setting.app_url,
-                logo: props.setting.logo,
-                favicon: props.setting.favicon,
-                signed_name: props.setting.signed_name,
-                signed_image: props.setting.signed_image,
-                authentication_background: props.setting.authentication_background,
-                address: props.setting.address,
-                whatsapp_number: props.setting.whatsapp_number,
-                timezone: props.setting.timezone ?? '',
-                block_system_type: props.setting.block_system_type ?? '',
-                public_access: props.setting.public_access ?? '',
-                social_group_mode: props.setting.social_group_mode ?? '',
-                practice_question_display_mode: props.setting.practice_question_display_mode ?? '',
-                tryout_display_mode: props.setting.tryout_display_mode ?? '',
+                app_name: setting.app_name ?? '',
+                app_url: setting.app_url ?? '',
+                logo: setting.logo ?? '',
+                favicon: setting.favicon ?? '',
+                signed_name: setting.signed_name ?? '',
+                signed_image: setting.signed_image ?? '',
+                authentication_background: setting.authentication_background ?? '',
+                address: setting.address ?? '',
+                whatsapp_number: setting.whatsapp_number ?? '',
+                timezone: setting.timezone ?? '',
+                block_system_type: setting.block_system_type ?? '',
+                public_access: setting.public_access ?? '',
+                social_group_mode: setting.social_group_mode ?? '',
+                practice_question_display_mode: setting.practice_question_display_mode ?? '',
+                tryout_display_mode: setting.tryout_display_mode ?? '',
 
-                practice_question_statuses: props.setting.practice_question_statuses ?? [],
-                tryout_statuses: props.setting.tryout_statuses ?? [],
-                module_material_statuses: props.setting.module_material_statuses ?? [],
-                video_module_statuses: props.setting.video_module_statuses ?? [],
-                course_statuses: props.setting.course_statuses ?? [],
-                classroom_statuses: props.setting.classroom_statuses ?? [],
+                practice_question_statuses: setting.practice_question_statuses ?? [],
+                tryout_statuses: setting.tryout_statuses ?? [],
+                module_material_statuses: setting.module_material_statuses ?? [],
+                video_module_statuses: setting.video_module_statuses ?? [],
+                course_statuses: setting.course_statuses ?? [],
+                classroom_statuses: setting.classroom_statuses ?? [],
             });
             
             // submit method
             const submit = () => {
                 // send data to server
                 Inertia.post(`/admin/settings/applications`, {
-                    forceFormData: true,
-                    // data
                     app_name: form.app_name,
                     app_url: form.app_url,
                     signed_name: form.signed_name,
@@ -475,6 +474,7 @@
                     course_statuses: form.course_statuses,
                     classroom_statuses: form.classroom_statuses,
                 }, {
+                    forceFormData: true,
                     onSuccess: () => {
                         //show success alert
                         Swal.fire({

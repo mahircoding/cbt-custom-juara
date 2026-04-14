@@ -227,3 +227,57 @@ body {
         display: block !important;
     }
 }
+
+/* Custom Premium Dashboard Classes */
+.bg-gradient-blue-modern {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+}
+
+.bg-gradient-rose-modern {
+    background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%) !important;
+}
+
+.bg-gradient-amber-modern {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+}
+
+.bg-gradient-emerald-modern {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%) !important;
+}
+
+.icon-box-soft-blue {
+    background: rgba(56, 189, 248, 0.1) !important;
+    color: #0ea5e9 !important;
+}
+
+.icon-box-soft-green {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: #10b981 !important;
+}
+
+.icon-box-soft-rose {
+    background: rgba(244, 63, 94, 0.1) !important;
+    color: #f43f5e !important;
+}
+
+.icon-box-soft-amber {
+    background: rgba(245, 158, 11, 0.1) !important;
+    color: #f59e0b !important;
+}
+
+.card-hover-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-white {
+    font-size: 35px;
+    opacity: 0.8;
+    color: #fff !important;
+}
+
+.stat-icon-dark {
+    font-size: 35px;
+    opacity: 0.8;
+    color: #1e293b !important;
+}

@@ -20,7 +20,7 @@
         <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/icons.css') }}" rel="stylesheet">
         <link href="{{ asset('assets/css/header-colors.css') }}" rel="stylesheet">
-        <link href="{{ asset('assets/css/modern-dashboard.css') }}" rel="stylesheet">
+        <link href="{{ asset('assets/css/modern-dashboard.css') }}?v={{ time() }}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5-editor.css" />
         <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5-content.css" />
         @if (isset($setting) && $setting->add_custom_css == 1)

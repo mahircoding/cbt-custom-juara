@@ -273,7 +273,7 @@
                                                         </div>
 
                                                         <div class="col-lg-6 col-md-12" v-if="$page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
-                                                            <label class="form-label">Aktifkan Penjualan Ruang Kelas</label>
+                                                            <label class="form-label">Aktifkan Penjualan Live Class</label>
                                                             <select v-model="form.categories[category.id].enable_classroom_sales"
                                                                 :class="{ 'is-invalid': errors[`categories.${category.id}.enable_classroom_sales`] }"
                                                                 class="form-select">
@@ -286,16 +286,16 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-6 col-md-12" v-if="$page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
-                                                            <label class="form-label">Tipe Penjualan Ruang Kelas</label>
+                                                            <label class="form-label">Tipe Penjualan Live Class</label>
                                                             <select v-model="form.categories[category.id].classroom_sales_type"
                                                                 :class="{ 'is-invalid': errors[`categories.${category.id}.classroom_sales_type`] }"
                                                                 class="form-select"
                                                                 :disabled="form.categories[category.id].enable_classroom_sales == 0">
                                                                 <option value="">[ Pilih ]</option>
-                                                                <option value="0" v-if="form.categories[category.id].enable_classroom_sales == 0">Penjualan Ruang Kelas dinonaktifkan</option>
-                                                                <option value="1">Penjualan Per Ruang Kelas</option>
+                                                                <option value="0" v-if="form.categories[category.id].enable_classroom_sales == 0">Penjualan Live Class dinonaktifkan</option>
+                                                                <option value="1">Penjualan Per Live Class</option>
                                                                 <option value="2">Penjualan Dengan Membership Bulanan</option>
-                                                                <option value="3">Penjualan Per Ruang Kelas & Membership</option>
+                                                                <option value="3">Penjualan Per Live Class & Membership</option>
                                                             </select>
                                                             <div v-if="errors[`categories.${category.id}.classroom_sales_type`]" class="invalid-feedback">
                                                                 {{ errors[`categories.${category.id}.classroom_sales_type`] }}
@@ -433,7 +433,7 @@
                                             </div>
 
                                             <div class="col-lg-6 col-md-12" v-if="form.transaction_sale_type == 1 && $page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
-                                                <label class="form-label">Aktifkan Penjualan Ruang Kelas</label>
+                                                <label class="form-label">Aktifkan Penjualan Live Class</label>
                                                 <select v-model="form.enable_classroom_sales" :class="{ 'is-invalid': errors.enable_classroom_sales }" class="form-select">
                                                     <option value="">[ Pilih ]</option>
                                                     <option value="1">Ya</option>
@@ -444,13 +444,13 @@
                                                 </div>
                                             </div>
                                             <div class="col-lg-6 col-md-12" v-if="form.transaction_sale_type == 1 && $page.props.menu_users.some(item => item.code == 'classroom' && item.is_active == '1')">
-                                                <label class="form-label">Tipe Penjualan Ruang kelas</label>
+                                                <label class="form-label">Tipe Penjualan Live Class</label>
                                                 <select v-model="form.classroom_sales_type" :class="{ 'is-invalid': errors.classroom_sales_type }" class="form-select" :disabled="form.enable_classroom_sales == 0">
                                                     <option value="">[ Pilih ]</option>
-                                                    <option value="0" v-if="form.enable_classroom_sales == 0">Penjualan Ruang Kelas dinonaktifkan</option>
-                                                    <option value="1">Penjualan Per Ruang Kelas</option>
+                                                    <option value="0" v-if="form.enable_classroom_sales == 0">Penjualan Live Class dinonaktifkan</option>
+                                                    <option value="1">Penjualan Per Live Class</option>
                                                     <option value="2">Penjualan Dengan Membership Bulanan</option>
-                                                    <option value="3">Penjualan Per Ruang Kelas & Membership Bulanan</option>
+                                                    <option value="3">Penjualan Per Live Class & Membership Bulanan</option>
                                                 </select>
                                                 <div v-if="errors.classroom_sales_type" class="invalid-feedback">
                                                     {{ errors.classroom_sales_type }}
@@ -573,7 +573,7 @@
     // import Head from Inertia
     import { Head } from '@inertiajs/inertia-vue3';
 
-    import Multiselect from '@suadelabs/vue3-multiselect';
+    import Multiselect from '@suadelabs/vue3-multiselect/src/Multiselect.vue';
 
     import { Inertia } from '@inertiajs/inertia';
 
