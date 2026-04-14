@@ -4,9 +4,9 @@
 			<div class="sidebar-header d-flex align-items-center justify-content-between px-3">
                 <div class="d-flex align-items-center gap-2 overflow-hidden">
                     <div class="logo-icon-wrapper p-1 bg-white rounded-3 shadow-sm" v-if="$page.props.setting && $page.props.setting.logo">
-                        <img v-bind:src="'/storage/upload_files/settings/' + $page.props.setting.logo" style="height:35px; width: auto;"/>
+                        <img v-bind:src="'/storage/upload_files/settings/' + $page.props.setting.logo" style="height:45px; width: auto;"/>
                     </div>
-                    <h4 class="logo-text fw-bold mb-0 text-primary" style="font-size:18px;">{{ $page.props.setting.app_name ?? 'JUARA' }}</h4>
+                    <!-- <h4 class="logo-text fw-bold mb-0 text-primary" style="font-size:18px;">{{ $page.props.setting.app_name ?? 'JUARA' }}</h4> -->
                 </div>
 				<div class="toggle-icon ms-auto d-none d-lg-flex cursor-pointer fs-4 text-primary">
                     <i class='bx bx-chevron-left-circle'></i>
