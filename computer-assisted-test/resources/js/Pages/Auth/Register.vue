@@ -12,9 +12,9 @@
                     <div class="brand-top">
                         <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo-img mb-3" alt="Logo" />
                     </div>
-                    
+
                     <div class="brand-hero text-center my-4 animate-float">
-                        <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-img-register" alt="Hero" />
+                        <img src="/assets/images/bg-juaracademy-cover.png" class="hero-img-register" alt="Hero" />
                     </div>
 
                     <div class="brand-bottom px-4">
@@ -118,6 +118,17 @@
                                         </div>
                                     </div>
 
+                                    <div v-if="hasField('phone_number')" class="col-md-12">
+                                        <label class="form-label-auth">{{ getFieldLabel('phone_number') }}</label>
+                                        <div class="input-inner">
+                                            <i class="bx bx-phone input-icon"></i>
+                                            <input type="text" v-model="form.phone_number" :class="{ 'is-invalid': errors.phone_number }" class="form-control input-auth" :placeholder="getFieldLabel('phone_number')">
+                                        </div>
+                                        <!-- <div v-if="$page.props.setting?.notification_type == 1" class="helper-text text-success small mt-2">
+                                            <i class="bx bxl-whatsapp me-1"></i> Link aktivasi dikirim via WhatsApp.
+                                        </div> -->
+                                    </div>
+
                                     <div v-if="hasField('password')" class="col-md-6">
                                         <label class="form-label-auth">{{ getFieldLabel('password') }}</label>
                                         <div class="input-inner">
@@ -132,7 +143,7 @@
                                     <div v-if="hasField('password')" class="col-md-6">
                                         <label class="form-label-auth">Konfirmasi</label>
                                         <div class="input-inner">
-                                            <i class="bx bx-check-double input-icon"></i>
+                                            <i class="bx bx-lock-alt input-icon"></i>
                                             <input :type="showPasswordConfirmation ? 'text' : 'password'" v-model="form.password_confirmation" :class="{ 'is-invalid': errors.password_confirmation }" class="form-control input-auth" placeholder="Ulangi Password">
                                             <button type="button" class="btn-eye-toggle" @click="toggleShowPasswordConfirmation">
                                                 <i :class="showPasswordConfirmation ? 'bx bx-show' : 'bx bx-hide'"></i>
@@ -143,7 +154,7 @@
                             </div>
 
                             <!-- Section: Data Profil -->
-                            <div class="auth-section mb-5">
+                            <!-- <div class="auth-section mb-5">
                                 <h6 class="section-label">Informasi Personal</h6>
                                 <div class="row g-3">
                                     <div v-if="hasField('class_name')" class="col-12">
@@ -247,7 +258,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <!-- Section: Kategori Peminatan -->
                             <div v-if="$page.props.setting.category_access == 2" class="auth-section mb-5">
@@ -275,7 +286,7 @@
 
                         <div class="register-footer text-center mt-4">
                             <p class="text-secondary small mb-3">Sudah memiliki akun belajar?</p>
-                            <Link href="/login" class="btn btn-outline-auth w-100">Kembali ke Halaman Login</Link>
+                            <Link href="/login" class="btn btn-outline-auth w-100 py-[12px]">Kembali ke Halaman Login</Link>
                         </div>
                     </div>
                 </div>
@@ -313,7 +324,7 @@
 }
 
 .brand-logo-img { height: 45px; filter: brightness(0) invert(1); }
-.hero-img-register { max-width: 300px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2)); }
+.hero-img-register { max-width: 400px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2)); }
 
 /* Right Section Scrollable Form */
 .register-form-side { flex: 1.2; position: relative; }

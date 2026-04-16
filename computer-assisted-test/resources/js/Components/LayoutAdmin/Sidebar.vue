@@ -6,7 +6,6 @@
                     <div class="logo-icon-wrapper p-1 bg-white rounded-3 shadow-sm" v-if="$page.props.setting && $page.props.setting.logo">
                         <img v-bind:src="'/storage/upload_files/settings/' + $page.props.setting.logo" style="height:45px; width: auto;"/>
                     </div>
-                    <!-- <h4 class="logo-text fw-bold mb-0 text-primary" style="font-size:18px;">{{ $page.props.setting.app_name ?? 'JUARA' }}</h4> -->
                 </div>
 				<div class="toggle-icon ms-auto d-none d-lg-flex cursor-pointer fs-4 text-primary">
                     <i class='bx bx-chevron-left-circle'></i>
@@ -123,7 +122,7 @@
                         <div class="parent-icon"><i class='bx bx-calculator text-emerald-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                         <div class="menu-title">Kalkulator Psikologi</div>
                     </Link>
-                </li> 
+                </li>
                 <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code) && item.is_active == '1')" class="menu-label">Materi</li>
                 <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'module' && item.is_active == '1')" :class="{ 'mm-active': isActive('/admin/modules') }">
                     <Link href="/admin/modules" class="menu-clicked" title="Modul / Materi" data-bs-toggle="tooltip" data-bs-placement="right">
@@ -131,7 +130,7 @@
 						</div>
 						<div class="menu-title">Modul / Materi</div>
 					</Link>
-                </li> 
+                </li>
                 <li v-if="$page.props.menu_users && $page.props.menu_users.some(item => item.code == 'video_module' && item.is_active == '1')" :class="{ 'mm-active': isActive('/admin/video-modules') }">
                     <Link href="/admin/video-modules" class="menu-clicked" title="Video Pembelajaran" data-bs-toggle="tooltip" data-bs-placement="right">
                         <div class="parent-icon"><i class='bx bx-video text-amber-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
@@ -255,31 +254,31 @@
             <!-- user -->
             <ul class="metismenu px-3" id="menu" v-if="$page.props.auth.user.level == 2">
                 <!-- <li class="mb-4 mt-3">
-                    <div class="card-modern-user p-3 rounded-4 shadow-sm border-0 position-relative overflow-hidden" 
+                    <div class="card-modern-user p-3 rounded-4 shadow-sm border-0 position-relative overflow-hidden"
                          :class="[$page.props.setting.sidebar_color && $page.props.setting.header_color ? 'bg-primary text-white' : 'bg-light']">
                         <div class="position-relative z-1 text-center">
                             <p class="mb-1 small opacity-75">Halo, Selamat Belajar!</p>
                             <h6 class="fw-bold mb-3">{{ $page.props.auth.user.name }}</h6>
-                            
-                            <div v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" 
+
+                            <div v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')"
                                  class="balance-box mb-3 p-2 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-25">
                                 <p class="mb-0 small opacity-75">Saldo Akun</p>
                                 <h5 class="mb-0 fw-black">Rp {{ formatPrice($page.props.auth.user.account_balance) }}</h5>
                             </div>
 
                             <div class="d-flex flex-column gap-2">
-                                <button v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')" 
-                                        class="btn btn-primary btn-sm rounded-pill py-2 shadow-sm" 
+                                <button v-if="canDisplayTransactions && $page.props.setting.payment_methods && $page.props.setting.payment_methods.some(item => item.code == 'account_balance')"
+                                        class="btn btn-primary btn-sm rounded-pill py-2 shadow-sm"
                                         @click="topUp()">
                                     <i class='bx bx-plus-circle me-1'></i> Top Up Saldo
                                 </button>
-                                <button v-if="$page.props.setting.social_group_mode == 1" 
-                                        class="btn btn-success btn-sm rounded-pill py-2 shadow-sm" 
+                                <button v-if="$page.props.setting.social_group_mode == 1"
+                                        class="btn btn-success btn-sm rounded-pill py-2 shadow-sm"
                                         @click="socialGroup()">
                                     <i class='bx bxl-whatsapp me-1'></i> Grup Belajar
                                 </button>
-                                <button @click="changeCategorySelected($page.props.auth.user.id)" 
-                                        v-if="$page.props.auth.user.level == 2 && $page.props.setting.category_access == 2 && $page.props.setting.allow_category_access_changes == 1" 
+                                <button @click="changeCategorySelected($page.props.auth.user.id)"
+                                        v-if="$page.props.auth.user.level == 2 && $page.props.setting.category_access == 2 && $page.props.setting.allow_category_access_changes == 1"
                                         class="btn btn-outline-primary btn-sm rounded-pill py-2 show-on-mobile">
                                     <i class='bx bx-category me-1'></i> Ganti Kategori
                                 </button>
@@ -327,8 +326,8 @@
                             <div class="parent-icon"><i class='bx bx-calculator text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Kalkulator Psikologi</div>
                         </Link>
-                    </li> 
-                </template> 
+                    </li>
+                </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))" @click="toggleCategory('ujian')">
                     <span>Ujian</span>
                     <i class='bx' :class="expandedCategories.ujian ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
@@ -351,7 +350,7 @@
                                 </Link>
                             </li>
                         </ul>
-                    </li>  
+                    </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))">
                         <a href="javascript:;" class="has-arrow" title="Latihan Soal" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-pencil text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
@@ -466,14 +465,14 @@
                             <div class="parent-icon"><i class='bx bx-user-circle text-slate-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Profil</div>
                         </Link>
-                    </li>     
+                    </li>
                     <li>
                         <Link href="/user/users" class="menu-clicked" title="Keamanan" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-lock-alt text-slate-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Keamanan</div>
                         </Link>
-                    </li>     
-                </template>         
+                    </li>
+                </template>
                 <li class="menu-label">&nbsp;</li>
                 <li class="menu-label">&nbsp;</li>
 			</ul>
@@ -481,7 +480,7 @@
 
             <!-- User Logout Button at Bottom -->
             <div class="sidebar-logout-footer p-3 mt-auto border-top bg-white" v-if="$page.props.auth.user.level == 2">
-                <Link href="/logout" method="POST" 
+                <Link href="/logout" method="POST"
                       class="btn btn-logout-modern w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2 transition-all duration-300"
                       title="Log Out" data-bs-toggle="tooltip" data-bs-placement="right">
                     <i class='bx bx-log-out-circle fs-5'></i>
@@ -557,7 +556,7 @@
                 socialGroup,
                 changeCategorySelected
             }
-        },  
+        },
         methods: {
             isActive(url) {
                 if (!this.$page || !this.$page.url) return false;
@@ -656,7 +655,7 @@
         padding-left: 10px !important;
         transition: all 0.2s ease;
     }
-    
+
     .menu-label-toggle:hover {
         background: rgba(0,0,0,0.03);
     }
@@ -712,7 +711,7 @@
         height: 40px;
         margin: 0 auto;
     }
-    
+
     .sidebar-wrapper.toggled .menu-title-logout {
         display: none;
     }

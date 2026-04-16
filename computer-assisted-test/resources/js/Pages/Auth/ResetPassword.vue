@@ -12,9 +12,9 @@
                     <div class="brand-top">
                         <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo-img mb-3" alt="Logo" />
                     </div>
-                    
+
                     <div class="brand-hero text-center my-4 animate-float">
-                        <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-img-login" alt="Hero" />
+                        <img src="/assets/images/bg-juaracademy-cover.png" class="hero-img-login" alt="Hero" />
                     </div>
 
                     <div class="brand-bottom px-4">
@@ -65,7 +65,7 @@
                             <label class="form-label-auth">{{ passwordTitle }} Baru</label>
                             <div class="input-inner">
                                 <i class="bx bx-lock-alt input-icon"></i>
-                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }" 
+                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }"
                                        class="form-control input-auth" :placeholder="'Masukkan ' + passwordTitle + ' baru'">
                                 <button type="button" class="btn-eye-toggle" @click="toggleShowPassword">
                                     <i :class="showPassword ? 'bx bx-show' : 'bx bx-hide'"></i>
@@ -79,7 +79,7 @@
                             <label class="form-label-auth">Konfirmasi {{ passwordTitle }}</label>
                             <div class="input-inner">
                                 <i class="bx bx-check-shield input-icon"></i>
-                                <input :type="showPasswordConfirmation ? 'text' : 'password'" v-model="form.password_confirmation" :class="{ 'is-invalid': errors.password_confirmation }" 
+                                <input :type="showPasswordConfirmation ? 'text' : 'password'" v-model="form.password_confirmation" :class="{ 'is-invalid': errors.password_confirmation }"
                                        class="form-control input-auth" :placeholder="'Ulangi ' + passwordTitle">
                                 <button type="button" class="btn-eye-toggle" @click="toggleShowPasswordConfirmation">
                                     <i :class="showPasswordConfirmation ? 'bx bx-show' : 'bx bx-hide'"></i>

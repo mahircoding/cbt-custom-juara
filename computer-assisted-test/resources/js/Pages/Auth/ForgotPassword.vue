@@ -12,9 +12,9 @@
                     <div class="brand-top">
                         <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo-img mb-3" alt="Logo" />
                     </div>
-                    
+
                     <div class="brand-hero text-center my-4 animate-float">
-                        <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-img-login" alt="Hero" />
+                        <img src="/assets/images/bg-juaracademy-cover.png" class="hero-img-login" alt="Hero" />
                     </div>
 
                     <div class="brand-bottom px-4">
@@ -56,7 +56,7 @@
                             <label class="form-label-auth">{{ contactTitle }}</label>
                             <div class="input-inner">
                                 <i :class="contactIcon" class="input-icon"></i>
-                                <input type="text" v-model="form.contact" :class="{ 'is-invalid': errors.contact }" 
+                                <input type="text" v-model="form.contact" :class="{ 'is-invalid': errors.contact }"
                                        class="form-control input-auth" :placeholder="contactPlaceholder">
                             </div>
                             <div v-if="errors.contact" class="error-msg">{{ errors.contact }}</div>
@@ -129,7 +129,7 @@
 }
 
 .hero-img-login {
-    max-width: 320px;
+    max-width: 400px;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
 }
 

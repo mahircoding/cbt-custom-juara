@@ -12,9 +12,9 @@
                     <div class="brand-top">
                         <img v-if="$page.props.setting?.logo" :src="'/storage/upload_files/settings/' + $page.props.setting.logo" class="brand-logo-img mb-3" alt="Logo" />
                     </div>
-                    
+
                     <div class="brand-hero text-center my-4 animate-float">
-                        <img src="https://casn.privatalfaiz.id/assets/images/alfaiz/login-img.png" class="hero-img-login" alt="Hero" />
+                        <img src="/assets/images/bg-juaracademy-cover.png" class="hero-img-login" alt="Hero" />
                     </div>
 
                     <div class="brand-bottom px-4">
@@ -49,6 +49,10 @@
                         <i class="bx bx-info-circle fs-5"></i>
                         <div v-html="$page.props.session.warning"></div>
                     </div>
+                    <div v-if="errors.email" class="alert-modern alert-danger animate-shake mb-4">
+                        <i class="bx bx-error-circle fs-5"></i>
+                        <div>{{ errors.email }}</div>
+                    </div>
 
                     <form @submit.prevent="submit" class="auth-form mt-2">
                         <!-- Email Input -->
@@ -56,7 +60,7 @@
                             <label class="form-label-auth">{{ loginTitle }}</label>
                             <div class="input-inner">
                                 <i class="bx bx-envelope input-icon"></i>
-                                <input type="text" v-model="form.email" :class="{ 'is-invalid': errors.email }" 
+                                <input type="text" v-model="form.email" :class="{ 'is-invalid': errors.email }"
                                        class="form-control input-auth" :placeholder="loginPlaceholder">
                             </div>
                             <div v-if="errors.email" class="error-msg">{{ errors.email }}</div>
@@ -70,7 +74,7 @@
                             </div>
                             <div class="input-inner">
                                 <i class="bx bx-lock-alt input-icon"></i>
-                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }" 
+                                <input :type="showPassword ? 'text' : 'password'" v-model="form.password" :class="{ 'is-invalid': errors.password }"
                                        class="form-control input-auth" :placeholder="passwordPlaceholder">
                                 <button type="button" class="btn-eye-toggle" @click="toggleShow">
                                     <i :class="showPassword ? 'bx bx-show' : 'bx bx-hide'"></i>
@@ -87,12 +91,12 @@
 
                         <div v-if="$page.props.setting?.add_user_registration == 1" class="register-cta text-center mt-5">
                             <p class="text-secondary small mb-3">Belum memiliki akun?</p>
-                            <Link href="/register" class="btn btn-outline-auth w-100">Registrasi Akun Baru</Link>
+                            <Link href="/register" class="btn btn-outline-auth py-[12px] w-100">Daftar Akun Baru</Link>
                         </div>
                     </form>
 
                     <div class="contact-admin text-center mt-4">
-                        <a :href="`https://wa.me/${$page.props.setting?.whatsapp_number}?text=${encodeURI('Hallo, Admin. saya memiliki kendala saat login....')}`" 
+                        <a :href="`https://wa.me/${$page.props.setting?.whatsapp_number}?text=${encodeURI('Hallo, Admin. saya memiliki kendala saat login....')}`"
                            target="_blank" class="wa-admin-link">
                             <i class="bx bxl-whatsapp"></i>
                             Bantuan Chat Admin
@@ -140,7 +144,7 @@
 }
 
 .hero-img-login {
-    max-width: 320px;
+    max-width: 400px;
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
 }
 
@@ -352,7 +356,7 @@
             });
 
             const showPassword = ref(false);
-            
+
             const submit = () => {
                 form.processing = true;
                 Inertia.post('/login', {
@@ -370,7 +374,7 @@
             return {
                 form,
                 showPassword,
-                toggleShow, 
+                toggleShow,
                 submit,
             }
         },
@@ -380,7 +384,7 @@
             },
             loginTitle() {
                 if (!this.setting?.login_type || !this.setting?.authentication_field) return "Email / Username";
-                
+
                 const loginTypes = this.setting.login_type;
                 const fields = this.setting.authentication_field;
 
@@ -404,4 +408,3 @@
         }
     }
 </script>
-
