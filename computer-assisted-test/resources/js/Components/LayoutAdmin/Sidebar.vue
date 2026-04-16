@@ -254,7 +254,7 @@
 
             <!-- user -->
             <ul class="metismenu px-3" id="menu" v-if="$page.props.auth.user.level == 2">
-                <li class="mb-4 mt-3">
+                <!-- <li class="mb-4 mt-3">
                     <div class="card-modern-user p-3 rounded-4 shadow-sm border-0 position-relative overflow-hidden" 
                          :class="[$page.props.setting.sidebar_color && $page.props.setting.header_color ? 'bg-primary text-white' : 'bg-light']">
                         <div class="position-relative z-1 text-center">
@@ -286,7 +286,7 @@
                             </div>
                         </div>
                     </div>
-				</li>
+				</li> -->
                 <li class="menu-label menu-label-toggle" @click="toggleCategory('navigation')">
                     <span>Navigation & Tools</span>
                     <i class='bx' :class="expandedCategories.navigation ? 'bx-chevron-up' : 'bx-chevron-down'"></i>

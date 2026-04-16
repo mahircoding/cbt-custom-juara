@@ -131,7 +131,7 @@ Route::get('403', [TestingController::class, 'privateAccess'])->name('private-ac
 Route::get('check-config-midtrans', [TestingController::class, 'checkConfigMidtrans']);
 
 Route::get('check-connection', [TestingController::class, 'checkConnection']);
-Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/', [HomeController::class,'index'])->middleware('auth')->name('home');
 Route::get('/physical-calculations', [HomeController::class,'physicalCalculation'])->name('landing_page.physical-calculations');
 Route::post('/physical-calculations', [HomeController::class,'physicalCalculate'])->name('landing_page.physical-calculations.store');
 
