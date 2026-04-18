@@ -14,7 +14,7 @@
                     </div>
 
                     <div class="brand-hero text-center my-4 animate-float">
-                        <img src="/assets/images/bg-juaracademy-cover.png" class="hero-img-register" alt="Hero" />
+                        <img src="/assets/images/cover-juaraacademy.png" class="hero-img-register" alt="Hero" />
                     </div>
 
                     <div class="brand-bottom px-4">

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('value_category_groups')) {
+            return;
+        }
+
         Schema::create('value_category_groups', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();

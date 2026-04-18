@@ -137,8 +137,8 @@
                        search: form.search,
                     },
                     {
-                        preserveState: true,     
-                        preserveScroll: true,     
+                        preserveState: true,
+                        preserveScroll: true,
                         replace: true
                     }
                 )

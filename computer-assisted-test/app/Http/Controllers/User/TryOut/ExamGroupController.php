@@ -126,6 +126,36 @@ class ExamGroupController extends Controller
         ]);
     }
 
+    public function certificateIndex(Request $request)
+    {
+        $search = $request->input('search');
+
+        $certificates = ExamGroupUser::with([
+            'examGroup',
+            'examGroup.lessonCategory',
+            'examGroup.category',
+        ])
+        ->where('user_id', Auth::id())
+        ->where('is_finished', 1)
+        ->whereHas('examGroup', function ($query) use ($search) {
+            $query->where('certificate_print_user', 1);
+
+            if ($search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            }
+        })
+        ->orderBy('updated_at', 'DESC')
+        ->paginate(10)
+        ->withQueryString();
+
+        return inertia('User/TryOut/Certificate/Index', [
+            'certificates' => $certificates,
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
+    }
+
     public function examGroupHistoryDetail(Request $request, $id)
     {   
         $historyUpdate = ExamGroupUser::with([
@@ -693,9 +723,12 @@ class ExamGroupController extends Controller
 
     public function examGroupStudentExportPdf($examGroupUserId)
     {
-        $examGroupUser = ExamGroupUser::find($examGroupUserId);
+        $examGroupUser = ExamGroupUser::where('id', $examGroupUserId)
+            ->where('user_id', Auth::id())
+            ->where('is_finished', 1)
+            ->first();
 
-        if($examGroupUser->examGroup->certificate_print_user == 0) {
+        if(!$examGroupUser || !$examGroupUser->examGroup || $examGroupUser->examGroup->certificate_print_user == 0) {
             return abort('404');
         }
 

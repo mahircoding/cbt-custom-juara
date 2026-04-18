@@ -1,221 +1,232 @@
 <template>
     <Head>
-        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Pembelian {{ typeTranslation }}</title>
+        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - {{ t.buy.pageTitle }} {{ typeTranslation }}</title>
     </Head>
-    <!--start page wrapper -->
-    <div class="page-wrapper">
-        <div class="page-content">
-            <!--breadcrumb-->
-            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">{{ typeTranslation }}</div>
-                <div class="ps-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">Pembelian {{ typeTranslation }}</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <!--end breadcrumb-->
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div v-if="$page.props.session.error" class="alert alert-danger border-0 alert-dismissible fade show">
-                        <div v-html="$page.props.session.error"></div>
+    <div class="page-wrapper checkout-page">
+        <div class="page-content">
+            <div class="checkout-hero mb-4">
+                <h2 class="hero-title mb-1">{{ t.buy.pageTitle }} {{ typeTranslation }}</h2>
+                <p class="hero-subtitle mb-0">Lengkapi metode pembayaran dan cek ringkasan pesanan sebelum lanjut.</p>
+            </div>
+
+            <div v-if="$page.props.session.error" class="alert alert-danger border-0 shadow-sm">
+                <div v-html="$page.props.session.error"></div>
+            </div>
+            <div v-if="$page.props.session.success" class="alert alert-success border-0 shadow-sm">
+                <div v-html="$page.props.session.success"></div>
+            </div>
+            <div v-if="Object.keys(errors).length > 0" class="alert alert-danger border-0 shadow-sm mb-4">
+                <strong>{{ t.buy.warning }}</strong>
+                <ul class="mt-2 mb-0">
+                    <li v-for="(error, idx) in errors" :key="idx">{{ error }}</li>
+                </ul>
+            </div>
+
+            <form @submit.prevent="submit">
+                <div class="card border-0 shadow-sm checkout-card">
+                    <div class="card-header border-0 bg-transparent p-4 pb-2 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold">{{ t.buy.summaryTitle }} {{ typeTranslation }}</h6>
+                        <Link :href="urlBack" class="btn btn-outline-primary btn-sm rounded-pill px-3">{{ t.common.back }}</Link>
                     </div>
-                    <div v-if="$page.props.session.success" class="alert alert-success border-0 alert-dismissible fade show">
-                        <div v-html="$page.props.session.success"></div>
-                    </div>
-                    <div v-if="Object.keys(errors).length > 0" class="alert alert-danger border-0 alert-dismissible fade show mb-3 p-0 px-3 py-2">
-                        <strong>Perhatian, pastikan inputan diisi dengan benar.</strong>
-                        <ul class="mt-3">
-                            <li v-for="error in errors">{{ error }}</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <form @submit.prevent="submit">
-                        <div class="card border-top border-0 border-3 border-primary">
-                            <div class="card-header">
-                                <div class="d-lg-flex align-items-center">
-                                    <h6>Detail Pembelian {{ typeTranslation }}</h6>
-                                    <div class="ms-auto">
-                                        <Link :href="urlBack" class="btn btn-primary btn-sm mt-2 mt-lg-0 float-end">Kembali</Link>
+
+                    <div class="card-body p-4 pt-2">
+                        <div class="row g-3">
+                            <div class="col-12" v-if="type != 'topupBalance'">
+                                <label class="form-label form-label-modern">{{ t.common.category }}</label>
+                                <input type="text" class="form-control form-control-modern readonly-control" :value="purchase.category.name" disabled>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label form-label-modern">{{ type == 'topupBalance' ? t.buy.purchaseDescription : t.buy.productLabel }}</label>
+                                <input type="text" class="form-control form-control-modern readonly-control" :value="purchase.title" disabled>
+                            </div>
+
+                            <div class="col-12 col-lg-6" v-if="type == 'voucher'">
+                                <label class="form-label form-label-modern">{{ t.buy.activePeriod }}</label>
+                                <input
+                                    type="text"
+                                    class="form-control form-control-modern readonly-control"
+                                    :value="purchase.active_period + (purchase.period_type == 'day' ? ' Hari' : ' Bulan')"
+                                    disabled
+                                >
+                            </div>
+
+                            <div :class="type == 'voucher' ? 'col-12 col-lg-6' : 'col-12'">
+                                <label class="form-label form-label-modern">{{ type == 'topupBalance' ? t.buy.nominalLabel : t.buy.priceLabel }} {{ typeTranslation }}</label>
+                                <input type="text" class="form-control form-control-modern readonly-control fw-bold text-primary" :value="formatPrice(purchase.price_after_discount)" disabled>
+                            </div>
+
+                            <div class="col-12" v-if="type != 'topupBalance'">
+                                <label class="form-label form-label-modern">{{ t.buy.memberCategory }}</label>
+                                <div class="member-wrap">
+                                    <div v-if="purchase.member_categories.length">
+                                        <span v-for="(member_category, index) in purchase.member_categories" :key="index" class="badge bg-success me-1 mb-1">
+                                            {{ member_category.name }}
+                                        </span>
                                     </div>
+                                    <span v-else class="badge bg-success">{{ t.buy.memberCategoryAll }}</span>
                                 </div>
                             </div>
-                            <div class="card-body p-4">
-                                <div class="row mb-lg-3" v-if="type != 'topupBalance'">
-                                    <label class="col-sm-3 col-form-label">Kategori</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" :value="purchase.category.name" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3">
-                                    <label class="col-sm-3 col-form-label"> {{ type == 'topupBalance' ? 'Deskripsi Pembelian' : 'Pembelian ' + typeTranslation }}</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" :value="purchase.title" disabled style="background-color: #fff;">
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3" v-if="type == 'voucher'">
-                                    <label class="col-sm-3 col-form-label">Masa Aktif</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" :value="purchase.active_period + (purchase.period_type == 'day' ? ' Hari' : ' Bulan' )" disabled style="background-color: #fff;">
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3">
-                                    <label class="col-sm-3 col-form-label">{{type == 'topupBalance' ? 'Nominal' : 'Harga' }} {{ typeTranslation }}</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" :value="formatPrice(purchase.price_after_discount)" disabled style="background-color: #fff;">
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3"  v-if="type != 'topupBalance'">
-                                    <label class="col-sm-3 col-form-label">Kategori Member</label>
-                                    <div class="col-sm-9">
-                                        <div v-if="purchase.member_categories.length">
-                                            <div v-for="(member_category, index) in purchase.member_categories" :key="index" style="display: inline;">
-                                                <span class="badge bg-success ms-1">{{ member_category.name }}</span>
-                                            </div>
-                                        </div>
-                                        <div v-else>
-                                            <span class="badge bg-success ms-1">Akses Untuk Seluruh Tipe Member</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3">
-                                    <label class="col-sm-3 col-form-label">Metode Pembayaran</label>
-                                    <div class="col-sm-9">
-                                        <select v-model="form.payment_method" :class="{ 'is-invalid': errors.payment_method }" class="form-select">
-                                            <option value="">[ Pilih Metode Pembayaran ]</option>
-                                            <!-- Gunakan filteredPaymentMethods dari computed property -->
-                                            <option v-for="paymentMethod in filteredPaymentMethods" :key="paymentMethod.code" :value="paymentMethod.code">
-                                                {{ paymentMethod.name }}
-                                            </option>
-                                        </select>
-                                        <div v-if="errors.payment_method" class="invalid-feedback">
-                                            {{ errors.payment_method }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-lg-3" v-if="paymentMethods.find(method => method.code === form.payment_method) && paymentMethods.find(method => method.code === form.payment_method).show_description == 1">
-                                    <label class="col-sm-3 col-form-label"></label>
-                                    <div class="col-sm-9">
-                                        <div class="alert border-0 alert-dismissible fade show mb-3 p-0 px-3 py-2 alert-success">
-                                            {{ paymentMethods.find(method => method.code === form.payment_method).description }}
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="row">
-                                    <label class="col-sm-3 col-form-label"></label>
-                                    <div class="col-sm-9">
-                                        <div class="d-md-flex d-grid align-items-center gap-3">
-                                            <button class="btn btn-primary btn-sm px-4" onclick="buy()">Lanjutkan ke pembayaran</button>
-                                        </div>
-                                    </div>
+                            <div class="col-12">
+                                <label class="form-label form-label-modern">{{ t.buy.paymentMethodLabel }}</label>
+                                <select v-model="form.payment_method" :class="{ 'is-invalid': errors.payment_method }" class="form-select form-select-modern">
+                                    <option value="">{{ t.buy.paymentMethodPlaceholder }}</option>
+                                    <option v-for="paymentMethod in filteredPaymentMethods" :key="paymentMethod.code" :value="paymentMethod.code">
+                                        {{ paymentMethod.name }}
+                                    </option>
+                                </select>
+                                <div v-if="errors.payment_method" class="invalid-feedback">{{ errors.payment_method }}</div>
+                            </div>
+
+                            <div class="col-12" v-if="paymentMethods.find(method => method.code === form.payment_method) && paymentMethods.find(method => method.code === form.payment_method).show_description == 1">
+                                <div class="alert alert-success border-0 shadow-sm mb-0 py-2">
+                                    {{ paymentMethods.find(method => method.code === form.payment_method).description }}
                                 </div>
                             </div>
                         </div>
-                    </form>
+
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button class="btn btn-primary rounded-pill px-4">{{ t.buy.continuePayment }}</button>
+                        </div>
+                    </div>
                 </div>
-            </div><!--end row-->
+            </form>
         </div>
     </div>
-    <!--end page wrapper -->
 </template>
 
 <script>
-    //import layout admin
-    import LayoutAdmin from '../../../../Layouts/Layout.vue';
+import LayoutUser from '../../../../Layouts/Layout.vue';
+import { Link } from '@inertiajs/inertia-vue3';
+import { reactive } from 'vue';
+import { Head } from '@inertiajs/inertia-vue3';
+import Swal from 'sweetalert2';
+import { Inertia } from '@inertiajs/inertia';
+import { transactionText } from '../../../../lang/id/transaction';
 
-    // import Link
-    import { Link } from '@inertiajs/inertia-vue3';
+export default {
+    layout: LayoutUser,
 
-    //import reactive
-    import { reactive } from 'vue';
+    components: {
+        Link,
+        Head,
+    },
 
-    // import Head from Inertia
-    import {
-        Head
-    } from '@inertiajs/inertia-vue3';
+    props: {
+        errors: Object,
+        purchase: Object,
+        type: Object,
+        typeTranslation: Object,
+        urlBack: Object,
+        paymentMethods: Object,
+    },
 
-    // import Swal
-    import Swal from 'sweetalert2';
+    setup(props) {
+        const form = reactive({
+            payment_method: '',
+            price: '',
+        });
 
-    import { Inertia } from '@inertiajs/inertia';
-
-    export default {
-        // layout
-        layout: LayoutAdmin,
-
-        // register components
-        components: {
-            Link,
-            Head,
-        },
-
-        //props
-        props: {
-            errors: Object,
-            purchase: Object,
-            type: Object,
-            typeTranslation: Object,
-            urlBack: Object,
-            paymentMethods: Object,
-        },
-        setup(props) {
-            const form = reactive({
-                payment_method: '',
-                price: '',
+        const submit = () => {
+            Swal.fire({
+                title: transactionText.buy.confirmTitle,
+                text: transactionText.buy.confirmText,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#008cff',
+                cancelButtonColor: '#fd3550',
+                confirmButtonText: transactionText.buy.confirmYes,
+                cancelButtonText: transactionText.buy.confirmNo
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Inertia.post(`/user/transactions/${props.type}/${props.purchase.id}/buy`, {
+                        payment_method: form.payment_method,
+                        price: props.purchase.price_after_discount,
+                    });
+                }
             });
+        };
 
-            // submit method
-            const submit = () => {
-                Swal.fire({
-                    title: 'Selamat',
-                    text: "Selangkah lagi pembelianmu berhasil",
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Lanjutkan',
-                    cancelButtonText: 'Batalkan'
-                })
-                .then((result) => {
-                    if (result.isConfirmed) {
-                        // send data to server
-                        Inertia.post(`/user/transactions/${props.type}/${props.purchase.id}/buy`, {
-                            // data
-                            payment_method: form.payment_method,
-                            price: props.purchase.price_after_discount,
-                        });
-                    }
-                })
-            }
+        return {
+            form,
+            submit,
+            t: transactionText,
+        };
+    },
 
-            // return form state and submit method
-            return {
-                form,
-                submit,
-            }
-        },
-        methods: {
-            formatPrice(value) {
-                let val = (value/1).toFixed(2).replace('.', ',')
-                return 'Rp.' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
-        },
-        computed: {
-            filteredPaymentMethods() {
-                return this.$page.props.setting.payment_methods.filter(paymentMethod => {
-                    if (this.type === 'topupBalance' && paymentMethod.code === 'account_balance') {
-                        return false;
-                    }
-                    return true;
-                });
-            }
+    methods: {
+        formatPrice(value) {
+            const val = (value / 1).toFixed(2).replace('.', ',');
+            return 'Rp.' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+    },
+
+    computed: {
+        filteredPaymentMethods() {
+            return this.$page.props.setting.payment_methods.filter(paymentMethod => {
+                if (this.type === 'topupBalance' && paymentMethod.code === 'account_balance') {
+                    return false;
+                }
+                return true;
+            });
         }
     }
+};
 </script>
+
+<style scoped>
+.checkout-page {
+    background: radial-gradient(1200px 300px at 20% -15%, rgba(0, 140, 255, 0.08) 0%, rgba(0, 140, 255, 0) 60%), #f8fbff;
+}
+
+.hero-title {
+    color: #1f2430;
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    color: #667085;
+}
+
+.checkout-card {
+    border-radius: 16px;
+}
+
+.form-label-modern {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #454b5a;
+    margin-bottom: 0.45rem;
+}
+
+.form-select-modern,
+.form-control-modern {
+    border: 1px solid #e3e6ef;
+    border-radius: 12px;
+    min-height: 44px;
+    font-size: 0.92rem;
+}
+
+.form-select-modern:focus,
+.form-control-modern:focus {
+    border-color: rgba(0, 140, 255, 0.45);
+    box-shadow: 0 0 0 0.2rem rgba(0, 140, 255, 0.15);
+}
+
+.readonly-control {
+    background: #fff;
+    opacity: 1;
+}
+
+.member-wrap {
+    border: 1px solid #e3e6ef;
+    border-radius: 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 0.55rem 0.75rem;
+    background: #fff;
+}
+</style>

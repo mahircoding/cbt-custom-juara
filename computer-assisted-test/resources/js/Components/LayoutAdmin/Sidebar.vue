@@ -1,16 +1,22 @@
 <template>
     <!--sidebar wrapper -->
-		<div class="sidebar-wrapper" data-simplebar="true">
-			<div class="sidebar-header d-flex align-items-center justify-content-between px-3">
-                <div class="d-flex align-items-center gap-2 overflow-hidden">
-                    <div class="logo-icon-wrapper p-1 bg-white rounded-3 shadow-sm" v-if="$page.props.setting && $page.props.setting.logo">
-                        <img v-bind:src="'/storage/upload_files/settings/' + $page.props.setting.logo" style="height:45px; width: auto;"/>
-                    </div>
-                </div>
-				<div class="toggle-icon ms-auto d-none d-lg-flex cursor-pointer fs-4 text-primary">
-                    <i class='bx bx-chevron-left-circle'></i>
-                </div>
-			</div>
+		<div class="sidebar-wrapper sidebar-collabs" :class="{ toggled: isCollapsed }" data-simplebar="true">
+			<div class="sidebar-header sidebar-header-modern d-flex align-items-center justify-content-between px-3">
+	                <div class="d-flex align-items-center gap-2 overflow-hidden">
+	                    <div class="logo-icon-wrapper p-1 bg-white rounded-3 shadow-sm" v-if="$page.props.setting && $page.props.setting.logo">
+	                        <img v-bind:src="'/storage/upload_files/settings/' + $page.props.setting.logo" style="height:45px; width: auto;"/>
+	                    </div>
+	                </div>
+					<button
+                        type="button"
+                        class="toggle-icon sidebar-toggle-btn ms-auto d-none d-lg-inline-flex cursor-pointer text-primary border-0"
+                        :title="isCollapsed ? 'Buka sidebar' : 'Tutup sidebar'"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                    >
+	                    <i class='bx' :class="isCollapsed ? 'bx-chevron-right' : 'bx-chevron-left'"></i>
+	                </button>
+				</div>
 			<!--navigation-->
             <!-- admin -->
 			<ul class="metismenu" id="menu" v-if="$page.props.auth.user.level == 1 || $page.props.auth.user.level == 3">
@@ -287,7 +293,7 @@
                     </div>
 				</li> -->
                 <li class="menu-label menu-label-toggle" @click="toggleCategory('navigation')">
-                    <span>Navigation & Tools</span>
+                    <span>Pusat Belajar</span>
                     <i class='bx' :class="expandedCategories.navigation ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.navigation">
@@ -295,6 +301,12 @@
                         <Link href="/user/dashboard" class="menu-clicked" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-home-smile text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Dashboard</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))">
+                        <Link href="/user/leaderboards" class="menu-clicked" title="Leaderboard" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-trophy text-yellow-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Leaderboard</div>
                         </Link>
                     </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'classroom'))">
@@ -329,7 +341,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))" @click="toggleCategory('ujian')">
-                    <span>Ujian</span>
+                    <span>Achievement</span>
                     <i class='bx' :class="expandedCategories.ujian ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.ujian">
@@ -371,7 +383,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))" @click="toggleCategory('riwayat')">
-                    <span>Riwayat</span>
+                    <span>Achievement</span>
                     <i class='bx' :class="expandedCategories.riwayat ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.riwayat">
@@ -379,6 +391,12 @@
                         <Link href="/user/exam-groups/histories" class="menu-clicked" title="Riwayat Tryout" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-history text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Riwayat Tryout</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout'))">
+                        <Link href="/user/certificates" class="menu-clicked" title="Sertifikat" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-award text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Sertifikat</div>
                         </Link>
                     </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))">
@@ -389,7 +407,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code)))" @click="toggleCategory('materi')">
-                    <span>Materi</span>
+                    <span>Pusat Belajar</span>
                     <i class='bx' :class="expandedCategories.materi ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.materi">
@@ -413,7 +431,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="canDisplayTransactions" @click="toggleCategory('transaksi')">
-                    <span>{{ hasAnyMembershipCategory ? 'Beli Paket' : 'Transaksi' }}</span>
+                    <span>Transaksi</span>
                     <i class='bx' :class="expandedCategories.transaksi ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.transaksi">
@@ -438,7 +456,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="$page.props.setting.enable_affiliate_feature == 1" @click="toggleCategory('affiliate')">
-                    <span>Member get Member</span>
+                    <span>Bantuan</span>
                     <i class='bx' :class="expandedCategories.affiliate ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.affiliate">
@@ -639,6 +657,45 @@
 </script>
 
 <style>
+    .sidebar-collabs .sidebar-header-modern {
+        backdrop-filter: saturate(140%) blur(6px);
+        background: rgba(255, 255, 255, 0.94);
+    }
+
+    .sidebar-collabs .logo-icon-wrapper {
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-collabs .sidebar-toggle-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        background: #f3f4f6;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-collabs .sidebar-toggle-btn:hover {
+        background: #e5e7eb;
+        color: #111827 !important;
+    }
+
+    .sidebar-collabs.toggled .sidebar-header-modern {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .sidebar-collabs.toggled .logo-icon-wrapper {
+        padding: 0.15rem !important;
+        border-radius: 10px !important;
+    }
+
+    .sidebar-collabs.toggled .logo-icon-wrapper img {
+        height: 34px !important;
+    }
+
     @media (min-width: 768px) { /* Ukuran max 768px untuk mobile */
         .show-on-mobile {
             display: none !important;
@@ -649,15 +706,37 @@
         cursor: pointer;
         display: flex !important;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
         user-select: none;
-        padding-right: 1.5rem !important;
-        padding-left: 10px !important;
+        padding: 14px 16px !important;
+        margin: 10px 0 2px !important;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        color: #3f3f46 !important;
+        border-radius: 12px;
         transition: all 0.2s ease;
     }
 
     .menu-label-toggle:hover {
-        background: rgba(0,0,0,0.03);
+        background: rgba(0,0,0,0.04);
+    }
+
+    .menu-label-toggle span {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        min-width: 0;
+    }
+
+    .menu-label-toggle .bx {
+        margin-left: auto;
+        flex-shrink: 0;
+        font-size: 1.2rem;
+        color: #9ca3af;
     }
 
     .rotate-icon {

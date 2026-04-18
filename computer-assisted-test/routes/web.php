@@ -320,6 +320,7 @@ Route::group(['middleware' => ['ipWhitelist']], function() {
         Route::get('exams/{exam_id}/grades/{grade_id}/finished', [UserExamController::class, 'finished']);
 
         Route::resource('grades', UserGradeController::class)->only(['index', 'show']);
+        Route::get('leaderboards', [UserGradeController::class, 'leaderboard'])->name('leaderboards.index');
         Route::get('grades/{grade_id}/questions', [UserGradeController::class, 'question'])->name('grades.questions');
 
         Route::get('exam-groups/{id}/exam-start', [UserExamGroupController::class, 'examStart'])->name('exam-groups.exam-start');
@@ -331,6 +332,7 @@ Route::group(['middleware' => ['ipWhitelist']], function() {
         Route::get('exam-groups/{exam_group_id}/grades/{exam_group_user_id}/finished', [UserExamGroupController::class, 'finished']);
 
         Route::get('exam-groups', [UserExamGroupController::class, 'index']);
+        Route::get('certificates', [UserExamGroupController::class, 'certificateIndex'])->name('certificates.index');
         Route::get('exam-groups/histories', [UserExamGroupController::class, 'examGroupHistory']);
         Route::get('exam-groups/histories/{id}', [UserExamGroupController::class, 'examGroupHistoryDetail'])->name('exam-groups.histories.detail');
         Route::get('exam-groups/{id}/export-pdf', [UserExamGroupController::class, 'examGroupStudentExportPdf']);

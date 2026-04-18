@@ -1,198 +1,253 @@
 <template>
     <Head>
-        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - Detail Transaksi</title>
+        <title>{{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }} - {{ t.invoice.pageTitle }}</title>
     </Head>
-    <!--start page wrapper -->
-	<div class="page-wrapper">
-		<div class="page-content">
-			<!--breadcrumb-->
-			<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-				<div class="breadcrumb-title pe-3">Transaksi</div>
-				<div class="ps-3">
-					<nav aria-label="breadcrumb">
-						<ol class="breadcrumb mb-0 p-0">
-							<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a>
-							</li>
-							<li class="breadcrumb-item active" aria-current="page">Detail Transaksi</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
-			<!--end breadcrumb-->
-			<div class="card border-top border-0 border-3 border-primary">
-				<div class="card-body">
-					<div id="invoice">
-						<div class="invoice overflow-auto">
-							<div style="min-width: 600px">
-								<header>
-									<div class="row">
-										<div class="col">
-                                            <span class="badge bg-warning" v-if="transaction.transaction_status == 'pending'">
-                                                <h6 style="color:#000; height: 10px;">Menunggu Pembayaran</h6>
-                                            </span>
 
-                                            <span class="badge bg-success" v-if="transaction.transaction_status == 'paid'">
-                                                <h6 style="color:#fff; height: 10px;">Sudah Dibayar, Menunggu Verifikasi Admin</h6>
-                                            </span>
+    <div class="page-wrapper invoice-page">
+        <div class="page-content">
+            <div class="invoice-hero mb-4 d-flex flex-column flex-lg-row justify-content-between gap-2">
+                <div>
+                    <h2 class="hero-title mb-1">{{ t.invoice.heroTitle }}</h2>
+                    <p class="hero-subtitle mb-0">{{ t.invoice.heroSubtitle }}</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <Link href="/user/transactions" class="btn btn-outline-primary btn-sm rounded-pill px-3">{{ t.common.back }}</Link>
+                    <button class="btn btn-primary btn-sm rounded-pill px-3" @click="printInvoice">
+                        <i class='bx bx-printer me-1'></i> {{ t.invoice.print }}
+                    </button>
+                </div>
+            </div>
 
-                                            <span class="badge bg-danger" v-if="transaction.transaction_status == 'failed'">
-                                                <h6 style="color:#fff; height: 10px;">Transaksi Gagal</h6>
-                                            </span>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4 d-flex flex-column flex-lg-row justify-content-between gap-3 align-items-start align-items-lg-center">
+                    <div>
+                        <span class="badge status-pill" :class="statusClass(transaction.transaction_status)">
+                            {{ statusText(transaction.transaction_status) }}
+                        </span>
+                        <div class="small text-muted mt-2">{{ t.invoice.invoiceNumber }}</div>
+                        <div class="fw-bold fs-5">{{ transaction.code }}</div>
+                    </div>
+                    <div class="text-lg-end">
+                        <div class="fw-bold">{{ $page.props.setting.app_name ?? '-' }}</div>
+                        <div class="small text-muted">{{ $page.props.setting.address ?? '-' }}</div>
+                        <div class="small text-muted">{{ $page.props.setting.whatsapp_number ?? '-' }}</div>
+                        <div class="small text-muted">{{ $page.props.setting.email ?? '-' }}</div>
+                    </div>
+                </div>
+            </div>
 
-                                            <span class="badge bg-primary" v-if="transaction.transaction_status == 'done'">
-                                                <h6 style="color:#fff; height: 10px;">Transaksi Selesai</h6>
-                                            </span>
-										</div>
-										<div class="col company-details">
-											<h2 class="name">
-												<a target="_blank" href="javascript:;">
-                                                    {{ $page.props.setting.app_name ?? 'Atur Setting Terlebih Dahulu' }}
-												</a>
-											</h2>
-											<div>{{ $page.props.setting.address ?? 'Atur Setting Terlebih Dahulu' }}</div>
-											<div>{{ $page.props.setting.whatsapp_number ?? 'Atur Setting Terlebih Dahulu' }}</div>
-											<div>{{ $page.props.setting.email ?? 'Atur Setting Terlebih Dahulu' }}</div>
-										</div>
-									</div>
-								</header>
-								<main>
-									<div class="row contacts">
-										<div class="col invoice-to">
-											<div class="text-gray-light">Faktur Untuk:</div>
-											<h2 class="to">{{ transaction.user.name }}</h2>
-											<div class="address">
-                                                {{ transaction.user.student && transaction.user.student.address ? transaction.user.student.address :  '-' }},
-                                                {{ transaction.user.student && transaction.user.student.village ? transaction.user.student.village.name :  '-' }}
-                                                Desa/Kel.  {{ transaction.user.student && transaction.user.student.village ? transaction.user.student.village.name :  '-' }},
-                                                Kec.  {{ transaction.user.student && transaction.user.student.district ? transaction.user.student.district.name :  '-' }},
-                                                Kota/Kab.  {{ transaction.user.student && transaction.user.student.city ? transaction.user.student.city.name :  '-' }},
-                                                Provinsi {{ transaction.user.student && transaction.user.student.province ? transaction.user.student.province.name :  '-' }}
-                                                <br>
-                                                {{ transaction.user.student.phone_number }}
-                                            </div>
-											<div class="email">{{ transaction.user.email ?? '-' }}</div>
-										</div>
-										<div class="col invoice-details">
-											<h1 class="invoice-id">{{ transaction.code }}</h1>
-											<div class="date">Tanggal Faktur : {{ transaction.created_at }}</div>
-											<!-- <div class="date">Batas Waktu Pembayaran: {{ transaction.maximum_payment_time }}</div> -->
-										</div>
-									</div>
-									<table>
-										<thead>
-											<tr>
-												<th>#</th>
-												<th class="text-left">Deskripsi</th>
-												<th class="text-right">Harga</th>
-												<th class="text-right">Total</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td class="no">01</td>
-												<td class="text-left">
-                                                    {{ transaction.description }}
-                                                </td>
-												<td class="unit">{{ formatPrice(transaction.total_payment)  }}</td>
-												<td class="total">{{ formatPrice(transaction.total_payment) }}</td>
-											</tr>
-										</tbody>
-										<tfoot>
-											<tr>
-												<td colspan="2"></td>
-												<td>Sub Total</td>
-												<td>{{ formatPrice(transaction.total_payment) }}</td>
-											</tr>
-											<tr>
-												<td colspan="2"></td>
-												<td>Pajak 0%</td>
-												<td>Rp. 0.00</td>
-											</tr>
-											<tr>
-												<td colspan="2"></td>
-												<td>TOTAL PEMBAYARAN</td>
-												<td>{{ formatPrice(transaction.total_payment) }}</td>
-											</tr>
-										</tfoot>
-									</table>
-                                    <div class="thanks">Terimakasih</div>
-                                    <br>
-                                    <h4 class="text-center">Silakan lakukan pembayaran melalui bank dibawah ini</h4>
-                                    <br>
-                                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3">
-                                        <div class="col" v-for="bank in banks">
-                                            <div class="card border-bottom border-3 border-0">
-                                                <div style="height:75px;">
-                                                    <center>
-                                                        <img  v-bind:src="'/storage/upload_files/banks/' + bank.image" style="width:125px; margin-top:20px;"/>
-                                                    </center>
-                                                </div>
-                                                <div class="card-body">
-                                                    <center>
-                                                        <h5 class="card-title">{{ bank.bank_name }}</h5>
-                                                        <p class="card-text">{{ bank.rekening_number }}</p>
-                                                        <p class="card-text"><b>{{ bank.rekening_name }}</b></p>
-                                                    </center>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-									<!-- <div class="notices">
-										<div>Perhatian!</div>
-										<div class="notice">
-                                            Batas waktu pembayaran akan Habis pada 2 hari (2 x 24 jam) dari waktu transaksi, maka lakukan pembayaran & konfirmasi sebelum <span class="badge bg-danger">{{ transaction.maximum_payment_time }} </span><br><br>
-                                            Setelah melakukan pembayaran, silakan lakukan konfirmasi melalui Whatsapp di <b>{{ $page.props.setting.whatsapp_number ?? 'Atur Setting Terlebih Dahulu' }}</b> dengan menyertakan nomor faktur serta bukti transfer pembayaran. terimakasih
-                                        </div>
-									</div> -->
-								</main>
-								<footer>Faktur dibuat di komputer dan berlaku tanpa tanda tangan dan stempel.</footer>
-							</div>
-							<!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
-							<div></div>
-						</div>
-					</div>
+            <div class="card border-0 shadow-sm mb-4 invoice-card" id="invoice-print-area">
+                <div class="card-body p-4">
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-lg-7">
+                            <div class="small text-muted mb-1">{{ t.invoice.invoiceFor }}</div>
+                            <div class="fw-bold fs-6">{{ transaction.user.name }}</div>
+                            <div class="small text-muted">
+                                {{ transaction.user.student && transaction.user.student.address ? transaction.user.student.address : '-' }}
+                                {{ transaction.user.student && transaction.user.student.village ? ', ' + transaction.user.student.village.name : '' }}
+                                {{ transaction.user.student && transaction.user.student.district ? ', Kec. ' + transaction.user.student.district.name : '' }}
+                                {{ transaction.user.student && transaction.user.student.city ? ', ' + transaction.user.student.city.name : '' }}
+                                {{ transaction.user.student && transaction.user.student.province ? ', ' + transaction.user.student.province.name : '' }}
+                            </div>
+                            <div class="small text-muted">{{ transaction.user.student && transaction.user.student.phone_number ? transaction.user.student.phone_number : '-' }}</div>
+                            <div class="small text-muted">{{ transaction.user.email ?? '-' }}</div>
+                        </div>
+                        <div class="col-12 col-lg-5 text-lg-end">
+                            <div class="small text-muted mb-1">{{ t.common.date }}</div>
+                            <div class="fw-semibold">{{ formatDateWithTimeHourMinute(transaction.created_at) }}</div>
+                        </div>
+                    </div>
 
+                    <div class="table-responsive mb-3">
+                        <table class="table table-modern align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th width="70">No</th>
+                                    <th>Deskripsi</th>
+                                    <th width="180" class="text-end">Harga</th>
+                                    <th width="180" class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>01</td>
+                                    <td>{{ transaction.description }}</td>
+                                    <td class="text-end">{{ formatPrice(transaction.total_payment) }}</td>
+                                    <td class="text-end fw-bold">{{ formatPrice(transaction.total_payment) }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-end">{{ t.invoice.subtotal }}</td>
+                                    <td class="text-end">{{ formatPrice(transaction.total_payment) }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-end">{{ t.invoice.taxZero }}</td>
+                                    <td class="text-end">Rp.0</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-end fw-bold">{{ t.invoice.grandTotal }}</td>
+                                    <td class="text-end fw-bold text-primary">{{ formatPrice(transaction.total_payment) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
 
-				</div>
-			</div>
-		</div>
-	</div>
-	<!--end page wrapper -->
+                    <div class="text-muted small">{{ t.invoice.footerNote }}</div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm" v-if="transaction.transaction_status == 'pending'">
+                <div class="card-header border-0 bg-transparent p-4 pb-2">
+                    <h6 class="mb-0 fw-bold">{{ t.invoice.bankInfoTitle }}</h6>
+                </div>
+                <div class="card-body p-4 pt-2">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-xl-4" v-for="bank in banks" :key="bank.id">
+                            <div class="bank-card h-100">
+                                <div class="bank-logo-wrap">
+                                    <img :src="'/storage/upload_files/banks/' + bank.image" class="bank-logo" :alt="bank.bank_name">
+                                </div>
+                                <h6 class="text-center mb-2">{{ bank.bank_name }}</h6>
+                                <p class="text-center mb-1">{{ bank.rekening_number }}</p>
+                                <p class="text-center small text-muted mb-0">{{ bank.rekening_name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-    //import layout admin
-    import LayoutUser from '../../../../Layouts/Layout.vue';
+import LayoutUser from '../../../../Layouts/Layout.vue';
+import { Link } from '@inertiajs/inertia-vue3';
+import { Head } from '@inertiajs/inertia-vue3';
+import { transactionText } from '../../../../lang/id/transaction';
 
-    // import Link
-    import { Link } from '@inertiajs/inertia-vue3';
+export default {
+    layout: LayoutUser,
 
-    // import Head from Inertia
-    import {
-        Head
-    } from '@inertiajs/inertia-vue3';
+    components: {
+        Link,
+        Head,
+    },
 
-    export default {
-        // layout
-        layout: LayoutUser,
+    props: {
+        transaction: Object,
+        banks: Object,
+    },
 
-        // register components
-        components: {
-            Link,
-            Head,
+    methods: {
+        formatPrice(value) {
+            const val = (value / 1).toFixed().replace('.', ',');
+            return 'Rp.' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         },
-
-        // props
-        props: {
-            transaction: Object,
-            banks: Object,
+        statusText(status) {
+            if (status === 'pending') return this.t.status.pending;
+            if (status === 'paid') return this.t.status.paid;
+            if (status === 'failed') return this.t.status.failed;
+            if (status === 'done') return this.t.status.done;
+            if (status === 'expired') return this.t.status.expired;
+            return status ?? '-';
         },
-
-        methods: {
-            formatPrice(value) {
-                let val = (value/1).toFixed().replace('.', ',')
-                return 'Rp.' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
-        }
-    }
+        statusClass(status) {
+            if (status === 'pending') return 'bg-warning text-dark';
+            if (status === 'paid') return 'bg-success';
+            if (status === 'failed') return 'bg-danger';
+            if (status === 'done') return 'bg-primary';
+            if (status === 'expired') return 'bg-danger';
+            return 'bg-secondary';
+        },
+        printInvoice() {
+            window.print();
+        },
+    },
+    data() {
+        return {
+            t: transactionText,
+        };
+    },
+};
 </script>
+
+<style scoped>
+.invoice-page {
+    background: radial-gradient(1200px 300px at 20% -15%, rgba(0, 140, 255, 0.08) 0%, rgba(0, 140, 255, 0) 60%), #f8fbff;
+}
+
+.hero-title {
+    color: #1f2430;
+    font-weight: 700;
+}
+
+.hero-subtitle {
+    color: #667085;
+}
+
+.invoice-card,
+.bank-card {
+    border-radius: 16px;
+}
+
+.status-pill {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.65rem;
+}
+
+.table-modern thead th {
+    border-bottom: 1px solid #e8e8ef;
+    color: #5c6272;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.table-modern tbody td,
+.table-modern tfoot td {
+    border-color: #f0f1f5;
+}
+
+.bank-card {
+    border: 1px solid #e8ebf2;
+    padding: 0.85rem;
+    background: #fff;
+}
+
+.bank-logo-wrap {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bank-logo {
+    max-width: 130px;
+    max-height: 42px;
+    object-fit: contain;
+}
+
+@media print {
+    .invoice-hero,
+    .btn,
+    .page-breadcrumb,
+    .card:last-child {
+        display: none !important;
+    }
+
+    .invoice-page {
+        background: #fff !important;
+    }
+
+    .page-wrapper,
+    .page-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+</style>

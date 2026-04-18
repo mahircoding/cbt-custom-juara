@@ -84,6 +84,13 @@ class MenuUserSeeder extends Seeder
                 'is_active' => 1,
                 'type' => 'sale',
             ],
+            [
+                'code' => 'certificate',
+                'description' => 'Sertifikat',
+                'order' => 11,
+                'is_active' => 1,
+                'type' => 'sale',
+            ],
         ]);
     }
 }

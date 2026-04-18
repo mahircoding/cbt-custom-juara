@@ -11,6 +11,9 @@ use App\Services\CalculateGradeService;
 use App\Repositories\Lesson\QuestionRepository;
 use App\Repositories\Exam\ExamRepository;
 use App\Repositories\Exam\ExamGroupRepository;
+use App\Models\MasterData\Category;
+use App\Models\Lesson\LessonCategory;
+use App\Models\Exam\ExamGroup;
 
 class GradeController extends Controller
 {
@@ -30,6 +33,48 @@ class GradeController extends Controller
     {
         return inertia('User/TryOut/Grade/Index', [
             'grades' => $this->gradeRepository->getAllByUserPaginatedWithParams($request)
+        ]);
+    }
+
+    public function leaderboard(Request $request)
+    {
+        $selectedCategoryId = $request->get('category_id');
+        $selectedLessonCategoryId = $request->get('lesson_category_id');
+
+        $lessonCategories = LessonCategory::query()
+            ->select('id', 'name', 'category_id')
+            ->when($selectedCategoryId, function ($query, $selectedCategoryId) {
+                $query->where('category_id', $selectedCategoryId);
+            })
+            ->orderBy('name')
+            ->get();
+
+        $examGroups = ExamGroup::query()
+            ->select('id', 'title', 'category_id', 'lesson_category_id')
+            ->when($selectedCategoryId, function ($query, $selectedCategoryId) {
+                $query->where('category_id', $selectedCategoryId);
+            })
+            ->when($selectedLessonCategoryId, function ($query, $selectedLessonCategoryId) {
+                $query->where('lesson_category_id', $selectedLessonCategoryId);
+            })
+            ->orderBy('title')
+            ->get();
+
+        return inertia('User/TryOut/Leaderboard/Index', [
+            'leaderboard' => $this->gradeRepository->getLeaderboardPaginatedWithParams($request),
+            'myLeaderboard' => $this->gradeRepository->getMyLeaderboardRank($request, auth()->id()),
+            'leaderboardFilters' => [
+                'categories' => Category::query()->select('id', 'name')->orderBy('name')->get(),
+                'lessonCategories' => $lessonCategories,
+                'examGroups' => $examGroups,
+                'selected' => [
+                    'test_type' => $request->get('test_type'),
+                    'category_id' => $selectedCategoryId,
+                    'lesson_category_id' => $selectedLessonCategoryId,
+                    'exam_group_id' => $request->get('exam_group_id'),
+                    'search_participant' => $request->get('search_participant'),
+                ],
+            ],
         ]);
     }
 
