@@ -267,17 +267,19 @@
                     ? form.description
                     : (form.description ?? '').toString();
 
+                const payload = new FormData();
+                payload.append('user_id', form.user_id ?? '');
+                payload.append('title', form.title ?? '');
+                payload.append('sort_description', form.sort_description ?? '');
+                payload.append('description', descriptionValue ?? '');
+                payload.append('is_published', form.is_published ?? '');
+
+                if (form.thumbnail instanceof File) {
+                    payload.append('thumbnail', form.thumbnail);
+                }
+
                 // send data to server
-                Inertia.post('/admin/news', {
-                    // data
-                    user_id: form.user_id,
-                    title: form.title,
-                    thumbnail: form.thumbnail,
-                    sort_description: form.sort_description,
-                    description: descriptionValue,
-                    is_published: form.is_published,
-                }, {
-                    forceFormData: true,
+                Inertia.post('/admin/news', payload, {
                     onSuccess: () => {
                         //show success alert
                         Swal.fire({
