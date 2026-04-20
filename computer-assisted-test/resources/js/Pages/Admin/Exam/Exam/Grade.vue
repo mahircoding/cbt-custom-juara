@@ -255,7 +255,7 @@
             rankingExams: Object,
             chart: Object,
             exam: Object,
-            answers: Object,
+            answers: [Object, Array],
         },
         computed: {
             computedColspan() {

@@ -130,7 +130,7 @@ class ExamGroupDetailController extends Controller
             'grade' => $grade,
             'exam' => $exam,
             'rankingExams' => $rankingExams,
-            'answers' => empty($grade->answers) ? [] : $grade->answers,
+            'answers' => $this->normalizeAnswers($grade->answers),
             'chart' => $chart->build()
         ]);
     }
@@ -237,5 +237,30 @@ class ExamGroupDetailController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    private function normalizeAnswers($answers): array
+    {
+        if (empty($answers)) {
+            return [];
+        }
+
+        if (is_array($answers)) {
+            return $answers;
+        }
+
+        if (is_string($answers)) {
+            $unserialized = @unserialize($answers, ['allowed_classes' => false]);
+            if (is_array($unserialized)) {
+                return $unserialized;
+            }
+
+            $decoded = json_decode($answers, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        return [];
     }
 }

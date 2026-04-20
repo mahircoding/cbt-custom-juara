@@ -35,14 +35,14 @@
                 <div class="col-lg-12">
                     <div class="card border-top border-0 border-3 border-primary">
                         <div class="card-header">
-                            <h5 class="mb-0" data-bs-toggle="collapse" href="#collapseTryOutGroupInformation" aria-expanded="false" @click="toggleCollapseTryOutGroupInformation">
+                            <h5 class="mb-0" style="cursor: pointer;" @click="toggleCollapseTryOutGroupInformation">
                                 Informasi Tryout
-                                <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutGroupInformation" aria-expanded="false">
+                                <a class="float-end">
                                     <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutGroupInformation, 'bx bx-chevron-up': !collapseTryOutGroupInformation }"></i>
                                 </a>
                             </h5>
                         </div>
-                        <div class="collapse" :class="{ 'show': collapseTryOutGroupInformation, 'fade in': true}" id="collapseTryOutGroupInformation">
+                        <div v-show="collapseTryOutGroupInformation">
                             <div class="card-body">
                                 <div class="ck-content" v-html="examGroup.description"></div>
                             </div>
@@ -53,14 +53,14 @@
                 <div class="col-lg-12">
                     <div class="card border-top border-0 border-3 border-primary">
                         <div class="card-header">
-                            <h5 class="mb-0" data-bs-toggle="collapse" href="#collapseTryOutGroupDescription" aria-expanded="false" @click="toggleCollapseTryOutGroupDescription">
+                            <h5 class="mb-0" style="cursor: pointer;" @click="toggleCollapseTryOutGroupDescription">
                                 Deskripsi Tryout
-                                <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutGroupDescription" aria-expanded="false">
+                                <a class="float-end">
                                     <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutGroupDescription, 'bx bx-chevron-up': !collapseTryOutGroupDescription }"></i>
                                 </a>
                             </h5>
                         </div>
-                        <div class="collapse" :class="{ 'show': collapseTryOutGroupDescription, 'fade in': true}" id="collapseTryOutGroupDescription">
+                        <div v-show="collapseTryOutGroupDescription">
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table mb-0">
@@ -130,14 +130,14 @@
                 <div class="col-lg-12">
                     <div class="card border-top border-0 border-3 border-primary">
                         <div class="card-header">
-                            <h5 class="mb-0" data-bs-toggle="collapse" href="#collapseTryOutGroupExam" aria-expanded="false" @click="toggleCollapseTryOutGroupExam">
+                            <h5 class="mb-0" style="cursor: pointer;" @click="toggleCollapseTryOutGroupExam">
                                 Detail Soal Tryout
-                                <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutGroupExam" aria-expanded="false">
+                                <a class="float-end">
                                     <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutGroupExam, 'bx bx-chevron-up': !collapseTryOutGroupExam }"></i>
                                 </a>
                             </h5>
                         </div>
-                        <div class="collapse"  :class="{ 'show': collapseTryOutGroupExam, 'fade in': true}" id="collapseTryOutGroupExam">
+                        <div v-show="collapseTryOutGroupExam">
                             <div class="card-body">
                                 <Link v-if="examGroup.exam.length" :href="`/user/exam-groups/histories`" class="btn btn-success btn-sm float-end">Riwayat Tryout</Link>
 
@@ -211,7 +211,7 @@
                                                     </div>
                                                     <!-- Belum selesai -->
                                                     <div class="text-left" v-else-if="exam.grade[0] && exam.grade[0].is_finished == 0">
-                                                        <a href="#" @click.prevent="repeatExam()" class="btn btn-sm btn-secondary m-1" v-if="exam.repeat_the_exam == 2">Ulangi</a>
+                                                        <a href="#" @click.prevent="repeatExam(exam.id)" class="btn btn-sm btn-secondary m-1" v-if="exam.repeat_the_exam == 2">Ulangi</a>
                                                         <Link :href="`/user/exams/${exam.id}/exam-start`" class="btn btn-sm btn-warning">
                                                         Lanjut Mengerjakan</Link>
                                                     </div>
@@ -318,7 +318,7 @@
                                                         </div> 
                                                     </div>
                                                     <div class="text-left" v-else-if="examGroupUser && examGroupUser.is_finished == 0">
-                                                        <a href="#" @click.prevent="repeatExam()" class="btn btn-sm btn-secondary m-1" v-if="examGroup.repeat_the_exam == 2">Ulangi</a>
+                                                        <a href="#" @click.prevent="repeatExamGroup(examGroup.id)" class="btn btn-sm btn-secondary m-1" v-if="examGroup.repeat_the_exam == 2">Ulangi</a>
                                                         <Link :href="`/user/exam-groups/${examGroup.id}/exam-start`" class="btn btn-sm btn-warning px-5">Lanjut Mengerjakan</Link>
                                                     </div>
                                                     <div class="text-left" v-else-if="examGroupUser && examGroupUser.is_finished == 1">
@@ -354,7 +354,7 @@
         Head
     } from '@inertiajs/inertia-vue3';
 
-    import { ref } from 'vue';
+    import { computed, ref } from 'vue';
 
     //import sweet alert2
     import Swal from 'sweetalert2';
@@ -378,9 +378,28 @@
             examGroupUser: Object,
         },
         setup(props) {
-            const collapseTryOutGroupInformation = ref(localStorage.getItem('collapseTryOutGroupInformation') !== null ? JSON.parse(localStorage.getItem('collapseTryOutGroupInformation')) : true);
-            const collapseTryOutGroupDescription = ref(localStorage.getItem('collapseTryOutGroupDescription') !== null ? JSON.parse(localStorage.getItem('collapseTryOutGroupDescription')) : true);
-            const collapseTryOutGroupExam = ref(localStorage.getItem('collapseTryOutGroupExam') !== null ? JSON.parse(localStorage.getItem('collapseTryOutGroupExam')) : true);
+            const examGroup = computed(() => {
+                const raw = props.examGroup ?? {};
+                const exams = Array.isArray(raw.exam) ? raw.exam : [];
+
+                return {
+                    ...raw,
+                    category: raw.category ?? { name: '-' },
+                    lesson_category: raw.lesson_category ?? { name: '-' },
+                    sub_categories: Array.isArray(raw.sub_categories) ? raw.sub_categories : [],
+                    member_categories: Array.isArray(raw.member_categories) ? raw.member_categories : [],
+                    exam: exams.map((exam) => ({
+                        ...exam,
+                        grade: Array.isArray(exam.grade) ? exam.grade : [],
+                        question_title: exam.question_title ?? { question_count: 0, total_section: 1 },
+                    })),
+                };
+            });
+
+            // Force sections to be visible on first load to avoid hidden data caused by stale localStorage state.
+            const collapseTryOutGroupInformation = ref(true);
+            const collapseTryOutGroupDescription = ref(true);
+            const collapseTryOutGroupExam = ref(true);
 
             const toggleCollapseTryOutGroupInformation = () => {
                 collapseTryOutGroupInformation.value = !collapseTryOutGroupInformation.value;
@@ -451,16 +470,17 @@
 
             const isExamActive = (timezone) => {
                 const now = moment().tz(timezone);
-                const startTime = moment(props.examGroup.exam_start_time);
-                const endTime = moment(props.examGroup.exam_end_time);
+                const startTime = moment(examGroup.value.exam_start_time);
+                const endTime = moment(examGroup.value.exam_end_time);
                 return (
-                    (props.examGroup.exam_start_time && now.isSameOrAfter(startTime) && props.examGroup.exam_end_time && now.isSameOrBefore(endTime)) ||
-                    (props.examGroup.exam_start_time && now.isSameOrAfter(startTime) && (props.examGroup.exam_end_time == null || props.examGroup.exam_end_time == undefined)) ||
-                    (props.examGroup.exam_end_time && now.isSameOrBefore(endTime) && (props.examGroup.exam_start_time == null || props.examGroup.exam_start_time == undefined))
+                    (examGroup.value.exam_start_time && now.isSameOrAfter(startTime) && examGroup.value.exam_end_time && now.isSameOrBefore(endTime)) ||
+                    (examGroup.value.exam_start_time && now.isSameOrAfter(startTime) && (examGroup.value.exam_end_time == null || examGroup.value.exam_end_time == undefined)) ||
+                    (examGroup.value.exam_end_time && now.isSameOrBefore(endTime) && (examGroup.value.exam_start_time == null || examGroup.value.exam_start_time == undefined))
                 );
             }
 
             return {
+                examGroup,
                 repeatExam,
                 repeatExamGroup,
 

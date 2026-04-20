@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="ms-auto mb-3">
-                    <Link v-if="grade.exam_group_id" :href="`/user/exam-groups/${grade.category_id}/lesson-categories/${grade.lesson_category_id}/exams/${grade.exam_group_id}`" class="btn btn-primary btn-sm mt-2 mt-lg-0">Kembali</Link>
+                    <Link v-if="safeGrade.exam_group_id" :href="`/user/exam-groups/${safeGrade.category_id}/lesson-categories/${safeGrade.lesson_category_id}/exams/${safeGrade.exam_group_id}`" class="btn btn-primary btn-sm mt-2 mt-lg-0">Kembali</Link>
                     <Link v-else href="/user/grades" class="btn btn-primary btn-sm">Kembali</Link>
                 </div>
             </div>
@@ -30,14 +30,14 @@
 
             <div class="card">
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0 text-white" data-bs-toggle="collapse" href="#collapseTryOutInformation" aria-expanded="false" @click="toggleCollapseTryOutInformation">
+                    <h5 class="mb-0 text-white" style="cursor: pointer;" @click="toggleCollapseTryOutInformation">
                         Informasi Tryout
-                        <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutInformation" aria-expanded="false">
+                        <a class="float-end">
                             <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutInformation, 'bx bx-chevron-up': !collapseTryOutInformation }"></i>
                         </a>
                     </h5>
                 </div>
-                <div class="collapse" :class="{ 'show': collapseTryOutInformation, 'fade in': true}"  id="collapseTryOutInformation">
+                <div v-show="collapseTryOutInformation">
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table mb-0 table-bordered">
@@ -45,43 +45,43 @@
                                     <tr>
                                         <th width="220px">Peminatan</th>
                                         <td width="10px">:</td>
-                                        <td><span class="badge bg-primary">{{ grade.category.name }}</span></td>
+                                        <td><span class="badge bg-primary">{{ safeGrade.category.name }}</span></td>
                                     </tr>
                                     <tr>
                                         <th>Kategori Mata Pelajaran</th>
                                         <td>:</td>
-                                        <td>{{ grade.lesson_category.name }}</td>
+                                        <td>{{ safeGrade.lesson_category.name }}</td>
                                     </tr>
                                     <tr>
                                         <th>Judul Ujian</th>
                                         <td>:</td>
                                         <td>
-                                            {{ grade.exam.title }}
+                                            {{ safeGrade.exam.title }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Mata Pelajaran</th>
                                         <td>:</td>
                                         <td>
-                                            {{ grade.lesson.name }}
+                                            {{ safeGrade.lesson.name }}
                                             <br>
-                                            <Link :href="`/user/grades/${grade.id}/questions`" v-if="grade.exam.show_answer_discussion == 1 && grade.is_finished == 1"><span class="badge bg-warning text-dark">Klik untuk pembahasan</span></Link>
+                                            <Link :href="`/user/grades/${safeGrade.id}/questions`" v-if="safeGrade.exam.show_answer_discussion == 1 && safeGrade.is_finished == 1"><span class="badge bg-warning text-dark">Klik untuk pembahasan</span></Link>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Durasi</th>
                                         <td>:</td>
-                                        <td>{{ grade.exam.duration }} Menit</td>
+                                        <td>{{ safeGrade.exam.duration }} Menit</td>
                                     </tr>
                                     <tr>
                                         <th>Waktu Mulai</th>
                                         <td>:</td>
-                                        <td>{{ formatDateWithTime(grade.start_time) }}</td>
+                                        <td>{{ formatDateWithTime(safeGrade.start_time) }}</td>
                                     </tr>
                                     <tr>
                                         <th>Waktu Selesai</th>
                                         <td>:</td>
-                                        <td>{{ formatDateWithTime(grade.end_time) }}</td>
+                                        <td>{{ formatDateWithTime(safeGrade.end_time) }}</td>
                                     </tr>
                                     <!-- <tr v-if="grade.exam.repeat_the_exam != 0">
                                         <th>Total Mengulangi</th>
@@ -91,14 +91,14 @@
                                     <tr>
                                         <th>Nilai</th>
                                         <td>:</td>
-                                        <td><h5>{{ gradeFormat(grade.grade) }}</h5></td>
+                                        <td><h5>{{ gradeFormat(safeGrade.grade) }}</h5></td>
                                     </tr>
                                     <tr>
                                         <th>Action</th>
                                         <td>:</td>
                                         <td>
-                                            <Link class="btn btn-warning btn-sm" v-if="grade.exam.exam_group_id == null && grade.is_finished == 0" :href="`/user/categories/${grade.exam.category_id}/lesson-categories/${grade.exam.lesson_category_id}/lessons/${grade.exam.lesson_id}/exams/${grade.exam.id}`">Lanjut Mengerjakan</Link>
-                                            <Link class="btn btn-primary btn-sm" v-if="grade.exam.exam_group_id == null && grade.is_finished == 1" :href="`/user/categories/${grade.exam.category_id}/lesson-categories/${grade.exam.lesson_category_id}/lessons/${grade.exam.lesson_id}/exams/${grade.exam.id}`">Lihat Ujian</Link>
+                                            <Link class="btn btn-warning btn-sm" v-if="safeGrade.exam.exam_group_id == null && safeGrade.is_finished == 0" :href="`/user/categories/${safeGrade.exam.category_id}/lesson-categories/${safeGrade.exam.lesson_category_id}/lessons/${safeGrade.exam.lesson_id}/exams/${safeGrade.exam.id}`">Lanjut Mengerjakan</Link>
+                                            <Link class="btn btn-primary btn-sm" v-if="safeGrade.exam.exam_group_id == null && safeGrade.is_finished == 1" :href="`/user/categories/${safeGrade.exam.category_id}/lesson-categories/${safeGrade.exam.lesson_category_id}/lessons/${safeGrade.exam.lesson_id}/exams/${safeGrade.exam.id}`">Lihat Ujian</Link>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -108,16 +108,16 @@
                 </div>
             </div>
 
-            <div class="card" v-if="grade.grade_details && grade.exam.question_title.add_value_category == 1">
+            <div class="card" v-if="safeGrade.grade_details && safeGrade.exam.question_title.add_value_category == 1">
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0 text-white" data-bs-toggle="collapse" href="#collapseTryOutDetailValueByKategory" aria-expanded="false" @click="toggleCollapseTryOutDetailValueByKategory">
+                    <h5 class="mb-0 text-white" style="cursor: pointer;" @click="toggleCollapseTryOutDetailValueByKategory">
                         Detail Nilai Per Kategori
-                        <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutDetailValueByKategory" aria-expanded="false">
+                        <a class="float-end">
                             <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutDetailValueByKategory, 'bx bx-chevron-up': !collapseTryOutDetailValueByKategory }"></i>
                         </a>
                     </h5>
                 </div>
-                <div class="collapse" :class="{ 'show': collapseTryOutDetailValueByKategory, 'fade in': true}" id="collapseTryOutDetailValueByKategory">
+                <div v-show="collapseTryOutDetailValueByKategory">
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table mb-0 table-bordered text-center">
@@ -125,8 +125,8 @@
                                     <tr>
                                         <th>NO</th>
                                         <th>ASPEK PENILAIAN</th>
-                                        <th v-if="grade.exam.question_title.total_section == 1 && grade.exam.question_title.assessment_type != 4">TOTAL BENAR</th>
-                                        <th v-if="grade.exam.question_title.total_section == 1 && grade.exam.question_title.assessment_type != 4">TOTAL SALAH</th>
+                                        <th v-if="safeGrade.exam.question_title.total_section == 1 && safeGrade.exam.question_title.assessment_type != 4">TOTAL BENAR</th>
+                                        <th v-if="safeGrade.exam.question_title.total_section == 1 && safeGrade.exam.question_title.assessment_type != 4">TOTAL SALAH</th>
                                         <th v-if="grade.grade_details.some(item => 'rs' in item)">RS</th>
                                         <th v-if="grade.grade_details.some(item => 'ws' in item)">WS</th>
                                         <th>KATEGORI</th>
@@ -134,15 +134,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(gradeDetail, index) in grade.grade_details" :key="index">
+                                    <tr v-for="(gradeDetail, index) in safeGrade.grade_details" :key="index">
                                         <td>{{ ++index }}</td>
                                         <td>{{ gradeDetail.grade_category_name }}</td>
-                                        <td v-if="grade.exam.question_title.total_section == 1 && grade.exam.question_title.assessment_type != 4">
-                                            <Link v-if="grade.exam.show_answer_discussion == 1 && gradeDetail.total_correct > 0" :href="`/user/grades/${grade.id}/questions?valueCategoryId=${gradeDetail.value_category_id}&isCorrect=Y`">{{ gradeDetail.total_correct }}</Link>
+                                        <td v-if="safeGrade.exam.question_title.total_section == 1 && safeGrade.exam.question_title.assessment_type != 4">
+                                            <Link v-if="safeGrade.exam.show_answer_discussion == 1 && gradeDetail.total_correct > 0" :href="`/user/grades/${safeGrade.id}/questions?valueCategoryId=${gradeDetail.value_category_id}&isCorrect=Y`">{{ gradeDetail.total_correct }}</Link>
                                             <div v-else>{{ gradeDetail.total_correct }}</div>
                                         </td>
-                                        <td v-if="grade.exam.question_title.total_section == 1 && grade.exam.question_title.assessment_type != 4">
-                                            <Link v-if="grade.exam.show_answer_discussion == 1 && gradeDetail.total_wrong > 0" :href="`/user/grades/${grade.id}/questions?valueCategoryId=${gradeDetail.value_category_id}&isCorrect=N`">{{ gradeDetail.total_wrong }}</Link>
+                                        <td v-if="safeGrade.exam.question_title.total_section == 1 && safeGrade.exam.question_title.assessment_type != 4">
+                                            <Link v-if="safeGrade.exam.show_answer_discussion == 1 && gradeDetail.total_wrong > 0" :href="`/user/grades/${safeGrade.id}/questions?valueCategoryId=${gradeDetail.value_category_id}&isCorrect=N`">{{ gradeDetail.total_wrong }}</Link>
                                             <div v-else>{{ gradeDetail.total_wrong }}</div>
                                         </td>
                                         <td v-if="grade.grade_details.some(item => 'rs' in item)">{{ gradeDetail.rs ?? '-' }}</td>
@@ -154,11 +154,11 @@
                                     </tr>
                                     <tr>
                                         <th :colspan="computedColspan">TOTAL SKOR</th>
-                                        <th>{{ grade.final_score }}</th>
+                                        <th>{{ safeGrade.final_score }}</th>
                                     </tr>
                                     <tr>
                                         <th :colspan="computedColspan">KONVERSI NILAI AKHIR</th>
-                                        <th>{{ gradeFormat(grade.grade) }}</th>
+                                        <th>{{ gradeFormat(safeGrade.grade) }}</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -168,37 +168,37 @@
             </div>
             <div class="card" v-else>
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0 text-white" data-bs-toggle="collapse" href="#collapseTryOutDetailValueByKategory" aria-expanded="false" @click="toggleCollapseTryOutDetailValueByKategory">
+                    <h5 class="mb-0 text-white" style="cursor: pointer;" @click="toggleCollapseTryOutDetailValueByKategory">
                         Detail Nilai
-                        <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutDetailValueByKategory" aria-expanded="false">
+                        <a class="float-end">
                             <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutDetailValueByKategory, 'bx bx-chevron-up': !collapseTryOutDetailValueByKategory }"></i>
                         </a>
                     </h5>
                 </div>
-                <div class="collapse" :class="{ 'show': collapseTryOutDetailValueByKategory, 'fade in': true}" id="collapseTryOutDetailValueByKategory">
+                <div v-show="collapseTryOutDetailValueByKategory">
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table mb-0 table-bordered text-center">
                                 <thead>
                                     <tr>
                                         <th>MATA PELAJARAN</th>
-                                        <th v-if="grade.exam.question_title.assessment_type != 4">BENAR</th>
-                                        <th v-if="grade.exam.question_title.assessment_type != 4">SALAH</th>
+                                        <th v-if="safeGrade.exam.question_title.assessment_type != 4">BENAR</th>
+                                        <th v-if="safeGrade.exam.question_title.assessment_type != 4">SALAH</th>
                                         <th>SKOR</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>{{ grade.lesson.name }}</td>
-                                        <td v-if="grade.exam.question_title.assessment_type != 4">
-                                            <Link v-if="grade.exam.show_answer_discussion == 1 && grade.total_correct > 0" :href="`/user/grades/${grade.id}/questions?isCorrect=Y`">{{ grade.total_correct }}</Link>
-                                            <div v-else>{{ grade.total_correct }}</div>
+                                        <td>{{ safeGrade.lesson.name }}</td>
+                                        <td v-if="safeGrade.exam.question_title.assessment_type != 4">
+                                            <Link v-if="safeGrade.exam.show_answer_discussion == 1 && safeGrade.total_correct > 0" :href="`/user/grades/${safeGrade.id}/questions?isCorrect=Y`">{{ safeGrade.total_correct }}</Link>
+                                            <div v-else>{{ safeGrade.total_correct }}</div>
                                         </td>
-                                        <td v-if="grade.exam.question_title.assessment_type != 4">
-                                            <Link v-if="grade.exam.show_answer_discussion == 1 && grade.total_wrong > 0" :href="`/user/grades/${grade.id}/questions?isCorrect=N`">{{ grade.total_wrong }}</Link>
-                                            <div v-else>{{ grade.total_wrong }}</div>
+                                        <td v-if="safeGrade.exam.question_title.assessment_type != 4">
+                                            <Link v-if="safeGrade.exam.show_answer_discussion == 1 && safeGrade.total_wrong > 0" :href="`/user/grades/${safeGrade.id}/questions?isCorrect=N`">{{ safeGrade.total_wrong }}</Link>
+                                            <div v-else>{{ safeGrade.total_wrong }}</div>
                                         </td>
-                                        <td>{{ gradeFormat(grade.grade) }}</td>
+                                        <td>{{ gradeFormat(safeGrade.grade) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -207,32 +207,32 @@
                 </div>
             </div>
 
-            <div class="card" v-if="grade.exam.question_title.total_section > 1 && grade.total_correct_per_section">
+            <div class="card" v-if="safeGrade.exam.question_title.total_section > 1 && safeGrade.total_correct_per_section">
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0 text-white" data-bs-toggle="collapse" href="#collapseTryOutGraphicBySection" aria-expanded="false" @click="toggleCollapseTryOutGraphicBySection">
+                    <h5 class="mb-0 text-white" style="cursor: pointer;" @click="toggleCollapseTryOutGraphicBySection">
                         Grafik Ketahanan
-                        <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutGraphicBySection" aria-expanded="false">
+                        <a class="float-end">
                             <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutGraphicBySection, 'bx bx-chevron-up': !collapseTryOutGraphicBySection }"></i>
                         </a>
                     </h5>
                 </div>
-                <div class="collapse" :class="{ 'show': collapseTryOutGraphicBySection, 'fade in': true}" id="collapseTryOutGraphicBySection">
+                <div v-show="collapseTryOutGraphicBySection">
                     <div class="card-body">
                         <apexchart :width="chart.width" :height="chart.height" :type="chart.type" :options="chart.options" :series="chart.series"></apexchart>
                     </div>
                 </div>
             </div>
 
-            <div class="card" v-if="(grade.exam && grade.exam.show_ranking_exam == 1) || (grade.exam_group && grade.exam_group.show_ranking_exam == 1)">
+            <div class="card" v-if="(safeGrade.exam && safeGrade.exam.show_ranking_exam == 1) || (safeGrade.exam_group && safeGrade.exam_group.show_ranking_exam == 1)">
                 <div class="card-header bg-primary">
-                    <h5 class="mb-0 text-white" data-bs-toggle="collapse" href="#collapseTryOutRanking" aria-expanded="false" @click="toggleCollapseTryOutRanking">
+                    <h5 class="mb-0 text-white" style="cursor: pointer;" @click="toggleCollapseTryOutRanking">
                         Nilai Peserta
-                        <a class="float-end" data-bs-toggle="collapse" href="#collapseTryOutRanking" aria-expanded="false">
+                        <a class="float-end">
                             <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseTryOutRanking, 'bx bx-chevron-up': !collapseTryOutRanking }"></i>
                         </a>
                     </h5>
                 </div>
-                <div class="collapse" :class="{ 'show': collapseTryOutRanking, 'fade in': true}" id="collapseTryOutRanking">
+                <div v-show="collapseTryOutRanking">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div class="text-start">
@@ -327,13 +327,27 @@
             grade: Object,
             rankingExams: Object,
             chart: Object,
-            answers: Object,
+            answers: [Object, Array],
         },
         setup(props) {
-            const collapseTryOutInformation = ref(localStorage.getItem('collapseTryOutInformation') !== null ? JSON.parse(localStorage.getItem('collapseTryOutInformation')) : true);
-            const collapseTryOutDetailValueByKategory = ref(localStorage.getItem('collapseTryOutDetailValueByKategory') !== null ? JSON.parse(localStorage.getItem('collapseTryOutDetailValueByKategory')) : true);
-            const collapseTryOutGraphicBySection = ref(localStorage.getItem('collapseTryOutGraphicBySection') !== null ? JSON.parse(localStorage.getItem('collapseTryOutGraphicBySection')) : true);
-            const collapseTryOutRanking = ref(localStorage.getItem('collapseTryOutRanking') !== null ? JSON.parse(localStorage.getItem('collapseTryOutRanking')) : true);
+            const safeGrade = ref({
+                ...props.grade,
+                category: props.grade?.category ?? { name: '-' },
+                lesson_category: props.grade?.lesson_category ?? props.grade?.lessonCategory ?? { name: '-' },
+                lesson: props.grade?.lesson ?? { name: '-' },
+                exam_group: props.grade?.exam_group ?? props.grade?.examGroup ?? null,
+                exam: {
+                    ...(props.grade?.exam ?? {}),
+                    title: props.grade?.exam?.title ?? '-',
+                    question_title: props.grade?.exam?.question_title ?? props.grade?.exam?.questionTitle ?? { total_section: 1, assessment_type: 1, add_value_category: 0 },
+                },
+                grade_details: Array.isArray(props.grade?.grade_details) ? props.grade.grade_details : [],
+            });
+
+            const collapseTryOutInformation = ref(true);
+            const collapseTryOutDetailValueByKategory = ref(true);
+            const collapseTryOutGraphicBySection = ref(true);
+            const collapseTryOutRanking = ref(true);
 
             const toggleCollapseTryOutInformation = () => {
                 collapseTryOutInformation.value = !collapseTryOutInformation.value;
@@ -360,7 +374,7 @@
 
             // define method search
             const handleSearch = () => {
-                Inertia.get(`/user/grades/${props.grade.id}`, {
+                Inertia.get(`/user/grades/${safeGrade.value.id}`, {
                     search: search.value,
                 })
             }
@@ -370,6 +384,7 @@
                 collapseTryOutDetailValueByKategory,
                 collapseTryOutGraphicBySection,
                 collapseTryOutRanking,
+                safeGrade,
 
                 toggleCollapseTryOutInformation,
                 toggleCollapseTryOutDetailValueByKategory,
@@ -381,13 +396,13 @@
         },
         computed: {
             computedColspan() {
-                let colspan = this.grade.exam.question_title.total_section > 1 || this.grade.exam.question_title.assessment_type == 4 ? 3 : 5;
+                let colspan = this.safeGrade.exam.question_title.total_section > 1 || this.safeGrade.exam.question_title.assessment_type == 4 ? 3 : 5;
 
-                if (this.grade.grade_details.some(item => 'rs' in item)) {
+                if (this.safeGrade.grade_details.some(item => 'rs' in item)) {
                     colspan += 1;
                 }
 
-                if (this.grade.grade_details.some(item => 'ws' in item)) {
+                if (this.safeGrade.grade_details.some(item => 'ws' in item)) {
                     colspan += 1;
                 }
 
