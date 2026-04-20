@@ -145,6 +145,7 @@
                 editor: ClassicEditor, 
                 editorData: '<p>Initial content</p>',
                 editorConfig: {
+                    licenseKey: import.meta.env.VITE_CKEDITOR_LICENSE_KEY || 'GPL',
                     plugins: [
                         Essentials, 
                         Alignment,
