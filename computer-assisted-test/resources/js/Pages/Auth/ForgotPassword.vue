@@ -114,13 +114,13 @@
 /* Left Section Styles */
 .login-branding-side {
     flex: 1.2;
-    background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80');
+    /* background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80'); */
     background-size: cover;
     background-position: center;
 }
 
 .branding-overlay {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.9) 0%, rgba(124, 58, 237, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(43, 35, 184, 0.9) 0%, rgba(64, 58, 237, 0.9) 100%);
 }
 
 .brand-logo-img {

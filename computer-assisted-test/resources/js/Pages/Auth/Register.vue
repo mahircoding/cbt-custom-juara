@@ -314,13 +314,13 @@
 /* Left Section Styles */
 .register-branding-side {
     flex: 0.8;
-    background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80');
+    /* background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80'); */
     background-size: cover;
     background-position: center;
 }
 
 .branding-overlay {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.92) 0%, rgba(124, 58, 237, 0.92) 100%);
+    background: linear-gradient(135deg, rgba(34, 26, 192, 0.92) 0%, rgba(12, 8, 204, 0.92) 100%);
 }
 
 .brand-logo-img { height: 45px; filter: brightness(0) invert(1); }

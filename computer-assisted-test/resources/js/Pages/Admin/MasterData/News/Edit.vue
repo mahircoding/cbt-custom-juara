@@ -262,18 +262,22 @@
 
             // submit method
             const submit = () => {
+                const descriptionValue = typeof form.description === 'string'
+                    ? form.description
+                    : (form.description ?? '').toString();
+
                 // send data to server
                 Inertia.post(`/admin/news/${props.news.id}`, {
-                    forceFormData: true,
                     _method: 'put',
                     // data
                     user_id: form.user_id,
                     title: form.title,
                     thumbnail: form.thumbnail,
                     sort_description: form.sort_description,
-                    description: form.description,
+                    description: descriptionValue,
                     is_published: form.is_published,
                 }, {
+                    forceFormData: true,
                     onSuccess: () => {
                         //show success alert
                         Swal.fire({

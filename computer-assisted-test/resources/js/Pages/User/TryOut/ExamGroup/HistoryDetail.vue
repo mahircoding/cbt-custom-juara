@@ -113,8 +113,8 @@
                         <div class="text-start">
                             <h5 class="mb-0">Detail Penilaian</h5>
                         </div>
-                        <div class="ms-auto" v-if="history.exam_group.certificate_print_user == 1 && history.is_finished == 1">
-                            <a target="_blank" :href="`/user/exam-groups/${history.id}/export-pdf`" class="btn btn-danger btn-sm m-1">Cetak Hasil Tryout</a>
+                        <div class="ms-auto" v-if="history.exam_group.certificate_print_user == 1 && history.is_finished == 1 && history.passed == 1">
+                            <a target="_blank" :href="`/user/exam-groups/${history.id}/export-pdf`" class="btn btn-primary btn-sm m-1">Download Sertifikat</a>
                         </div>
                     </div>
                 </div>
