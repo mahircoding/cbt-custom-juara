@@ -717,6 +717,12 @@ class ExamGroupController extends Controller
     public function removeOldFiles()
     {
         $directoryPath = storage_path('app/json');
+
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true);
+            return;
+        }
+
         $currentDate = Carbon::now();
         $thresholdDate = $currentDate->subDays(7);
 
