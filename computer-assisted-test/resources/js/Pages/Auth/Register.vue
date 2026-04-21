@@ -64,20 +64,7 @@
                         </div>
 
                         <form @submit.prevent="submit" class="auth-form overflow-visible">
-                            <!-- Section: Afiliasi -->
-                            <div v-if="$page.props.setting.enable_affiliate_feature == 1 && referrer" class="auth-section mb-5">
-                                <h6 class="section-label">Informasi Afiliasi</h6>
-                                <div class="row g-3 p-3 bg-light rounded-4 border-dashed">
-                                    <div class="col-md-6" v-if="referrer.referral_link">
-                                        <label class="form-label-auth">Kode Referral</label>
-                                        <input type="text" class="form-control input-auth-sm bg-white" :value="referrer.referral_link.referral_code" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label-auth">Pengundang</label>
-                                        <input type="text" class="form-control input-auth-sm bg-white" :value="referrer.name" readonly>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             <!-- Section: Data Akun -->
                             <div class="auth-section mb-5">
@@ -129,7 +116,7 @@
                                         </div> -->
                                     </div>
 
-                                    <div v-if="hasField('password')" class="col-md-6">
+                                    <div v-if="hasField('password')" class="col-md-12">
                                         <label class="form-label-auth">{{ getFieldLabel('password') }}</label>
                                         <div class="input-inner">
                                             <i class="bx bx-lock-alt input-icon"></i>
@@ -140,7 +127,7 @@
                                         </div>
                                     </div>
 
-                                    <div v-if="hasField('password')" class="col-md-6">
+                                    <div v-if="hasField('password')" class="col-md-12">
                                         <label class="form-label-auth">Konfirmasi</label>
                                         <div class="input-inner">
                                             <i class="bx bx-lock-alt input-icon"></i>
@@ -149,6 +136,28 @@
                                                 <i :class="showPasswordConfirmation ? 'bx bx-show' : 'bx bx-hide'"></i>
                                             </button>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section: Afiliasi -->
+                            <div v-if="$page.props.setting.enable_affiliate_feature == 1" class="auth-section mb-5">
+                                <div class="row g-3">
+                                    <div class="col-md-6" v-if="referrer && referrer.referral_link">
+                                        <label class="form-label-auth">Kode Referral</label>
+                                        <input type="text" class="form-control input-auth-sm bg-white" :value="referrer.referral_link.referral_code" readonly>
+                                    </div>
+                                    <div class="col-md-6" v-if="referrer">
+                                        <label class="form-label-auth">Pengundang</label>
+                                        <input type="text" class="form-control input-auth-sm bg-white" :value="referrer.name" readonly>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label-auth">Masukkan Kode Referral (Opsional)</label>
+                                        <div class="input-inner">
+                                            <!-- <i class="bx bx-gift input-icon"></i> -->
+                                            <input type="text" v-model="form.referral_code" :class="{ 'is-invalid': errors.referral_code }" class="form-control input-auth-sm bg-white" placeholder="Contoh: AB12CD34EF">
+                                        </div>
+                                        <small class="text-muted">Kosongkan jika tidak memiliki kode referral.</small>
                                     </div>
                                 </div>
                             </div>
@@ -460,6 +469,7 @@
                 province_id: '', city_id: '', district_id: '', village_id: '',
                 address: '', photo: '', class_name: '', phone_number: '',
                 gender: '', category_ids: [],
+                referral_code: props.referrer?.referral_link?.referral_code ?? '',
                 cities: [], districts: [], villages: [],
                 processing: false
             });

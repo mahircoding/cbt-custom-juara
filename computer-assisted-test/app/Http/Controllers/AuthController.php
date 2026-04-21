@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\Models\Affiliate\ReferralLink;
 use App\Models\MasterData\Student;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
@@ -113,10 +114,16 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
-            $referrer_id = $this->setting->enable_affiliate_feature == 1 && session('referrer_id') 
-                && User::find(session('referrer_id')) 
-                ? User::find(session('referrer_id'))->id 
-                : null;
+            $referrer_id = null;
+
+            if ($this->setting->enable_affiliate_feature == 1) {
+                if (!empty($request->referral_code)) {
+                    $referralLink = ReferralLink::where('referral_code', $request->referral_code)->first();
+                    $referrer_id = $referralLink ? $referralLink->user_id : null;
+                } elseif (session('referrer_id') && User::find(session('referrer_id'))) {
+                    $referrer_id = User::find(session('referrer_id'))->id;
+                }
+            }
 
                 if($request->hasFile('photo')){
                     $file = $request->file('photo')->getClientOriginalName();

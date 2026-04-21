@@ -28,6 +28,9 @@ class RegisterRequest extends FormRequest
 
         $rules = [];
         $rules['category_ids'] = $setting->category_access == 2 ? 'required' : 'sometimes';
+        if ($setting->enable_affiliate_feature == 1) {
+            $rules['referral_code'] = 'nullable|string|exists:referral_links,referral_code';
+        }
 
         foreach ($fields as $field) {
             if ($field['is_active'] == '1') {
@@ -92,6 +95,7 @@ class RegisterRequest extends FormRequest
         $attributes = [];
 
         $attributes['category_ids'] = 'Kategori Peminatan';
+        $attributes['referral_code'] = 'Kode Referral';
 
         // Mengambil terjemahan untuk setiap field
         foreach ($fields as $field) {

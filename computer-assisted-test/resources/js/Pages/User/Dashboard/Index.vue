@@ -160,6 +160,111 @@
                 </div>
             </div>
 
+            <div class="quiz-frame mb-4">
+                <div class="quiz-frame__head">
+                    <h4 class="mb-0 fw-bold text-dark">Tryout</h4>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="quiz-nav-btn" type="button" @click="scrollTryout('left')" :disabled="!canTryoutScrollLeft || !recentTryouts || !recentTryouts.length">
+                            <i class="bx bx-chevron-left"></i>
+                        </button>
+                        <button class="quiz-nav-btn" type="button" @click="scrollTryout('right')" :disabled="!canTryoutScrollRight || !recentTryouts || !recentTryouts.length">
+                            <i class="bx bx-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="quiz-frame__body">
+                    <div v-if="recentTryouts && recentTryouts.length" ref="tryoutScroller" class="quiz-scroller" @scroll="onTryoutScroll">
+                        <div class="quiz-card" v-for="(tryout, index) in recentTryouts" :key="index">
+                            <div
+                                class="quiz-card__cover"
+                                :style="{
+                                    backgroundImage: tryout.lesson_category && tryout.lesson_category.thumbnail
+                                        ? `url('/storage/upload_files/lesson_categories/${tryout.lesson_category.thumbnail}')`
+                                        : 'linear-gradient(135deg, #f2f4f8 0%, #e5e9f0 100%)'
+                                }"
+                            ></div>
+                            <div class="quiz-card__body">
+                                <div class="d-flex gap-2 mb-2">
+                                    <span class="badge bg-primary">{{ tryout.category ? tryout.category.name : 'Tryout' }}</span>
+                                    <span class="badge badge-premium">{{ tryout.price_type == 2 ? 'Premium' : 'Gratis' }}</span>
+                                </div>
+                                <h5 class="quiz-card__title">{{ tryout.title }}</h5>
+                                <p class="quiz-card__desc">{{ truncateText(stripHtml(tryout.description), 95) }}</p>
+                                <div class="quiz-card__price" v-if="tryout.price_type == 2">
+                                    <span class="old-price" v-if="Number(tryout.price_before_discount || 0) > Number(tryout.price_after_discount || 0)">
+                                        {{ formatCurrencyNoDecimal(tryout.price_before_discount) }}
+                                    </span>
+                                    <span class="new-price">{{ formatCurrencyNoDecimal(tryout.price_after_discount) }}</span>
+                                </div>
+                                <div class="quiz-card__price" v-else>
+                                    <span class="new-price">Gratis</span>
+                                </div>
+                                <div class="quiz-card__meta">
+                                    <i class='bx bx-purchase-tag-alt'></i>
+                                    {{ tryout.user_access && tryout.user_access.length > 0 ? 'Sudah Dimiliki' : 'Belum Dimiliki' }}
+                                </div>
+                                <div class="quiz-card__actions">
+                                    <Link
+                                        v-if="tryout.price_type == 2 && (!tryout.user_access || !tryout.user_access.length)"
+                                        :href="`/user/transactions/examGroup/${tryout.id}/buy`"
+                                        class="btn btn-light text-primary btn-sm rounded-pill px-4 w-100 fw-semibold"
+                                    >
+                                        Beli Paket Kuis
+                                    </Link>
+                                    <Link
+                                        v-else
+                                        :href="`/user/exam-groups/${tryout.category_id}/lesson-categories/${tryout.lesson_category_id}/exams/${tryout.id}`"
+                                        class="btn btn-outline-light btn-sm rounded-pill px-4 w-100 fw-semibold"
+                                    >
+                                        Mulai Tryout
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="quiz-empty">
+                        Belum ada tryout terbaru saat ini.
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaderboard-frame mb-4">
+                <div class="leaderboard-frame__head">
+                    <h4 class="mb-0 fw-bold text-white">Leaderboard Tryout</h4>
+                </div>
+                <div class="leaderboard-frame__body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="leaderboard-card">
+                                <div class="leaderboard-card__title">Top Five Leaderboard CPNS</div>
+                                <div v-if="cpnsTopFive.length" class="leaderboard-list">
+                                    <div
+                                        v-for="(item, index) in cpnsTopFive"
+                                        :key="`cpns-${item.user_id}`"
+                                        class="leaderboard-item"
+                                        :class="{ 'leaderboard-item--top': index === 0 }"
+                                    >
+                                        <div class="leaderboard-item__left">
+                                            <div class="leaderboard-avatar">{{ getInitials(item.name) }}</div>
+                                            <div class="leaderboard-rank" :class="{ 'text-white': index === 0 }">
+                                                <span v-if="index < 3">🏅 {{ index + 1 }}</span>
+                                                <span v-else>{{ index + 1 }}</span>
+                                            </div>
+                                            <div class="leaderboard-name">{{ item.name }}</div>
+                                        </div>
+                                        <div class="leaderboard-score">{{ formatLeaderboardGrade(item.best_grade) }}</div>
+                                    </div>
+                                </div>
+                                <div v-else class="leaderboard-empty">Belum ada data leaderboard CPNS.</div>
+                                <div class="leaderboard-footer">
+                                    <Link :href="cpnsLeaderboardHref" class="leaderboard-more">Lihat Leaderboard Lengkap</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- <div v-if="canDisplayTransactions" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 mb-3">
                 <div class="col">
                     <div class="card radius-10 border-0 bg-gradient-amber-modern shadow-sm card-hover-modern">
@@ -407,7 +512,7 @@
                 </div>
             </div> -->
 
-            <div class="card radius-10 border-0 shadow-sm mb-4" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'announcement'))">
+            <!-- <div class="card radius-10 border-0 shadow-sm mb-4" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'announcement'))">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
                         <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-green me-3">
@@ -448,9 +553,9 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
-            <div class="card radius-10 border-0 shadow-sm mb-4">
+            <!-- <div class="card radius-10 border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
                         <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-amber me-3">
@@ -515,7 +620,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
         </div>
     </div>
     <!--end page wrapper -->
@@ -564,15 +670,22 @@
             recentExamGroupUsers: Object,
             recentGrades: Object,
             todayLiveClasses: Object,
+            recentTryouts: Object,
             announcementSummaries: Object,
             newsSummaries: Object,
             totalDataInCategories: Object,
             walletSummary: Object,
+            cpnsTryoutLeaderboard: Object,
+            kedinasanTryoutLeaderboard: Object,
+            cpnsLeaderboardCategoryId: String,
+            kedinasanLeaderboardCategoryId: String,
         },
         data() {
             return {
                 canNewsScrollLeft: false,
                 canNewsScrollRight: false,
+                canTryoutScrollLeft: false,
+                canTryoutScrollRight: false,
             };
         },
         setup() {
@@ -600,15 +713,24 @@
         },
         mounted() {
             this.$nextTick(() => this.updateNewsNavState());
+            this.$nextTick(() => this.updateTryoutNavState());
             window.addEventListener('resize', this.updateNewsNavState);
+            window.addEventListener('resize', this.updateTryoutNavState);
         },
         beforeUnmount() {
             window.removeEventListener('resize', this.updateNewsNavState);
+            window.removeEventListener('resize', this.updateTryoutNavState);
         },
         watch: {
             newsSummaries: {
                 handler() {
                     this.$nextTick(() => this.updateNewsNavState());
+                },
+                deep: true,
+            },
+            recentTryouts: {
+                handler() {
+                    this.$nextTick(() => this.updateTryoutNavState());
                 },
                 deep: true,
             }
@@ -621,6 +743,27 @@
             formatCurrencyNoDecimal(value) {
                 const number = Number(value || 0);
                 return 'Rp' + number.toLocaleString('id-ID');
+            },
+            stripHtml(value) {
+                const raw = String(value || '');
+                return raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            },
+            truncateText(value, max = 90) {
+                if (!value) return '-';
+                return value.length > max ? `${value.slice(0, max)}...` : value;
+            },
+            formatLeaderboardGrade(value) {
+                const number = Number(value || 0);
+                return Number.isInteger(number) ? number.toString() : number.toFixed(2);
+            },
+            getInitials(name) {
+                if (!name) return 'U';
+                return String(name)
+                    .split(' ')
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map((word) => word[0].toUpperCase())
+                    .join('');
             },
             shareReferralLink() {
                 const referralCode = this.walletSummary?.referral_code;
@@ -683,9 +826,54 @@
                 window.setTimeout(() => {
                     this.updateNewsNavState();
                 }, 220);
+            },
+            updateTryoutNavState() {
+                const node = this.$refs.tryoutScroller;
+                if (!node || !this.recentTryouts || !this.recentTryouts.length) {
+                    this.canTryoutScrollLeft = false;
+                    this.canTryoutScrollRight = false;
+                    return;
+                }
+
+                const maxLeft = node.scrollWidth - node.clientWidth;
+                this.canTryoutScrollLeft = node.scrollLeft > 2;
+                this.canTryoutScrollRight = node.scrollLeft < (maxLeft - 2);
+            },
+            onTryoutScroll() {
+                this.updateTryoutNavState();
+            },
+            scrollTryout(direction) {
+                const node = this.$refs.tryoutScroller;
+                if (!node) return;
+
+                const amount = Math.max(node.clientWidth * 0.85, 340);
+                const offset = direction === 'left' ? -amount : amount;
+
+                node.scrollBy({
+                    left: offset,
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(() => {
+                    this.updateTryoutNavState();
+                }, 220);
             }
         },
         computed: {
+            cpnsTopFive() {
+                return (this.cpnsTryoutLeaderboard || []).slice(0, 5);
+            },
+            kedinasanTopFive() {
+                return (this.kedinasanTryoutLeaderboard || []).slice(0, 5);
+            },
+            cpnsLeaderboardHref() {
+                const categoryId = this.cpnsLeaderboardCategoryId || '';
+                return `/user/leaderboards?test_type=tryout&category_id=${categoryId}&lesson_category_id=&exam_group_id=&search_participant=`;
+            },
+            kedinasanLeaderboardHref() {
+                const categoryId = this.kedinasanLeaderboardCategoryId || '';
+                return `/user/leaderboards?test_type=tryout&category_id=${categoryId}&lesson_category_id=&exam_group_id=&search_participant=`;
+            },
             canDisplayTransactions() {
                 const { transactions } = this;
                 const user = this.$page.props.auth.user;
@@ -974,6 +1162,302 @@
         font-size: 1.04rem;
     }
 
+    .quiz-frame {
+        border: 1px solid #c8ccd2;
+        border-radius: 16px;
+        background-color: #f2f3f5;
+        overflow: hidden;
+    }
+
+    .quiz-frame__head {
+        background-color: #f2f3f5;
+        border-bottom: 1px solid #d7dbe0;
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .quiz-frame__body {
+        min-height: 300px;
+        padding: 1rem 1.25rem 1.05rem;
+    }
+
+    .quiz-scroller {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        padding-bottom: 0.3rem;
+    }
+
+    .quiz-scroller::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .quiz-scroller::-webkit-scrollbar-thumb {
+        background: #c8cfd8;
+        border-radius: 999px;
+    }
+
+    .quiz-card {
+        min-width: 420px;
+        width: 420px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 120, 220, 0.35);
+        background: linear-gradient(165deg, #0b66d0 0%, #0852ac 48%, #063d83 100%);
+        color: #fff;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .quiz-card__cover {
+        height: 210px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #eef2f8;
+    }
+
+    .quiz-card__body {
+        padding: 0.95rem 1rem 1rem;
+    }
+
+    .badge-premium {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--bs-primary);
+        font-weight: 600;
+    }
+
+    .quiz-card__title {
+        color: #fff;
+        font-size: 2rem;
+        line-height: 1.08;
+        margin-bottom: 0.35rem;
+        font-weight: 800;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .quiz-card__desc {
+        color: rgba(255, 255, 255, 0.92);
+        margin-bottom: 0.45rem;
+        min-height: 52px;
+    }
+
+    .quiz-card__price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .old-price {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: line-through;
+        font-size: 1.25rem;
+    }
+
+    .new-price {
+        color: #ffffff;
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .quiz-card__meta {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .quiz-card__meta i {
+        color: #cfe6ff;
+        font-size: 1.2rem;
+    }
+
+    .quiz-nav-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid #d5d9de;
+        background-color: #eef0f3;
+        color: #9aa1ab;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .quiz-nav-btn i {
+        font-size: 1.15rem;
+    }
+
+    .quiz-nav-btn:hover:not(:disabled) {
+        color: #6a7380;
+        border-color: #c7cdd6;
+        background: #e7eaef;
+    }
+
+    .quiz-nav-btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    .quiz-empty {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #5e6672;
+        font-size: 1.04rem;
+    }
+
+    .leaderboard-frame {
+        border: 1px solid #c9cdd4;
+        border-radius: 16px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+
+    .leaderboard-frame__head {
+        background-color: var(--bs-primary);
+        border-bottom: 1px solid var(--bs-primary);
+        padding: 0.85rem 1.25rem;
+    }
+
+    .leaderboard-frame__body {
+        padding: 1rem;
+        background-color: #fff;
+    }
+
+    .leaderboard-card {
+        border: 1px solid #e8edf4;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .leaderboard-card__title {
+        background: #f8f9fb;
+        border-bottom: 1px solid #e6edf8;
+        color: #2a2f37;
+        font-weight: 700;
+        padding: 0.75rem 1rem;
+    }
+
+    .leaderboard-list {
+        padding: 0.55rem;
+    }
+
+    .leaderboard-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.78rem 0.95rem;
+        border-radius: 11px;
+        border-bottom: 1px solid #eceff4;
+    }
+
+    .leaderboard-item:last-child {
+        border-bottom: 0;
+    }
+
+    .leaderboard-item--top {
+        background: var(--bs-primary);
+        color: #fff;
+        border-bottom-color: transparent;
+        box-shadow: 0 6px 14px rgba(13, 110, 253, 0.24);
+    }
+
+    .leaderboard-item__left {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        gap: 0.75rem;
+    }
+
+    .leaderboard-avatar {
+        width: 2.45rem;
+        height: 2.45rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.16), rgba(13, 110, 253, 0.28));
+        color: var(--bs-primary);
+        font-weight: 700;
+        font-size: 0.82rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .leaderboard-item--top .leaderboard-avatar {
+        background: rgba(255, 255, 255, 0.22);
+        color: #fff;
+    }
+
+    .leaderboard-rank {
+        min-width: 2.05rem;
+        font-weight: 700;
+        color: #2f3540;
+    }
+
+    .leaderboard-name {
+        font-weight: 600;
+        color: #2f3540;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .leaderboard-item--top .leaderboard-name {
+        color: #fff;
+    }
+
+    .leaderboard-score {
+        font-weight: 700;
+        font-size: 1.02rem;
+        color: var(--bs-primary);
+    }
+
+    .leaderboard-item--top .leaderboard-score {
+        color: #fff;
+    }
+
+    .leaderboard-empty {
+        min-height: 170px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #6a7380;
+        padding: 1rem;
+    }
+
+    .leaderboard-footer {
+        text-align: center;
+        border-top: 1px solid #eef2f7;
+        padding: 0.78rem 1rem 0.88rem;
+    }
+
+    .leaderboard-more {
+        color: var(--bs-primary);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .leaderboard-more:hover {
+        color: #0a58ca;
+    }
+
     @media (max-width: 575.98px) {
         .schedule-frame__head {
             padding: 0.75rem 0.9rem;
@@ -1002,6 +1486,40 @@
         .news-card__title {
             font-size: 1.3rem;
             -webkit-line-clamp: 2;
+        }
+
+        .quiz-frame__head {
+            padding: 0.75rem 0.9rem;
+        }
+
+        .quiz-frame__body {
+            padding: 0.9rem;
+            min-height: 270px;
+        }
+
+        .quiz-card {
+            min-width: 300px;
+            width: 300px;
+        }
+
+        .quiz-card__cover {
+            height: 160px;
+        }
+
+        .quiz-card__title {
+            font-size: 1.35rem;
+        }
+
+        .new-price {
+            font-size: 1.5rem;
+        }
+
+        .leaderboard-frame__head {
+            padding: 0.75rem 0.9rem;
+        }
+
+        .leaderboard-frame__body {
+            padding: 0.9rem;
         }
     }
 
