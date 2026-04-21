@@ -17,6 +17,7 @@ use App\Models\Lesson\{DetailValueCategory, ValueCategory};
 use App\Models\Transaction\Transaction;
 use App\Services\CalculateGradeService;
 use App\Models\Setting\Setting;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Auth;
@@ -296,7 +297,7 @@ class ExamGroupController extends Controller
 
             if($request->repeat == 1) {
 
-                if ( $examGroup->repeat_the_exam != 0 && $examGroup->repeat_limit !== null && $examGroupUserCheck->total_repeat >= $examGroup->repeat_limit) {
+                if ($examGroup->repeat_the_exam != 0 && $examGroup->repeat_limit !== null && $totalRepeat >= $examGroup->repeat_limit) {
                     DB::rollback();
                     session()->flash('error', 'Kesempatan untuk Mengulangi <b>'.$examGroup->title.'</b> telah habis yaitu sebanyak '.$examGroup->repeat_limit.' kali.');
                     return redirect()->back();
@@ -447,7 +448,19 @@ class ExamGroupController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e], 500);
+            Log::error('Exam group start failed', [
+                'exam_group_id' => $id,
+                'user_id' => Auth::id(),
+                'repeat' => $request->repeat,
+                'message' => $e->getMessage(),
+            ]);
+
+            if ($request->expectsJson()) {
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+
+            session()->flash('error', 'Gagal memulai ulang tryout. Silakan coba lagi.');
+            return redirect()->back();
         }
     }
 
