@@ -60,6 +60,7 @@ class ClassroomRepository extends BaseRepository implements ClassroomInterface
     public function create($attributes)
     {
         $input = $attributes->all();
+        $input['user_id'] = $attributes->user_id ?? Auth::id();
 
         $input['price_before_discount'] = $attributes->price_type == 1 ? null : $attributes->price_before_discount;
         $input['price_after_discount'] = $attributes->price_type == 1 ? null : $attributes->price_after_discount;

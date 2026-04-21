@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('grade_generators')) {
+            return;
+        }
+
         Schema::create('grade_generators', function (Blueprint $table) {
             $table->id();
             
@@ -43,6 +47,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!Schema::hasTable('grade_generators')) {
+            return;
+        }
+
         Schema::dropIfExists('grade_generators');
     }
 };

@@ -45,7 +45,7 @@ class ClassroomController extends Controller
     {
         return inertia('Admin/Material/Classroom/Create', [
             'categories' => (new CategoryRepository())->all(),
-            'user_id' => auth()->user()->level == 3 ? auth()->user()->id : null,
+            'user_id' => auth()->id(),
             'users' => (new UserRepository())->getAllTeacher(),
             'memberCategories' => (new MemberCategoryRepository())->getAllActivated()
         ]);

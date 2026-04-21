@@ -19,13 +19,6 @@
                 </div>
             </div>
 
-            <div class="hero-card mb-4">
-                <div>
-                    <h4 class="mb-1 fw-bold text-dark">Jadwal Live Class</h4>
-                    <p class="mb-0 text-muted">Pilih kelas, cek akses kamu, lalu gabung sesi belajar secara langsung.</p>
-                </div>
-            </div>
-
             <div class="card radius-10 border-0 shadow-sm mb-4">
                 <div class="card-body p-3 p-md-4">
                     <div class="row g-3 align-items-end">
@@ -70,117 +63,147 @@
                 </div>
             </div>
 
-            <div class="row g-4" v-if="classrooms.data.length > 0">
-                <div class="col-12 col-md-6 col-xl-4" v-for="(classroom, index) in classrooms.data" :key="index">
-                    <div class="card h-100 classroom-card">
-                        <div class="classroom-card__header">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <span class="badge bg-light text-primary border fw-semibold">{{ classroom.category.name }}</span>
-                                <span v-if="classroom.status == 'active'" class="badge bg-success text-white">
-                                    <span class="status-dot me-1"></span>Aktif
-                                </span>
-                                <span v-else-if="classroom.status == 'inactive'" class="badge bg-danger text-white">Selesai</span>
-                                <span v-else class="badge bg-warning text-dark">Coming Soon</span>
-                            </div>
-                            <h5 class="fw-bold text-white mb-0 mt-3 text-truncate">{{ classroom.title }}</h5>
-                        </div>
+            <div class="schedule-frame mb-4">
+                <div class="schedule-frame__head">
+                    <h4 class="mb-0 fw-bold text-dark">Jadwal Live Class</h4>
+                    <div class="d-flex align-items-center gap-2">
+                        <button
+                            class="schedule-nav-btn"
+                            type="button"
+                            @click="scrollSchedule('left')"
+                            :disabled="!canScrollLeft || !classrooms.data.length"
+                            aria-label="Geser ke kiri"
+                        >
+                            <i class="bx bx-chevron-left"></i>
+                        </button>
+                        <button
+                            class="schedule-nav-btn"
+                            type="button"
+                            @click="scrollSchedule('right')"
+                            :disabled="!canScrollRight || !classrooms.data.length"
+                            aria-label="Geser ke kanan"
+                        >
+                            <i class="bx bx-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
 
-                        <div class="card-body d-flex flex-column p-3 p-md-4">
-                            <div class="d-flex flex-column gap-2 mb-3 text-muted small">
-                                <div class="d-flex align-items-center">
-                                    <i class="bx bx-user-circle text-primary me-2 fs-5"></i>
-                                    <span class="fw-semibold text-dark">{{ classroom.user ? classroom.user.name : 'Instruktur Profesional' }}</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <i class="bx bx-time-five text-primary me-2 fs-5"></i>
-                                    <span>{{ formatDateWithTimeHourMinute(classroom.start_time) }}</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <i class="bx bx-hourglass text-primary me-2 fs-5"></i>
-                                    <span>{{ classroom.duration }} Menit</span>
-                                </div>
-                            </div>
-
-                            <div class="mb-3 min-h-badge">
-                                <template v-if="(resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 || resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3) && $page.props.auth.user.member_type == 2">
-                                    <div class="d-flex flex-wrap gap-1">
-                                        <template v-if="classroom.member_categories && classroom.member_categories.length">
-                                            <span
-                                                v-for="(memberCategory, subIndex) in classroom.member_categories"
-                                                :key="subIndex"
-                                                class="badge bg-light text-primary border fw-semibold"
-                                            >
-                                                {{ memberCategory.name }}
-                                            </span>
-                                        </template>
-                                        <span v-else class="badge bg-light text-primary border fw-semibold">Akses Publik</span>
+                <div class="schedule-frame__body">
+                    <div
+                        v-if="classrooms.data.length > 0"
+                        ref="scheduleScroller"
+                        class="schedule-scroller"
+                        @scroll="onScheduleScroll"
+                    >
+                        <div class="schedule-item" v-for="(classroom, index) in classrooms.data" :key="index">
+                            <div class="card h-100 classroom-card">
+                                <div class="classroom-card__header">
+                                    <div class="d-flex justify-content-between align-items-start gap-2">
+                                        <span class="badge bg-light text-primary border fw-semibold">{{ classroom.category.name }}</span>
+                                        <span v-if="classroom.status == 'active'" class="badge bg-success text-white">
+                                            <span class="status-dot me-1"></span>Aktif
+                                        </span>
+                                        <span v-else-if="classroom.status == 'inactive'" class="badge bg-danger text-white">Selesai</span>
+                                        <span v-else class="badge bg-warning text-dark">Coming Soon</span>
                                     </div>
-                                </template>
-                            </div>
+                                    <h5 class="fw-bold text-white mb-0 mt-3 text-truncate">{{ classroom.title }}</h5>
+                                </div>
 
-                            <div class="d-flex align-items-end justify-content-between gap-2 mt-auto">
-                                <div class="price-container">
-                                    <div v-if="$page.props.auth.user.member_type == 2" class="mb-1">
-                                        <span v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 && classroom.user_access.length > 0" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
-                                        <span v-else-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 && classroom.member_categories.length > 0 && checkMemberCategories(classroom.member_categories) == true" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
-                                        <span v-else-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3 && (classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true)" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
-                                    </div>
-
-                                    <div v-if="(resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 || resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3) && $page.props.auth.user.member_type == 2">
-                                        <div v-if="classroom.price_type == 2">
-                                            <div v-if="classroom.price_before_discount == classroom.price_after_discount">
-                                                <h5 class="text-primary fw-bold mb-0">Rp{{ formatPrice(classroom.price_after_discount) }}</h5>
-                                            </div>
-                                            <div v-else>
-                                                <div class="small text-muted text-decoration-line-through">Rp{{ formatPrice(classroom.price_before_discount) }}</div>
-                                                <h5 class="text-primary fw-bold mb-0">Rp{{ formatPrice(classroom.price_after_discount) }}</h5>
-                                            </div>
+                                <div class="card-body d-flex flex-column p-3 p-md-4">
+                                    <div class="d-flex flex-column gap-2 mb-3 text-muted small">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bx bx-user-circle text-primary me-2 fs-5"></i>
+                                            <span class="fw-semibold text-dark">{{ classroom.user ? classroom.user.name : 'Instruktur Profesional' }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bx bx-time-five text-primary me-2 fs-5"></i>
+                                            <span>{{ formatDateWithTimeHourMinute(classroom.start_time) }}</span>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bx bx-hourglass text-primary me-2 fs-5"></i>
+                                            <span>{{ classroom.duration }} Menit</span>
                                         </div>
                                     </div>
 
-                                    <div v-if="((resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 && classroom.price_type == 1) || (resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 && classroom.member_categories.length == 0) || (resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3 && (classroom.member_categories.length == 0 || classroom.price_type == 1))) && !($page.props.auth.user.member_type == 2 && (classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true))">
-                                        <span class="badge bg-success text-white">Gratis</span>
-                                    </div>
-                                </div>
-
-                                <div class="action-btn text-end">
-                                    <div v-if="classroom.status == 'active'">
-                                        <template v-if="$page.props.auth.user.member_type == 2 && resolvedEnableClassroomSales(classroom.category.enable_classroom_sales) == 1">
-                                            <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1">
-                                                <Link v-if="classroom.user_access.length > 0 || classroom.price_type == 1" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
-                                                <Link v-else :href="`/user/transactions/classroom/${classroom.id}/buy`" class="btn btn-danger btn-sm px-3">Beli</Link>
-                                            </template>
-
-                                            <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2">
-                                                <Link v-if="checkMemberCategories(classroom.member_categories) == true" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
-                                                <Link v-else :href="`/user/vouchers?category_id=${classroom.category_id}`" class="btn btn-success btn-sm px-3">Upgrade</Link>
-                                            </template>
-
-                                            <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3">
-                                                <Link v-if="(classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true || classroom.price_type == 1)" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
-                                                <Link v-else-if="classroom.user_access.length == 0 && classroom.price_type == 2" :href="`/user/transactions/classroom/${classroom.id}/buy`" class="btn btn-danger btn-sm px-3">Beli</Link>
-                                                <Link v-if="checkMemberCategories(classroom.member_categories) == false" :href="`/user/vouchers?category_id=${classroom.category_id}`" class="btn btn-success btn-sm px-3 mt-1">Upgrade</Link>
-                                            </template>
-                                        </template>
-                                        <template v-else>
-                                            <Link :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Ikuti Kelas</Link>
+                                    <div class="mb-3 min-h-badge">
+                                        <template v-if="(resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 || resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3) && $page.props.auth.user.member_type == 2">
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <template v-if="classroom.member_categories && classroom.member_categories.length">
+                                                    <span
+                                                        v-for="(memberCategory, subIndex) in classroom.member_categories"
+                                                        :key="subIndex"
+                                                        class="badge bg-light text-primary border fw-semibold"
+                                                    >
+                                                        {{ memberCategory.name }}
+                                                    </span>
+                                                </template>
+                                                <span v-else class="badge bg-light text-primary border fw-semibold">Akses Publik</span>
+                                            </div>
                                         </template>
                                     </div>
-                                    <div v-else-if="classroom.status == 'inprogress' && classroom.release_date">
-                                        <Link :href="`/user/classrooms/${classroom.id}`" class="btn btn-outline-primary btn-sm px-3">Detail</Link>
+
+                                    <div class="d-flex align-items-end justify-content-between gap-2 mt-auto">
+                                        <div class="price-container">
+                                            <div v-if="$page.props.auth.user.member_type == 2" class="mb-1">
+                                                <span v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 && classroom.user_access.length > 0" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
+                                                <span v-else-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 && classroom.member_categories.length > 0 && checkMemberCategories(classroom.member_categories) == true" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
+                                                <span v-else-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3 && (classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true)" class="text-success fw-semibold small"><i class="bx bxs-check-circle"></i> Enrolled</span>
+                                            </div>
+
+                                            <div v-if="(resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 || resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3) && $page.props.auth.user.member_type == 2">
+                                                <div v-if="classroom.price_type == 2">
+                                                    <div v-if="classroom.price_before_discount == classroom.price_after_discount">
+                                                        <h5 class="text-primary fw-bold mb-0">Rp{{ formatPrice(classroom.price_after_discount) }}</h5>
+                                                    </div>
+                                                    <div v-else>
+                                                        <div class="small text-muted text-decoration-line-through">Rp{{ formatPrice(classroom.price_before_discount) }}</div>
+                                                        <h5 class="text-primary fw-bold mb-0">Rp{{ formatPrice(classroom.price_after_discount) }}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div v-if="((resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1 && classroom.price_type == 1) || (resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2 && classroom.member_categories.length == 0) || (resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3 && (classroom.member_categories.length == 0 || classroom.price_type == 1))) && !($page.props.auth.user.member_type == 2 && (classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true))">
+                                                <span class="badge bg-success text-white">Gratis</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="action-btn text-end">
+                                            <div v-if="classroom.status == 'active'">
+                                                <template v-if="$page.props.auth.user.member_type == 2 && resolvedEnableClassroomSales(classroom.category.enable_classroom_sales) == 1">
+                                                    <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 1">
+                                                        <Link v-if="classroom.user_access.length > 0 || classroom.price_type == 1" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
+                                                        <Link v-else :href="`/user/transactions/classroom/${classroom.id}/buy`" class="btn btn-danger btn-sm px-3">Beli</Link>
+                                                    </template>
+
+                                                    <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 2">
+                                                        <Link v-if="checkMemberCategories(classroom.member_categories) == true" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
+                                                        <Link v-else :href="`/user/vouchers?category_id=${classroom.category_id}`" class="btn btn-success btn-sm px-3">Upgrade</Link>
+                                                    </template>
+
+                                                    <template v-if="resolvedClassroomSalesType(classroom.category.classroom_sales_type) == 3">
+                                                        <Link v-if="(classroom.user_access.length > 0 || checkMemberCategories(classroom.member_categories) == true || classroom.price_type == 1)" :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Masuk</Link>
+                                                        <Link v-else-if="classroom.user_access.length == 0 && classroom.price_type == 2" :href="`/user/transactions/classroom/${classroom.id}/buy`" class="btn btn-danger btn-sm px-3">Beli</Link>
+                                                        <Link v-if="checkMemberCategories(classroom.member_categories) == false" :href="`/user/vouchers?category_id=${classroom.category_id}`" class="btn btn-success btn-sm px-3 mt-1">Upgrade</Link>
+                                                    </template>
+                                                </template>
+                                                <template v-else>
+                                                    <Link :href="`/user/classrooms/${classroom.id}`" class="btn btn-primary btn-sm px-3">Ikuti Kelas</Link>
+                                                </template>
+                                            </div>
+                                            <div v-else-if="classroom.status == 'inprogress' && classroom.release_date">
+                                                <Link :href="`/user/classrooms/${classroom.id}`" class="btn btn-outline-primary btn-sm px-3">Detail</Link>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div v-else class="empty-state text-center py-5 px-3 rounded-4">
-                <i class="bx bx-calendar-x mb-2"></i>
-                <h5 class="fw-bold mb-1">Live Class Belum Tersedia</h5>
-                <p class="text-muted mb-3">Silakan kembali lagi nanti untuk jadwal kelas terbaru.</p>
-                <Link href="/user/dashboard" class="btn btn-primary px-4">Kembali ke Dashboard</Link>
+                    <div v-else class="schedule-empty">
+                        Belum ada rekomendasi live class saat ini.
+                    </div>
+                </div>
             </div>
 
             <div class="d-flex justify-content-center mt-4 mb-3" v-if="classrooms.data.length">
@@ -211,7 +234,14 @@
             categories: Object,
             session: Object,
         },
+        data() {
+            return {
+                canScrollLeft: false,
+                canScrollRight: false,
+            };
+        },
         setup(props) {
+            const scheduleScroller = ref(null);
             const form = reactive({
                 search: ref('' || (new URL(document.location)).searchParams.get('search')),
                 category_id: ref((new URL(document.location)).searchParams.get('category_id') || ''),
@@ -246,14 +276,60 @@
 
             return {
                 form,
+                scheduleScroller,
                 checkMemberCategories,
                 handleSearch
             };
+        },
+        mounted() {
+            this.$nextTick(() => this.updateScheduleNavState());
+            window.addEventListener('resize', this.updateScheduleNavState);
+        },
+        beforeUnmount() {
+            window.removeEventListener('resize', this.updateScheduleNavState);
+        },
+        watch: {
+            classrooms: {
+                handler() {
+                    this.$nextTick(() => this.updateScheduleNavState());
+                },
+                deep: true,
+            }
         },
         methods: {
             formatPrice(value) {
                 const val = (value / 1).toFixed().replace('.', ',');
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            },
+            updateScheduleNavState() {
+                if (!this.scheduleScroller || !this.classrooms?.data?.length) {
+                    this.canScrollLeft = false;
+                    this.canScrollRight = false;
+                    return;
+                }
+
+                const node = this.scheduleScroller;
+                const maxLeft = node.scrollWidth - node.clientWidth;
+                this.canScrollLeft = node.scrollLeft > 2;
+                this.canScrollRight = node.scrollLeft < (maxLeft - 2);
+            },
+            onScheduleScroll() {
+                this.updateScheduleNavState();
+            },
+            scrollSchedule(direction) {
+                if (!this.scheduleScroller) return;
+
+                const amount = Math.max(this.scheduleScroller.clientWidth * 0.85, 280);
+                const offset = direction === 'left' ? -amount : amount;
+
+                this.scheduleScroller.scrollBy({
+                    left: offset,
+                    behavior: 'smooth',
+                });
+
+                window.setTimeout(() => {
+                    this.updateScheduleNavState();
+                }, 250);
             },
             resolvedClassroomSalesType(classroomSalesType) {
                 return this.$page.props.setting.transaction_sale_type == 1
@@ -273,14 +349,7 @@
 .classroom-page {
     --core-primary: #008cff;
     --core-primary-dark: #037de2;
-    --core-surface: #f8fbff;
-}
-
-.hero-card {
-    background: linear-gradient(120deg, rgba(0, 140, 255, 0.15), rgba(0, 140, 255, 0.04));
-    border: 1px solid rgba(0, 140, 255, 0.18);
-    border-radius: 14px;
-    padding: 1rem 1.25rem;
+    --schedule-border: #c9cdd4;
 }
 
 .classroom-control {
@@ -323,14 +392,89 @@
     min-height: 28px;
 }
 
-.empty-state {
-    background: var(--core-surface);
-    border: 1px dashed rgba(0, 140, 255, 0.25);
+.schedule-frame {
+    border: 1px solid var(--schedule-border);
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #fff;
 }
 
-.empty-state i {
-    font-size: 72px;
-    color: #a8c9e8;
+.schedule-frame__head {
+    background-color: #f0f1f3;
+    border-bottom: 1px solid #dde1e6;
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.schedule-frame__body {
+    min-height: 240px;
+    background-color: #fff;
+    padding: 1rem;
+}
+
+.schedule-scroller {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 0.25rem;
+}
+
+.schedule-scroller::-webkit-scrollbar {
+    height: 6px;
+}
+
+.schedule-scroller::-webkit-scrollbar-thumb {
+    background: #cfd5dd;
+    border-radius: 999px;
+}
+
+.schedule-item {
+    min-width: 300px;
+    width: min(360px, 90vw);
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+}
+
+.schedule-nav-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid #d2d7de;
+    color: #8a93a0;
+    background: #f5f6f8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.schedule-nav-btn i {
+    font-size: 1.15rem;
+}
+
+.schedule-nav-btn:hover:not(:disabled) {
+    color: #4f5967;
+    border-color: #bcc3cd;
+    background: #eceef2;
+}
+
+.schedule-nav-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.schedule-empty {
+    min-height: 208px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #616875;
+    font-size: 1.08rem;
 }
 
 @keyframes pulse-green {
@@ -340,12 +484,21 @@
 }
 
 @media (max-width: 575.98px) {
-    .hero-card {
-        padding: 0.9rem 1rem;
-    }
-
     .classroom-card__header {
         padding: 0.9rem;
+    }
+
+    .schedule-frame__head {
+        padding: 0.75rem 0.9rem;
+    }
+
+    .schedule-frame__body {
+        padding: 0.9rem;
+        min-height: 220px;
+    }
+
+    .schedule-item {
+        min-width: 270px;
     }
 }
 </style>

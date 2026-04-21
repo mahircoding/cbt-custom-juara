@@ -4,11 +4,25 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/inertia-vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { InertiaProgress } from '@inertiajs/progress';
+import { createNotivue } from 'notivue';
 import moment from 'moment/min/moment-with-locales'; // Impor dengan semua locale
 moment.locale('id'); // Atur ke bahasa Indonesia
 import VueApexCharts from "vue3-apexcharts";
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import VueSplide from '@splidejs/vue-splide';
+import 'notivue/notification.css';
+import 'notivue/animations.css';
+
+const notivue = createNotivue({
+  position: 'top-center',
+  limit: 4,
+  enqueue: true,
+  notifications: {
+    global: {
+      duration: 2200,
+    },
+  },
+});
 
 createInertiaApp({
   resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
@@ -76,6 +90,7 @@ createInertiaApp({
         },
       })
       .use(plugin)
+      .use(notivue)
       .use(VueApexCharts)
       .use(CKEditor)
       .use(VueSplide)

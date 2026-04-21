@@ -13,6 +13,7 @@ use App\Repositories\MasterData\AnnouncementRepository;
 use App\Repositories\MasterData\CategoryRepository;
 use App\Models\Setting\Setting;
 use App\Models\MasterData\Category;
+use App\Models\MasterData\News;
 use App\Models\Setting\Banner;
 
 class DashboardController extends Controller
@@ -32,6 +33,7 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {        
         $setting = Setting::first();
+        $user = Auth::user()?->loadMissing(['referralLink', 'userCommission']);
 
         return inertia('User/Dashboard/Index', [
             'banners' => Banner::where('is_active', 1)->orderBy('order', 'ASC')->get(),
@@ -41,6 +43,11 @@ class DashboardController extends Controller
             'totalTransactionFailed' => number_format($this->transactionRepository->getTotalTransactionFailedByUser()),
             'transactions' => $this->transactionRepository->getSummaryTransactionByUser(),
             'announcementSummaries' =>  (new announcementRepository())->getAnnouncementSummaries(),
+            'newsSummaries' => News::with('user')
+                ->where('is_published', 1)
+                ->orderBy('created_at', 'DESC')
+                ->limit(10)
+                ->get(),
             'recentExamGroupUsers' => \App\Models\Exam\ExamGroupUser::where('user_id', Auth::id())
                 ->with(['examGroup', 'examGroup.category', 'examGroup.lessonCategory'])
                 ->where('is_finished', 1)
@@ -60,6 +67,11 @@ class DashboardController extends Controller
                 ->orderBy('start_time', 'ASC')
                 ->limit(5)
                 ->get(),
+            'walletSummary' => [
+                'learning_balance' => $user?->account_balance ?? 0,
+                'referral_balance' => $user?->userCommission?->current_balance ?? 0,
+                'referral_code' => $user?->referralLink?->referral_code,
+            ],
             'totalDataInCategories' => optional($setting)->category_access == 1
                 ? Category::withCount([
                     'exam as exam_count' => fn($query) => $query->whereNull('exam_group_id'),

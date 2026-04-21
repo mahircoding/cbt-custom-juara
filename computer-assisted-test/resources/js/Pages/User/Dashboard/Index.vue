@@ -24,33 +24,143 @@
                 <div class="position-absolute rounded-circle" style="width: 150px; height: 150px; background: rgba(255,255,255,0.1); top: -50px; right: -20px; z-index: 0;"></div>
             </div>
 
-            <!-- Live Class Hari Ini Section -->
-            <div v-if="todayLiveClasses && todayLiveClasses.length" class="mb-4">
-                <div class="card radius-10 border-0 shadow-sm bg-gradient-indigo-modern overflow-hidden position-relative">
-                    <div class="card-body p-4 position-relative z-1">
-                        <div class="row align-items-center">
-                            <div class="col-lg-8">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="badge bg-white bg-opacity-25 text-white px-3 py-2 rounded-pill small uppercase tracking-wider font-bold">Live Class Hari Ini</span>
+
+
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-xl-6">
+                    <div class="card radius-10 border-0 shadow-sm bg-gradient-indigo-modern overflow-hidden">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 46px; height: 46px; background: rgba(255,255,255,0.2);">
+                                    <i class='bx bx-wallet text-white text-xl'></i>
                                 </div>
-                                <h3 class="text-white font-bold mb-2">{{ todayLiveClasses[0].title }}</h3>
-                                <p class="text-white text-opacity-75 mb-4">Bersama <span class="text-white font-semibold">{{ todayLiveClasses[0].user ? todayLiveClasses[0].user.name : 'Instruktur' }}</span> • Mulai Pukul {{ formatDateWithTimeHourMinute(todayLiveClasses[0].start_time) }}</p>
-                                <div class="d-flex gap-2">
-                                    <a :href="todayLiveClasses[0].link" target="_blank" class="btn btn-white px-4 py-2 radius-30 font-bold shadow-sm">
-                                        <i class='bx bx-play-circle me-1'></i> Gabung Sekarang
-                                    </a>
-                                    <Link href="/user/classrooms" class="btn btn-outline-white-glass px-4 py-2 radius-30">Jadwal Lainnya</Link>
+                                <div class="text-white">
+                                    <div class="font-semibold text-uppercase text-white-50 mb-1">Saldo Belajar</div>
+                                    <h3 class="mb-1 font-bold text-white">{{ formatCurrencyNoDecimal(walletSummary.learning_balance) }}</h3>
+                                    <div class="small text-white-50">Gunakan untuk mengakses Premium</div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 d-none d-lg-block text-end">
-                                <i class='bx bx-chalkboard text-white text-opacity-20' style="font-size: 150px; margin-right: -20px;"></i>
+                            <div class="d-flex gap-2">
+                                <Link href="/user/account-balances" class="btn btn-white flex-fill radius-30 fw-bold">
+                                    <i class='bx bx-down-arrow-circle me-1'></i> Top Up
+                                </Link>
+                                <Link href="/user/account-balances" class="btn btn-outline-white-glass flex-fill radius-30 fw-bold">
+                                    <i class='bx bx-history me-1'></i> Riwayat
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-6" v-if="$page.props.setting.enable_affiliate_feature == 1">
+                    <div class="card radius-10 border-0 shadow-sm bg-gradient-indigo-modern overflow-hidden">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start mb-4">
+                                <div class="d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 46px; height: 46px; background: rgba(255,255,255,0.2);">
+                                    <i class='bx bx-user-plus text-white text-xl'></i>
+                                </div>
+                                <div class="text-white">
+                                    <div class="font-semibold text-uppercase text-white-50 mb-1">Saldo Referral</div>
+                                    <h3 class="mb-1 font-bold text-white">{{ formatCurrencyNoDecimal(walletSummary.referral_balance) }}</h3>
+                                    <div class="small text-white-50">Kode Referral: {{ walletSummary.referral_code ?? '-' }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-white flex-fill radius-30 fw-bold" @click="shareReferralLink">
+                                    <i class='bx bx-share-alt me-1'></i> Bagikan
+                                </button>
+                                <Link href="/user/affiliates/withdrawals/create" class="btn btn-outline-white-glass flex-fill radius-30 fw-bold">
+                                    <i class='bx bx-up-arrow-circle me-1'></i> Tarik
+                                </Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="canDisplayTransactions" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 mb-3">
+            <div class="schedule-frame mb-4">
+                <div class="schedule-frame__head">
+                    <h4 class="mb-0 fw-bold text-white">Jadwal Live Class</h4>
+                    <Link href="/user/classrooms" class="btn btn-sm btn-light text-primary radius-30 px-3">Lihat Semua</Link>
+                </div>
+                <div class="schedule-frame__body">
+                    <div v-if="todayLiveClasses && todayLiveClasses.length" class="table-responsive schedule-table-wrap">
+                        <table class="table mb-0 align-middle">
+                            <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider font-semibold">
+                                <tr>
+                                    <th class="py-3 px-4 border-0 rounded-tl-lg">Judul</th>
+                                    <th class="py-3 px-4 border-0">Mentor</th>
+                                    <th class="py-3 px-4 border-0 text-center">Jadwal</th>
+                                    <th class="py-3 px-4 border-0 text-center">Status</th>
+                                    <th class="py-3 px-4 border-0 text-center rounded-tr-lg">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                <tr v-for="(liveClass, index) in todayLiveClasses" :key="index" class="border-b border-slate-100 transition-colors hover:bg-slate-50">
+                                    <td class="py-3 px-4">
+                                        <div class="font-semibold text-slate-800">{{ liveClass.title }}</div>
+                                        <div class="text-xs text-slate-500">{{ liveClass.category ? liveClass.category.name : 'Live Class' }}</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-slate-700">{{ liveClass.user ? liveClass.user.name : 'Instruktur' }}</td>
+                                    <td class="py-3 px-4 text-center text-slate-500">{{ formatDateWithTimeHourMinute(liveClass.start_time) }}</td>
+                                    <td class="py-3 px-4 text-center">
+                                        <span v-if="liveClass.status == 'active'" class="badge bg-success text-white">Aktif</span>
+                                        <span v-else-if="liveClass.status == 'inactive'" class="badge bg-danger text-white">Selesai</span>
+                                        <span v-else class="badge bg-warning text-dark">Coming Soon</span>
+                                    </td>
+                                    <td class="py-3 px-4 text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a v-if="liveClass.status == 'active'" :href="liveClass.link" target="_blank" class="btn btn-primary btn-sm px-3">Gabung</a>
+                                            <Link :href="`/user/classrooms/${liveClass.id}`" class="btn btn-outline-primary btn-sm px-3">Detail</Link>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div v-else class="schedule-empty">
+                        Belum ada rekomendasi live class saat ini.
+                    </div>
+                </div>
+            </div>
+
+            <div class="news-frame mb-4">
+                <div class="news-frame__head">
+                    <h4 class="mb-0 fw-bold text-dark">Informasi CPNS Terbaru</h4>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="news-nav-btn" type="button" @click="scrollNews('left')" :disabled="!canNewsScrollLeft || !newsSummaries || !newsSummaries.length">
+                            <i class="bx bx-chevron-left"></i>
+                        </button>
+                        <button class="news-nav-btn" type="button" @click="scrollNews('right')" :disabled="!canNewsScrollRight || !newsSummaries || !newsSummaries.length">
+                            <i class="bx bx-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="news-frame__body">
+                    <div v-if="newsSummaries && newsSummaries.length" ref="newsScroller" class="news-scroller" @scroll="onNewsScroll">
+                        <Link
+                            v-for="(news, index) in newsSummaries"
+                            :key="index"
+                            :href="`/user/news/${news.id}`"
+                            class="news-card"
+                            :style="{
+                                backgroundImage: news.thumbnail
+                                    ? `linear-gradient(180deg, rgba(9, 31, 69, 0.16) 0%, rgba(6, 19, 43, 0.88) 74%), url('/storage/upload_files/news/${news.thumbnail}')`
+                                    : 'linear-gradient(135deg, #0f4fc3 0%, #071f4d 100%)'
+                            }"
+                        >
+                            <div class="news-card__content">
+                                <h5 class="news-card__title">{{ news.title }}</h5>
+                                <div class="news-card__meta">{{ formatDateWithTimeHourMinute(news.created_at) }}</div>
+                            </div>
+                        </Link>
+                    </div>
+                    <div v-else class="news-empty">
+                        Belum ada informasi terbaru saat ini.
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div v-if="canDisplayTransactions" class="row row-cols-1 row-cols-md-2 row-cols-xl-4 mb-3">
                 <div class="col">
                     <div class="card radius-10 border-0 bg-gradient-amber-modern shadow-sm card-hover-modern">
                         <div class="card-body p-4">
@@ -111,19 +221,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="card" v-if="banners.length > 0">
-                <Splide :options="{ 
+                <Splide :options="{
                         type: 'loop',
-                        perPage: 1,  
-                        perMove: 1,   
+                        perPage: 1,
+                        perMove: 1,
                         autoplay: true,
                         direction: 'ltr',
                         pauseOnHover: true,
                         pauseOnFocus: true,
-                        interval: 5000 
-                    }" 
+                        interval: 5000
+                    }"
                     aria-label="My Favorite Images">
                     <SplideSlide v-for="(banner, index) in banners" :key="index">
                         <img v-bind:src="'/storage/upload_files/banners/' + banner.image" :alt="banner.name" style="width:100%; cursor: pointer;" @click="showPopup(banner)">
@@ -131,7 +241,7 @@
                 </Splide>
             </div>
 
-            <div v-if="canDisplayTransactions" class="card radius-10 border-0 shadow-sm mb-4">
+            <!-- <div v-if="canDisplayTransactions" class="card radius-10 border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
                         <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-blue me-3">
@@ -191,10 +301,10 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Recent Exams Section -->
-            <div class="card radius-10 border-0 shadow-sm mb-4">
+            <!-- <div class="card radius-10 border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
                         <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-indigo me-3">
@@ -243,13 +353,13 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Recent Practice Section -->
-            <div class="card radius-10 border-0 shadow-sm mb-4">
+            <!-- <div class="card radius-10 border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex align-items-center mb-4">
-                        <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-emerald me-3">
+                        <div class="d-flex align-items-center justify-content-center w-10 h-10 rounded-circle icon-box-soft-blue me-3">
                             <i class='bx bx-edit text-xl'></i>
                         </div>
                         <div>
@@ -257,7 +367,7 @@
                             <p class="mb-0 text-sm text-slate-500">Hasil pengerjaan mandiri Anda</p>
                         </div>
                         <div class="ms-auto">
-                            <Link href="/user/grades" class="btn btn-sm btn-outline-emerald radius-30 px-3">Lihat Semua</Link>
+                            <Link href="/user/grades" class="btn btn-sm btn-outline-primary radius-30 px-3">Lihat Semua</Link>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -277,12 +387,12 @@
                                         <div class="text-xs text-slate-500">{{ grade.category.name }} • {{ grade.lesson_category.name }}</div>
                                     </td>
                                     <td class="py-3 px-4 text-center">
-                                        <span class="badge bg-emerald-50 text-emerald-700 font-bold px-3 py-2 rounded-lg">{{ grade.grade }}</span>
+                                        <span class="badge bg-primary font-bold px-3 py-2 rounded-lg">{{ grade.grade }}</span>
                                     </td>
                                     <td class="py-3 px-4 text-center text-slate-500">{{ formatDateWithTimeHourMinute(grade.created_at) }}</td>
                                     <td class="py-3 px-4 text-center">
                                         <div class="d-flex justify-content-center order-actions">
-                                            <Link :href="`/user/grades/${grade.id}`" class="d-flex align-items-center justify-content-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors">
+                                            <Link :href="`/user/grades/${grade.id}`" class="d-flex align-items-center justify-content-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
                                                 <i class='bx bx-search-alt-2'></i>
                                             </Link>
                                         </div>
@@ -295,7 +405,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="card radius-10 border-0 shadow-sm mb-4" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code === 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code === 'announcement'))">
                 <div class="card-body p-4">
@@ -420,6 +530,7 @@
 
     //import sweet alert2
     import Swal from 'sweetalert2';
+    import { push } from 'notivue';
 
     // import Head from Inertia
     import {
@@ -454,7 +565,15 @@
             recentGrades: Object,
             todayLiveClasses: Object,
             announcementSummaries: Object,
+            newsSummaries: Object,
             totalDataInCategories: Object,
+            walletSummary: Object,
+        },
+        data() {
+            return {
+                canNewsScrollLeft: false,
+                canNewsScrollRight: false,
+            };
         },
         setup() {
             const bgColors = ['bg-light-primary', 'bg-light-danger', 'bg-light-info', 'bg-light-warning'];
@@ -479,11 +598,92 @@
                 showPopup
             };
         },
+        mounted() {
+            this.$nextTick(() => this.updateNewsNavState());
+            window.addEventListener('resize', this.updateNewsNavState);
+        },
+        beforeUnmount() {
+            window.removeEventListener('resize', this.updateNewsNavState);
+        },
+        watch: {
+            newsSummaries: {
+                handler() {
+                    this.$nextTick(() => this.updateNewsNavState());
+                },
+                deep: true,
+            }
+        },
         methods: {
             formatPrice(value) {
                 let val = (value/1).toFixed(2).replace('.', ',')
                 return 'Rp.' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
+            formatCurrencyNoDecimal(value) {
+                const number = Number(value || 0);
+                return 'Rp' + number.toLocaleString('id-ID');
+            },
+            shareReferralLink() {
+                const referralCode = this.walletSummary?.referral_code;
+                if (!referralCode) {
+                    push.warning('Kode referral belum tersedia.');
+                    return;
+                }
+
+                const referralUrl = `${this.$page.props.setting.app_url}/register?ref=${referralCode}`;
+
+                const copyFallback = () => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = referralUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(referralUrl).then(() => {
+                        push.success('Berhasil menyalin kode referral');
+                    }).catch(() => {
+                        copyFallback();
+                        push.success('Berhasil menyalin kode referral');
+                    });
+                    return;
+                }
+
+                copyFallback();
+                push.success('Berhasil menyalin kode referral');
+            },
+            updateNewsNavState() {
+                const node = this.$refs.newsScroller;
+                if (!node || !this.newsSummaries || !this.newsSummaries.length) {
+                    this.canNewsScrollLeft = false;
+                    this.canNewsScrollRight = false;
+                    return;
+                }
+
+                const maxLeft = node.scrollWidth - node.clientWidth;
+                this.canNewsScrollLeft = node.scrollLeft > 2;
+                this.canNewsScrollRight = node.scrollLeft < (maxLeft - 2);
+            },
+            onNewsScroll() {
+                this.updateNewsNavState();
+            },
+            scrollNews(direction) {
+                const node = this.$refs.newsScroller;
+                if (!node) return;
+
+                const amount = Math.max(node.clientWidth * 0.85, 340);
+                const offset = direction === 'left' ? -amount : amount;
+
+                node.scrollBy({
+                    left: offset,
+                    behavior: 'smooth'
+                });
+
+                window.setTimeout(() => {
+                    this.updateNewsNavState();
+                }, 220);
+            }
         },
         computed: {
             canDisplayTransactions() {
@@ -518,11 +718,11 @@
     }
 
     .swal2-close {
-        font-size: 32px; 
-        width: 32px;    
-        height: 32px;    
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
         line-height: 32px;
-        padding: 4px;    
+        padding: 4px;
         outline: none;
         background: none;
         box-shadow: none;
@@ -614,4 +814,195 @@
         font-size: 2.5rem;
         color: rgba(255, 255, 255, 0.5);
     }
+
+    .schedule-frame {
+        border: 1px solid #c9cdd4;
+        border-radius: 16px;
+        overflow: hidden;
+        background-color: #fff;
+    }
+
+    .schedule-frame__head {
+        background-color: var(--bs-primary);
+        border-bottom: 1px solid var(--bs-primary);
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .schedule-frame__body {
+        min-height: 240px;
+        background-color: #fff;
+        padding: 1rem;
+    }
+
+    .schedule-table-wrap {
+        border: 1px solid #eef1f5;
+        border-radius: 10px;
+    }
+
+    .schedule-empty {
+        min-height: 208px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #616875;
+        font-size: 1.08rem;
+    }
+
+    .news-frame {
+        border: 1px solid #c8ccd2;
+        border-radius: 16px;
+        background-color: #f2f3f5;
+        overflow: hidden;
+    }
+
+    .news-frame__head {
+        background-color: #f2f3f5;
+        border-bottom: 1px solid #d7dbe0;
+        padding: 0.85rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .news-frame__body {
+        min-height: 260px;
+        padding: 1rem 1.25rem 1.05rem;
+    }
+
+    .news-scroller {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        padding-bottom: 0.25rem;
+    }
+
+    .news-scroller::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .news-scroller::-webkit-scrollbar-thumb {
+        background: #c8cfd8;
+        border-radius: 999px;
+    }
+
+    .news-card {
+        width: 380px;
+        min-width: 380px;
+        height: 280px;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+        text-decoration: none;
+        scroll-snap-align: start;
+        display: flex;
+        align-items: flex-end;
+        transition: transform 0.2s ease;
+    }
+
+    .news-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .news-card__content {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .news-card__title {
+        color: #ffffff;
+        font-size: 1.7rem;
+        line-height: 1.15;
+        font-weight: 800;
+        margin-bottom: 0.6rem;
+        text-transform: uppercase;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news-card__meta {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.02rem;
+    }
+
+    .news-nav-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid #d5d9de;
+        background-color: #eef0f3;
+        color: #9aa1ab;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .news-nav-btn i {
+        font-size: 1.15rem;
+    }
+
+    .news-nav-btn:hover:not(:disabled) {
+        color: #6a7380;
+        border-color: #c7cdd6;
+        background: #e7eaef;
+    }
+
+    .news-nav-btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    .news-empty {
+        min-height: 220px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #5e6672;
+        font-size: 1.04rem;
+    }
+
+    @media (max-width: 575.98px) {
+        .schedule-frame__head {
+            padding: 0.75rem 0.9rem;
+        }
+
+        .schedule-frame__body {
+            padding: 0.9rem;
+            min-height: 220px;
+        }
+
+        .news-frame__head {
+            padding: 0.75rem 0.9rem;
+        }
+
+        .news-frame__body {
+            padding: 0.9rem;
+            min-height: 240px;
+        }
+
+        .news-card {
+            width: 290px;
+            min-width: 290px;
+            height: 230px;
+        }
+
+        .news-card__title {
+            font-size: 1.3rem;
+            -webkit-line-clamp: 2;
+        }
+    }
+
 </style>

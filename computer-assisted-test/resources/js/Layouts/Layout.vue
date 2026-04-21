@@ -6,6 +6,9 @@
         <Header/>
         <!-- content -->
         <slot />
+        <Notivue v-slot="item">
+            <Notification :item="item" />
+        </Notivue>
 
         <!-- backdrop for mobile -->
         <div class="sidebar-overlay d-lg-none" :class="{ show: isToggleActive }" @click="toggleMenu"></div>
@@ -16,6 +19,7 @@
 
 <script>
     import { Link } from '@inertiajs/inertia-vue3';
+    import { Notivue, Notification } from 'notivue';
 
     // import navbar
     import Sidebar from '../Components/LayoutAdmin/Sidebar.vue';
@@ -28,6 +32,8 @@
         // register components
         components: {
             Link,
+            Notivue,
+            Notification,
             Sidebar,
             Header,
             Footer
@@ -85,5 +91,4 @@
         -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
     }
 </style>
-
 

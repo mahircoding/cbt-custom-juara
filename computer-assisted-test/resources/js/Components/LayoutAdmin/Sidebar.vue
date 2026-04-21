@@ -303,83 +303,41 @@
                             <div class="menu-title">Dashboard</div>
                         </Link>
                     </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))">
-                        <Link href="/user/leaderboards" class="menu-clicked" title="Leaderboard" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-trophy text-yellow-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Leaderboard</div>
-                        </Link>
-                    </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'classroom')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'classroom'))">
                         <Link href="/user/classrooms" class="menu-clicked" title="Live Class" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-chalkboard text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title text-violet-600 font-bold">Live Class</div>
                         </Link>
                     </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'announcement'))">
-                        <Link href="/user/announcements" class="menu-clicked" title="Pengumuman" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-bell text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Pengumuman</div>
-                        </Link>
-                    </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'faq')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'faq'))">
-                        <Link href="/user/faqs" class="menu-clicked" title="Faq" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-help-circle text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Faq</div>
-                        </Link>
-                    </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'news')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'news'))">
-                        <Link href="/user/news" class="menu-clicked" title="Berita" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-news text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Berita</div>
-                        </Link>
-                    </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'psychology_calculator')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'psychology_calculator'))">
-                        <Link href="/user/psychology-calculators" class="menu-clicked" title="Kalkulator Psikologi" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-calculator text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Kalkulator Psikologi</div>
-                        </Link>
-                    </li>
-                </template>
-                <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))" @click="toggleCategory('ujian')">
-                    <span>Achievement</span>
-                    <i class='bx' :class="expandedCategories.ujian ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
-                </li>
-                <template v-if="expandedCategories.ujian">
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout'))">
-                        <a href="javascript:;" class="has-arrow" title="Tryout" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-medal text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                        <Link :href="$page.props.voucherCategories.length > 1 ? '/user/exam-groups' : ($page.props.voucherCategories.length === 1 ? `/user/exam-groups/${$page.props.voucherCategories[0].id}/lesson-categories` : '/user/exam-groups')" class="menu-clicked" title="Tryout" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-medal text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Tryout</div>
-                        </a>
-                        <ul>
-                            <li v-if="$page.props.voucherCategories.length > 1">
-                                <Link href="/user/exam-groups" class="menu-clicked">
-                                <i class="bx bx-right-arrow-alt"></i>Tryout
-                                </Link>
-                            </li>
-                            <li v-else v-for="(category, index) in $page.props.voucherCategories" :key="index">
-                                <Link :href="`/user/exam-groups/${category.id}/lesson-categories`" class="menu-clicked">
-                                <i class="bx bx-right-arrow-alt"></i>Tryout
-                                </Link>
-                            </li>
-                        </ul>
+                        </Link>
                     </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))">
-                        <a href="javascript:;" class="has-arrow" title="Latihan Soal" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-pencil text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                        <Link :href="$page.props.voucherCategories.length > 1 ? '/user/categories' : ($page.props.voucherCategories.length === 1 ? `/user/categories/${$page.props.voucherCategories[0].id}/lesson-categories` : '/user/categories')" class="menu-clicked" title="Latihan Soal" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-pencil text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Latihan Soal</div>
-                        </a>
-                        <ul>
-                            <li v-if="$page.props.voucherCategories.length > 1">
-                                <Link href="/user/categories" class="menu-clicked">
-                                <i class="bx bx-right-arrow-alt"></i>Latihan Soal
-                                </Link>
-                            </li>
-                            <li v-else v-for="(category, index) in $page.props.voucherCategories" :key="index">
-                                <Link :href="`/user/categories/${category.id}/lesson-categories`" class="menu-clicked">
-                                <i class="bx bx-right-arrow-alt"></i>Latihan Soal
-                                </Link>
-                            </li>
-                        </ul>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'course'))">
+                        <Link href="/user/courses" class="menu-clicked" title="Course" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-play-circle text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Course</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'video_module'))">
+                        <Link href="/user/video-modules" class="menu-clicked" title="Video Pembelajaran" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-video text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Video Pembelajaran</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'module'))">
+                        <Link href="/user/modules" class="menu-clicked" title="Modul / Materi" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-book-open text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Modul / Materi</div>
+                        </Link>
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))" @click="toggleCategory('riwayat')">
@@ -387,6 +345,12 @@
                     <i class='bx' :class="expandedCategories.riwayat ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.riwayat">
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['exam', 'tryout'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['exam', 'tryout'].includes(item.code)))">
+                        <Link href="/user/leaderboards" class="menu-clicked" title="Leaderboard" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-trophy text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Leaderboard</div>
+                        </Link>
+                    </li>
                     <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout'))">
                         <Link href="/user/exam-groups/histories" class="menu-clicked" title="Riwayat Tryout" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-history text-rose-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
@@ -406,47 +370,16 @@
                         </Link>
                     </li>
                 </template>
-                <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['module', 'video_module', 'course', 'classroom'].includes(item.code)))" @click="toggleCategory('materi')">
-                    <span>Pusat Belajar</span>
-                    <i class='bx' :class="expandedCategories.materi ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
-                </li>
-                <template v-if="expandedCategories.materi">
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'module'))">
-                        <Link href="/user/modules" class="menu-clicked" title="Modul / Materi" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-book-open text-amber-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Modul / Materi</div>
-                        </Link>
-                    </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'video_module')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'video_module'))">
-                        <Link href="/user/video-modules" class="menu-clicked" title="Video Pembelajaran" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-video text-amber-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Video Pembelajaran</div>
-                        </Link>
-                    </li>
-                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'course')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'course'))">
-                        <Link href="/user/courses" class="menu-clicked" title="Course" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-play-circle text-amber-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Course</div>
-                        </Link>
-                    </li>
-                </template>
                 <li class="menu-label menu-label-toggle" v-if="canDisplayTransactions" @click="toggleCategory('transaksi')">
                     <span>Transaksi</span>
                     <i class='bx' :class="expandedCategories.transaksi ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.transaksi">
-                    <li v-if="canDisplayTransactions && hasAnyMembershipCategory">
-                        <a href="javascript:;" class="has-arrow" title="Paket Membership" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-purchase-tag text-green-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Paket Membership</div>
-                        </a>
-                        <ul>
-                            <li v-for="(category, index) in $page.props.voucherCategories" :key="index">
-                                <Link :href="`/user/vouchers?category_id=${category.id}`" class="menu-clicked" v-if="canDisplayMembershipTransactions(category)">
-                                    <i class="bx bx-right-arrow-alt"></i>{{ category.name }}
-                                </Link>
-                            </li>
-                        </ul>
+                    <li v-if="canDisplayTransactions">
+                        <Link href="/user/account-balances" class="menu-clicked" title="Riwayat Saldo" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-wallet-alt text-green-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Riwayat Saldo</div>
+                        </Link>
                     </li>
                     <li v-if="canDisplayTransactions">
                         <Link href="/user/transactions" class="menu-clicked" title="Riwayat Transaksi" data-bs-toggle="tooltip" data-bs-placement="right">
@@ -456,7 +389,7 @@
                     </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="$page.props.setting.enable_affiliate_feature == 1" @click="toggleCategory('affiliate')">
-                    <span>Bantuan</span>
+                    <span>Afiliasi</span>
                     <i class='bx' :class="expandedCategories.affiliate ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
                 </li>
                 <template v-if="expandedCategories.affiliate">
@@ -473,6 +406,30 @@
                         </Link>
                     </li>
                 </template>
+                <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => ['announcement', 'faq', 'news'].includes(item.code))) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => ['announcement', 'faq', 'news'].includes(item.code)))" @click="toggleCategory('bantuan')">
+                    <span>Bantuan</span>
+                    <i class='bx' :class="expandedCategories.bantuan ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
+                </li>
+                <template v-if="expandedCategories.bantuan">
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'announcement')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'announcement'))">
+                        <Link href="/user/announcements" class="menu-clicked" title="Pengumuman" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-bell text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Pengumuman</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'faq')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'faq'))">
+                        <Link href="/user/faqs" class="menu-clicked" title="Faq" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-help-circle text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Faq</div>
+                        </Link>
+                    </li>
+                    <li v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'news')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'news'))">
+                        <Link href="/user/news" class="menu-clicked" title="Berita" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-news text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Berita</div>
+                        </Link>
+                    </li>
+                </template>
                 <li class="menu-label menu-label-toggle" @click="toggleCategory('pengaturan')">
                     <span>Pengaturan</span>
                     <i class='bx' :class="expandedCategories.pengaturan ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
@@ -482,12 +439,6 @@
                         <Link href="/user/users" class="menu-clicked" title="Profil" data-bs-toggle="tooltip" data-bs-placement="right">
                             <div class="parent-icon"><i class='bx bx-user-circle text-slate-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
                             <div class="menu-title">Profil</div>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/user/users" class="menu-clicked" title="Keamanan" data-bs-toggle="tooltip" data-bs-placement="right">
-                            <div class="parent-icon"><i class='bx bx-lock-alt text-slate-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
-                            <div class="menu-title">Keamanan</div>
                         </Link>
                     </li>
                 </template>
@@ -527,9 +478,8 @@
             return {
                 expandedCategories: {
                     navigation: true,
-                    ujian: false,
+                    bantuan: false,
                     riwayat: false,
-                    materi: false,
                     transaksi: false,
                     affiliate: false,
                     pengaturan: false
@@ -603,24 +553,6 @@
             formatPrice(value) {
                 let val = (value/1).toFixed().replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-            canDisplayMembershipTransactions(category) {
-                const user = this.$page.props.auth.user;
-                const setting = this.$page.props.setting;
-                const transactionSaleType = setting.transaction_sale_type;
-                const source = transactionSaleType == 1 ? setting : category;
-
-                return (
-                    user.member_type == 2 &&
-                    (
-                        source.practice_question_sales_type == 2 || source.practice_question_sales_type == 3 ||
-                        source.tryout_sales_type == 2 || source.tryout_sales_type == 3 ||
-                        source.module_material_sales_type == 2 || source.module_material_sales_type == 3 ||
-                        source.video_module_sales_type == 2 || source.video_module_sales_type == 3 ||
-                        source.course_sales_type == 2 || source.course_sales_type == 3 ||
-                        source.classroom_sales_type == 2 || source.classroom_sales_type == 3
-                    )
-                );
             }
 
         },
@@ -628,29 +560,6 @@
             canDisplayTransactions() {
                 const user = this.$page.props.auth.user;
                 return user.member_type == 2;
-            },
-            hasAnyMembershipCategory() {
-                const user = this.$page.props.auth.user;
-                const setting = this.$page.props.setting;
-                const transactionSaleType = setting.transaction_sale_type;
-
-                const isMembership = (source) => (
-                    user.member_type == 2 &&
-                    (
-                        source.practice_question_sales_type == 2 || source.practice_question_sales_type == 3 ||
-                        source.tryout_sales_type == 2 || source.tryout_sales_type == 3 ||
-                        source.module_material_sales_type == 2 || source.module_material_sales_type == 3 ||
-                        source.video_module_sales_type == 2 || source.video_module_sales_type == 3 ||
-                        source.course_sales_type == 2 || source.course_sales_type == 3 ||
-                        source.classroom_sales_type == 2 || source.classroom_sales_type == 3
-                    )
-                );
-
-                if (transactionSaleType == 1) {
-                    return isMembership(setting);
-                }
-
-                return this.$page.props.voucherCategories && this.$page.props.voucherCategories.some(category => isMembership(category));
             }
         }
     }
