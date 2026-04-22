@@ -6,7 +6,7 @@
     <div class="page-wrapper">
         <div class="page-content">
             <!-- Welcome Back Section -->
-            <div class="card radius-10 border-0 shadow-sm mb-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+            <div class="card radius-10 border-0 shadow-sm mb-4 position-relative overflow-hidden" style="background: linear-gradient(165deg, #0b66d0 0%, #0852ac 48%, #063d83 100%);">
                 <div class="card-body p-4 position-relative" style="z-index: 1;">
                     <div class="d-flex align-items-center">
                         <div class="text-white">
@@ -209,7 +209,7 @@
                                         :href="`/user/transactions/examGroup/${tryout.id}/buy`"
                                         class="btn btn-light text-primary btn-sm rounded-pill px-4 w-100 fw-semibold"
                                     >
-                                        Beli Paket Kuis
+                                        Beli Tryout
                                     </Link>
                                     <Link
                                         v-else
@@ -959,7 +959,8 @@
     .icon-box-soft-emerald { background: rgba(16, 185, 129, 0.1); color: #10b981; }
 
     .bg-gradient-indigo-modern {
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        /* background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); */
+        background: linear-gradient(165deg, #0b66d0 0%, #0852ac 48%, #063d83 100%);
     }
 
     .btn-white {
@@ -1234,7 +1235,6 @@
 
     .quiz-card__title {
         color: #fff;
-        font-size: 2rem;
         line-height: 1.08;
         margin-bottom: 0.35rem;
         font-weight: 800;
@@ -1265,7 +1265,7 @@
 
     .new-price {
         color: #ffffff;
-        font-size: 2rem;
+        font-size: 1.3rem;
         font-weight: 800;
     }
 

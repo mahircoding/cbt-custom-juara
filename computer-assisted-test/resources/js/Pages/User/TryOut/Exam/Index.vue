@@ -39,281 +39,72 @@
                 </div>
             </div>
 
-            <div v-if="exams.data.length > 0">
-                <div class="card mb-0" v-if="$page.props.setting.practice_question_display_mode == 1">
-                    <div class="card-body p-3">
-                        <div class="list-group">
-                            <div class="list-group-item list-group-item-action p-2 mb-2 border" v-for="(exam, index) in exams.data" :key="index">
-                                <div class="d-flex flex-column flex-md-row">
-                                    <!-- Judul, Deskripsi, Kategori, dan Sub Kategori -->
-                                    <div class="flex-grow-1 text-center text-sm-start">
-                                        <h6 class="my-2">{{ exam.title }}</h6>
-                                        
-                                        <p class="mb-1">
-                                            <template v-if="exam.sub_categories && exam.sub_categories.length">
-                                                <span v-for="(subCategory, subIndex) in exam.sub_categories" :key="subIndex" class="badge bg-danger me-1">
-                                                    {{ subCategory.name }}
-                                                </span>
-                                            </template>
-                                            <span v-else class="badge bg-danger">
-                                                Seluruh Peminatan {{ exam.category.name }}
-                                            </span>
-                                        </p>
+            <div v-if="exams.data.length > 0" class="row g-3">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3" v-for="(exam, index) in exams.data" :key="index">
+                    <div class="practice-card-modern">
+                        <div
+                            class="practice-card-modern__cover"
+                            :style="{
+                                backgroundImage: exam.lesson && exam.lesson.thumbnail
+                                    ? `url('/storage/upload_files/lessons/${exam.lesson.thumbnail}')`
+                                    : 'linear-gradient(135deg, #edf3ff 0%, #dbe8ff 100%)'
+                            }"
+                        ></div>
 
-                                        <!-- Kategori Member -->
-                                        <p class="mb-1">
-                                            <template v-if="(resolvedPracticeQuestionSalesType == 2 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2">
-                                                <template v-if="exam.member_categories && exam.member_categories.length">
-                                                    <span v-for="(memberCategory, subIndex) in exam.member_categories" :key="subIndex" class="badge bg-success me-1">
-                                                        {{ memberCategory.name }}
-                                                    </span>
-                                                </template>
-                                                <span v-else class="badge bg-success">
-                                                    Seluruh Member & Non Member
-                                                </span>
-                                            </template>
-                                        </p>
-
-                                        <!-- Batasan Waktu Penjualan Per Item -->
-                                        <p class="mb-1" v-if="exam.price_type == 2 && (resolvedPracticeQuestionSalesType == 1 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2 && exam.period_type">
-                                            <span class="badge bg-warning text-dark">Aktif {{ exam.active_period + (exam.period_type == 'day' ? ' hari' : ' bulan') }} setelah pembelian satuan</span>
-                                        </p>
-                                    </div>
-                                    
-                                    <!-- Action Links -->
-                                    <div class="d-flex flex-column action-button-exams text-center text-md-end">
-                                        <!-- Bagian Harga -->
-                                        <div v-if="$page.props.auth.user.member_type == 2">
-                                            <tempate v-if="resolvedPracticeQuestionSalesType == 1 && exam.user_access.length > 0">
-                                                <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                            </tempate>
-                                            <tempate v-if="resolvedPracticeQuestionSalesType == 2 && exam.member_categories.length > 0 && checkMemberCategories(exam.member_categories) == true">
-                                                <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                            </tempate>
-                                            <tempate v-if="resolvedPracticeQuestionSalesType == 3 && (exam.user_access.length > 0 || checkMemberCategories(exam.member_categories) == true)">
-                                                <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                            </tempate>
-                                        </div>
-                                        <div v-if="(resolvedPracticeQuestionSalesType == 1 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2">
-                                            <div v-if="exam.price_type == 2">
-                                                <div v-if="exam.price_before_discount == exam.price_after_discount">
-                                                    <h6 class="card-price">Rp.{{ formatPrice(exam.price_after_discount) }}</h6>
-                                                </div>
-                                                <div v-else>
-                                                    <h6 class="text-dark">
-                                                        <sup>
-                                                            <s>Rp.{{ formatPrice(exam.price_before_discount) }}</s>
-                                                            <span class="badge bg-warning text-dark mx-1">
-                                                                Hemat {{ formatPrice((exam.price_before_discount - exam.price_after_discount) / exam.price_before_discount * 100)}}%
-                                                            </span>
-                                                        </sup>
-                                                        <br>
-                                                        Rp.{{ formatPrice(exam.price_after_discount) }}
-                                                    </h6>
-                                                </div>     
-                                            </div>                               
-                                        </div>
-                                        <div v-if="(resolvedPracticeQuestionSalesType == 1 && exam.price_type == 1) || (resolvedPracticeQuestionSalesType == 2 && exam.member_categories.length == 0) || (resolvedPracticeQuestionSalesType == 3 && (exam.member_categories.length == 0 || exam.price_type == 1)) ">
-                                            <span class="badge bg-warning text-dark" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:1;">Gratis</span>
-                                        </div> 
-
-                                        <!-- Bagian Tombol -->
-                                        <div>
-                                            <div v-if="exam.exam_status == 'active'">
-                                                <template v-if="$page.props.auth.user.member_type == 2 && resolvedEnablePracticeQuestionSales == 1">
-                                                    <template v-if="resolvedPracticeQuestionSalesType == 1">
-                                                        <template v-if="exam.user_access.length > 0 || exam.price_type == 1">
-                                                            <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                        </template>
-                                                        <template v-else>
-                                                            <Link class="btn btn-sm btn-danger me-1" :href="`/user/transactions/exam/${exam.id}/buy`">Beli</Link>
-                                                        </template>
-                                                    </template>
-
-                                                    <template v-if="resolvedPracticeQuestionSalesType == 2">
-                                                        <template v-if="checkMemberCategories(exam.member_categories) == true">
-                                                            <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                        </template>
-                                                        <template v-else>
-                                                            <Link :href="`/user/vouchers?category_id=${exam.category_id}`" class="btn btn-sm btn-success">
-                                                                <span v-if="exam.member_categories.length == 1">Upgrade Ke {{ exam.member_categories[0] ? exam.member_categories[0].name : '' }}</span>
-                                                                <span v-else>Upgrade Member</span>
-                                                            </Link>
-                                                        </template>
-                                                    </template>
-
-                                                    <template v-if="resolvedPracticeQuestionSalesType == 3">
-                                                        <template v-if="exam.user_access.length > 0 && checkMemberCategories(exam.member_categories) == true">
-                                                            <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                        </template>
-                                                        <template v-if="(exam.user_access.length == 0  || checkMemberCategories(exam.member_categories) == false) && (exam.user_access.length > 0 || checkMemberCategories(exam.member_categories) == true || exam.price_type == 1)">
-                                                            <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                        </template>
-                                                        <template v-if="exam.user_access.length == 0 && exam.price_type == 2">
-                                                            <Link class="btn btn-sm btn-danger me-1" :href="`/user/transactions/exam/${exam.id}/buy`">Beli</Link>
-                                                        </template>
-                                                        <template v-if="checkMemberCategories(exam.member_categories) == false">
-                                                            <Link :href="`/user/vouchers?category_id=${exam.category_id}`" class="btn btn-sm btn-success">
-                                                                <span v-if="exam.member_categories.length == 1">Upgrade Ke {{ exam.member_categories[0] ? exam.member_categories[0].name : '' }}</span>
-                                                                <span v-else>Upgrade Member</span>
-                                                            </Link>
-                                                        </template>
-                                                    </template>
-                                                </template>
-                                                <template v-else>
-                                                    <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                </template>
-                                            </div>
-                                            <template v-else>
-                                                <span class="badge" :class="{ 'bg-danger': exam.exam_status == 'inactive', 'bg-warning': exam.exam_status === 'inprogress'}">
-                                                    {{ exam.exam_status === 'inactive' ? 'Inactive' : 'In Progress' }}
-                                                </span>
-                                                <template v-if="exam.exam_status == 'inprogress' && exam.release_date"> 
-                                                    <p><span class="badge bg-light text-dark mt-2">Rilis {{ formatDateWithTimeHourMinute(exam.release_date) }} {{ timezoneFormat($page.props.setting.timezone) }}</span></p>
-                                                </template>
-                                            </template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row" v-else>
-                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-3" v-for="(exam, index) in exams.data" :key="index">
-                        <div class="card">       
-                            <div class="p-2">
-                                <img v-bind:src="'/storage/upload_files/lessons/' + exam.lesson.thumbnail" class="card-img"/>
+                        <div class="practice-card-modern__body">
+                            <div class="d-flex gap-2 mb-2">
+                                <span class="badge practice-badge-category">{{ exam.category && exam.category.name ? exam.category.name : 'LATIHAN' }}</span>
+                                <span class="badge practice-badge-type">{{ exam.price_type == 2 ? 'Premium' : 'Gratis' }}</span>
                             </div>
 
-                            <div class="card-header">
-                                <h6 class="card-title">{{ exam.title }}</h6>
-                                <p class="card-text">Kerjakan Soal Sesuai Petuntuk Dalam Informasi.</p>
+                            <h5 class="practice-card-modern__title">{{ exam.title }}</h5>
+                            <p class="practice-card-modern__desc">{{ truncateText(stripHtml(exam.description || 'Soal-soal sudah disesuaikan dengan kisi-kisi terbaru.'), 92) }}</p>
+
+                            <div v-if="showPrice(exam)" class="practice-card-modern__price">
+                                <span class="practice-price-old" v-if="Number(exam.price_before_discount || 0) > Number(exam.price_after_discount || 0)">
+                                    {{ formatRupiah(exam.price_before_discount) }}
+                                </span>
+                                <span class="practice-price-new">{{ formatRupiah(exam.price_after_discount) }}</span>
                             </div>
-                            <div class="card-body" v-if="$page.props.auth.user.member_type == 2">  
-                                <!-- Sub Kategori -->
-                                <p class="text-center mb-1">
-                                    <template v-if="exam.sub_categories && exam.sub_categories.length">
-                                        <span v-for="(subCategory, subIndex) in exam.sub_categories" :key="subIndex" class="badge bg-danger me-1">
-                                            {{ subCategory.name }}
-                                        </span>
-                                    </template>
-                                    <span v-else class="badge bg-danger">
-                                        Seluruh Peminatan {{ exam.category.name }}
-                                    </span>
-                                </p>
-
-                                <!-- Kategori Member -->
-                                <p class="text-center mb-2">
-                                    <template v-if="(resolvedPracticeQuestionSalesType == 2 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2">
-                                        <template v-if="exam.member_categories && exam.member_categories.length">
-                                            <span v-for="(memberCategory, subIndex) in exam.member_categories" :key="subIndex" class="badge bg-success me-1">
-                                                {{ memberCategory.name }}
-                                            </span>
-                                        </template>
-                                        <span v-else class="badge bg-success">
-                                            Seluruh Member & Non Member
-                                        </span>
-                                    </template>
-                                </p>
-
-                                <!-- Batasan Waktu Penjualan Per Item -->
-                                <p class="mb-3 text-center" v-if="exam.price_type == 2 && (resolvedPracticeQuestionSalesType == 1 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2 && exam.period_type">
-                                    <span class="badge bg-light text-dark">Aktif {{ exam.active_period + (exam.period_type == 'day' ? ' hari' : ' bulan') }} setelah pembelian satuan</span>
-                                </p>
-
-                                <!-- Bagian Harga -->
-                                <div v-if="$page.props.auth.user.member_type == 2">
-                                    <tempate v-if="resolvedPracticeQuestionSalesType == 1 && exam.user_access.length > 0">
-                                        <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                    </tempate>
-                                    <tempate v-if="resolvedPracticeQuestionSalesType == 2 && exam.member_categories.length > 0 && checkMemberCategories(exam.member_categories) == true">
-                                        <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                    </tempate>
-                                    <tempate v-if="resolvedPracticeQuestionSalesType == 3 && (exam.user_access.length > 0 || checkMemberCategories(exam.member_categories) == true)">
-                                        <span class="badge bg-success" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:2;">Enrolled</span>
-                                    </tempate>
-                                </div>
-                                <div v-if="(resolvedPracticeQuestionSalesType == 1 || resolvedPracticeQuestionSalesType == 3) && $page.props.auth.user.member_type == 2">
-                                    <div v-if="exam.price_type == 2">
-                                        <div v-if="exam.price_before_discount == exam.price_after_discount">
-                                            <h6 class="text-dark text-center">Rp.{{ formatPrice(exam.price_after_discount) }}</h6>
-                                        </div>
-                                        <div v-else>
-                                            <h6 class="text-dark text-center">
-                                                <sup>
-                                                    <s>Rp.{{ formatPrice(exam.price_before_discount) }}</s>
-                                                    <span class="badge bg-warning text-dark mx-1">
-                                                        Hemat {{ formatPrice((exam.price_before_discount - exam.price_after_discount) / exam.price_before_discount * 100)}}%
-                                                    </span>
-                                                </sup>
-                                                <br>
-                                                Rp.{{ formatPrice(exam.price_after_discount) }}
-                                            </h6>
-                                        </div>     
-                                    </div>                               
-                                </div>
-                                <div v-if="(resolvedPracticeQuestionSalesType == 1 && exam.price_type == 1) || (resolvedPracticeQuestionSalesType == 2 && exam.member_categories.length == 0) || (resolvedPracticeQuestionSalesType == 3 && (exam.member_categories.length == 0 || exam.price_type == 1)) ">
-                                    <span class="badge bg-warning text-dark" style="position:absolute; left:-10px;top:-5px; font-size:10px; z-index:1;">Gratis</span>
-                                </div> 
+                            <div v-else class="practice-card-modern__price">
+                                <span class="practice-price-new">Gratis</span>
                             </div>
-                            <div class="card-footer">
-                                <!-- Bagian Tombol -->
-                                <div class="text-center">
-                                    <div v-if="exam.exam_status == 'active'">
-                                        <template v-if="$page.props.auth.user.member_type == 2 && resolvedEnablePracticeQuestionSales == 1">
-                                            <template v-if="resolvedPracticeQuestionSalesType == 1">
-                                                <template v-if="exam.user_access.length > 0 || exam.price_type == 1">
-                                                    <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                </template>
-                                                <template v-else>
-                                                    <Link class="btn btn-sm btn-danger me-1" :href="`/user/transactions/exam/${exam.id}/buy`">Beli</Link>
-                                                </template>
-                                            </template>
 
-                                            <template v-if="resolvedPracticeQuestionSalesType == 2">
-                                                <template v-if="checkMemberCategories(exam.member_categories) == true">
-                                                    <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                </template>
-                                                <template v-else>
-                                                    <Link :href="`/user/vouchers?category_id=${exam.category_id}`" class="btn btn-sm btn-success">
-                                                        <span v-if="exam.member_categories.length == 1">Upgrade Ke {{ exam.member_categories[0] ? exam.member_categories[0].name : '' }}</span>
-                                                        <span v-else>Upgrade Member</span>
-                                                    </Link>
-                                                </template>
-                                            </template>
+                            <div class="practice-card-modern__meta">
+                                <i class="bx bx-purchase-tag-alt"></i>
+                                {{ ownershipLabel(exam) }}
+                            </div>
 
-                                            <template v-if="resolvedPracticeQuestionSalesType == 3">
-                                                <template v-if="exam.user_access.length > 0 && checkMemberCategories(exam.member_categories) == true">
-                                                    <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                </template>
-                                                <template v-if="(exam.user_access.length == 0  || checkMemberCategories(exam.member_categories) == false) && (exam.user_access.length > 0 || checkMemberCategories(exam.member_categories) == true || exam.price_type == 1)">
-                                                    <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                                </template>
-                                                <template v-if="exam.user_access.length == 0 && exam.price_type == 2">
-                                                    <Link class="btn btn-sm btn-danger me-1" :href="`/user/transactions/exam/${exam.id}/buy`">Beli</Link>
-                                                </template>
-                                                <template v-if="checkMemberCategories(exam.member_categories) == false">
-                                                    <Link :href="`/user/vouchers?category_id=${exam.category_id}`" class="btn btn-sm btn-success">
-                                                        <span v-if="exam.member_categories.length == 1">Upgrade Ke {{ exam.member_categories[0] ? exam.member_categories[0].name : '' }}</span>
-                                                        <span v-else>Upgrade Member</span>
-                                                    </Link>
-                                                </template>
-                                            </template>
-                                        </template>
-                                        <template v-else>
-                                            <Link :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`" class="btn btn-sm btn-primary me-1">Kerjakan</Link>
-                                        </template>
-                                    </div>
-                                    <template v-else>
-                                        <span class="badge" :class="{ 'bg-danger': exam.exam_status == 'inactive', 'bg-warning': exam.exam_status === 'inprogress'}">
-                                            {{ exam.exam_status === 'inactive' ? 'Inactive' : 'In Progress' }}
-                                        </span>
-                                        <template v-if="exam.exam_status == 'inprogress' && exam.release_date"> 
-                                            <p><span class="badge bg-light text-dark mt-2">Rilis {{ formatDateWithTimeHourMinute(exam.release_date) }} {{ timezoneFormat($page.props.setting.timezone) }}</span></p>
-                                        </template>
-                                    </template>
+                            <div v-if="exam.exam_status == 'active'" class="practice-card-modern__actions">
+                                <Link
+                                    v-if="examAction(exam).canWork"
+                                    :href="`/user/categories/${exam.category_id}/lesson-categories/${exam.lesson_category_id}/lessons/${exam.lesson_id}/exams/${exam.id}`"
+                                    class="btn practice-btn-main"
+                                >
+                                    Kerjakan
+                                </Link>
+                                <Link
+                                    v-if="examAction(exam).canBuy"
+                                    :href="`/user/transactions/exam/${exam.id}/buy`"
+                                    class="btn practice-btn-main"
+                                >
+                                    Beli
+                                </Link>
+                                <Link
+                                    v-if="examAction(exam).canUpgrade"
+                                    :href="`/user/vouchers?category_id=${exam.category_id}`"
+                                    class="btn practice-btn-secondary"
+                                >
+                                    <span v-if="exam.member_categories && exam.member_categories.length == 1">Upgrade Ke {{ exam.member_categories[0].name }}</span>
+                                    <span v-else>Upgrade Member</span>
+                                </Link>
+                            </div>
+                            <div v-else class="practice-card-modern__inactive">
+                                <span class="badge" :class="{ 'bg-danger': exam.exam_status == 'inactive', 'bg-warning text-dark': exam.exam_status === 'inprogress'}">
+                                    {{ exam.exam_status === 'inactive' ? 'Inactive' : 'In Progress' }}
+                                </span>
+                                <div v-if="exam.exam_status == 'inprogress' && exam.release_date" class="mt-2">
+                                    <span class="badge bg-light text-dark">Rilis {{ formatDateWithTimeHourMinute(exam.release_date) }} {{ timezoneFormat($page.props.setting.timezone) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -411,8 +202,8 @@
                         sub_category_id: form.sub_category_id,
                     },
                     {
-                        preserveState: true,     
-                        preserveScroll: true,     
+                        preserveState: true,
+                        preserveScroll: true,
                         replace: true
                     }
                 )
@@ -460,7 +251,7 @@
             };
 
             return {
-                form, 
+                form,
                 handleSearch,
                 checkMemberCategories
             }
@@ -469,7 +260,70 @@
             formatPrice(value) {
                 let val = (value/1).toFixed().replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
+            },
+            formatRupiah(value) {
+                return `Rp${Number(value || 0).toLocaleString('id-ID')}`;
+            },
+            stripHtml(value) {
+                const raw = String(value || '');
+                return raw.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            },
+            truncateText(value, max = 90) {
+                if (!value) return '-';
+                return value.length > max ? `${value.slice(0, max)}...` : value;
+            },
+            hasUserAccess(exam) {
+                return !!(exam.user_access && exam.user_access.length);
+            },
+            hasMemberAccess(exam) {
+                return this.checkMemberCategories(exam.member_categories || []);
+            },
+            showPrice(exam) {
+                return this.$page.props.auth.user.member_type == 2
+                    && this.resolvedEnablePracticeQuestionSales == 1
+                    && (this.resolvedPracticeQuestionSalesType == 1 || this.resolvedPracticeQuestionSalesType == 3)
+                    && exam.price_type == 2;
+            },
+            ownershipLabel(exam) {
+                if (exam.price_type == 1) {
+                    return 'Gratis';
+                }
+                return this.examAction(exam).canWork ? 'Sudah Dimiliki' : 'Belum Dimiliki';
+            },
+            examAction(exam) {
+                if (exam.exam_status !== 'active') {
+                    return { canWork: false, canBuy: false, canUpgrade: false };
+                }
+
+                if (this.$page.props.auth.user.member_type != 2 || this.resolvedEnablePracticeQuestionSales != 1) {
+                    return { canWork: true, canBuy: false, canUpgrade: false };
+                }
+
+                const hasUserAccess = this.hasUserAccess(exam);
+                const hasMemberAccess = this.hasMemberAccess(exam);
+
+                if (this.resolvedPracticeQuestionSalesType == 1) {
+                    return {
+                        canWork: hasUserAccess || exam.price_type == 1,
+                        canBuy: !hasUserAccess && exam.price_type == 2,
+                        canUpgrade: false,
+                    };
+                }
+
+                if (this.resolvedPracticeQuestionSalesType == 2) {
+                    return {
+                        canWork: hasMemberAccess,
+                        canBuy: false,
+                        canUpgrade: !hasMemberAccess,
+                    };
+                }
+
+                return {
+                    canWork: hasUserAccess || hasMemberAccess || exam.price_type == 1,
+                    canBuy: !hasUserAccess && exam.price_type == 2,
+                    canUpgrade: !hasMemberAccess,
+                };
+            },
         },
         computed: {
             resolvedPracticeQuestionSalesType() {
@@ -487,34 +341,141 @@
 </script>
 
 <style>
-   .action-button-exams {
+    .practice-card-modern {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(13, 110, 253, 0.3);
+        background: linear-gradient(180deg, #0b57b4 0%, #0b4ca0 100%);
+        color: #fff;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        align-items: flex-end; /* Default alignment for larger screens */
+    }
+
+    .practice-card-modern__cover {
+        height: 210px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #eaf1ff;
+    }
+
+    .practice-card-modern__body {
+        padding: 0.95rem 1rem 1rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .practice-badge-category {
+        background: #1e88ff;
+        color: #fff;
+        font-weight: 700;
+    }
+
+    .practice-badge-type {
+        background: rgba(255, 255, 255, 0.96);
+        color: var(--bs-primary);
+        font-weight: 700;
+    }
+
+    .practice-card-modern__title {
+        color: #fff;
+        line-height: 1.06;
+        margin-bottom: 0.4rem;
+        font-weight: 800;
+    }
+
+    .practice-card-modern__desc {
+        color: rgba(255, 255, 255, 0.92);
+        margin-bottom: 0.45rem;
+        min-height: 56px;
+    }
+
+    .practice-card-modern__price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .practice-price-old {
+        color: rgba(255, 255, 255, 0.76);
+        text-decoration: line-through;
+        font-size: 1.3rem;
+    }
+
+    .practice-price-new {
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 800;
+    }
+
+    .practice-card-modern__meta {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.02rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .practice-card-modern__meta i {
+        color: #cae4ff;
+        font-size: 1.2rem;
+    }
+
+    .practice-card-modern__actions {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+
+    .practice-btn-main {
+        border: 0;
+        border-radius: 999px;
+        background: #ffffff;
+        color: var(--bs-primary);
+        font-weight: 700;
+        width: 100%;
+    }
+
+    .practice-btn-main:hover {
+        background: #f1f6ff;
+        color: var(--bs-primary);
+    }
+
+    .practice-btn-secondary {
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        color: #fff;
+        font-weight: 600;
+        width: 100%;
+    }
+
+    .practice-btn-secondary:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .practice-card-modern__inactive {
+        margin-top: auto;
+        text-align: center;
     }
 
     @media (max-width: 740px) {
-        .list-group-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .practice-card-modern__cover {
+            height: 190px;
         }
 
-        .list-group-item .flex-grow-1 {
-            text-align: center;
-            margin-bottom: 10px;
+        .practice-card-modern__title {
+            font-size: 1.5rem;
         }
 
-        .action-button-exams {
-            align-items: center;
-            text-align: center;
-            margin: 0 auto; /* Ensure the container is centered */
-        }
-
-        .action-button-exams h6,
-        .action-button-exams .btn,
-        .action-button-exams .btn-danger {
-            margin: 5px 0; /* Ensure spacing around elements */
+        .practice-price-new {
+            font-size: 1.8rem;
         }
     }
 </style>
