@@ -339,6 +339,12 @@
                             <div class="menu-title">Modul / Materi</div>
                         </Link>
                     </li>
+                    <li v-if="canDisplayTransactions">
+                        <Link href="/user/redeem-saldo" class="menu-clicked" title="Voucher" data-bs-toggle="tooltip" data-bs-placement="right">
+                            <div class="parent-icon"><i class='bx bx-gift text-violet-500 transition-all duration-300 hover:scale-110 active:scale-95 drop-shadow-sm'></i></div>
+                            <div class="menu-title">Voucher</div>
+                        </Link>
+                    </li>
                 </template>
                 <li class="menu-label menu-label-toggle" v-if="($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'tryout')) || ($page.props.auth.user.member_type == 1 && $page.props.setting.free_member_access && $page.props.setting.free_member_access.some(item => item.code == 'exam')) || ($page.props.auth.user.member_type == 2 && $page.props.setting.paid_member_access && $page.props.setting.paid_member_access.some(item => item.code == 'exam'))" @click="toggleCategory('riwayat')">
                     <span>Achievement</span>

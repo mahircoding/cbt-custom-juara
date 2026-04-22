@@ -26,7 +26,8 @@ class AccountBalanceController extends Controller
     {
         return inertia('User/AccountBalance/Index', [
             'transactions' => (new TransactionRepository())->getTransactionAccountBalanceByUser(),
-            'banks' => (new BankRepository())->all()
+            'banks' => (new BankRepository())->all(),
+            'isRedeemPage' => $request->is('user/redeem-saldo')
         ]);
     }
 

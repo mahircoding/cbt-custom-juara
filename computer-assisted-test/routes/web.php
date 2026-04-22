@@ -296,6 +296,8 @@ Route::group(['middleware' => ['ipWhitelist']], function() {
         // dashboard
         Route::get('dashboard', UserDashboardController::class)->name('user.dashboard');
 
+        Route::get('redeem-saldo', [UserAccountBalanceController::class, 'index'])->name('redeem-saldo.index');
+        Route::get('redeem-saldo/process', [UserAccountBalanceController::class, 'reedemVoucher'])->name('redeem-saldo.process');
         Route::get('account-balances/reedem-voucher', [UserAccountBalanceController::class, 'reedemVoucher']);
 
         Route::get('psychology-calculators', [UserPsychologyCalculatorController::class, 'index'])->name('psychology-calculators.index');

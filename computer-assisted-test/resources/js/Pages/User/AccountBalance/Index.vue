@@ -39,7 +39,7 @@
                 </div>
             </div>
 
-            <form @submit.prevent="submit">
+            <form v-if="!isRedeemPage" @submit.prevent="submit">
                 <div class="card border-top border-0 border-3 border-primary">
                     <div class="card-header">
                         <h5 class="mb-0">
@@ -198,6 +198,7 @@
             errors: Object,
             banks: Object,
             transactions: Object,
+            isRedeemPage: Boolean,
         },
         setup() {
             const form = reactive({
@@ -234,7 +235,7 @@
                     cancelButtonText: 'Batal',
                     showLoaderOnConfirm: true,
                     preConfirm: (code) => {
-                        axios.get(`/user/account-balances/reedem-voucher`, {
+                        axios.get(`/user/redeem-saldo/process`, {
                             params: {
                                 code: code
                             }
