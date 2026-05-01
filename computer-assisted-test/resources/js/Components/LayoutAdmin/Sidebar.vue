@@ -709,4 +709,18 @@
     .sidebar-wrapper.toggled .menu-title-logout {
         display: none;
     }
+
+    /* Keep menu labels visible on mobile when sidebar is opened */
+    @media (max-width: 1024.98px) {
+        .wrapper.toggled .sidebar-wrapper .sidebar-header .logo-text,
+        .wrapper.toggled .sidebar-wrapper .menu-title,
+        .wrapper.toggled .sidebar-wrapper .menu-label,
+        .wrapper.toggled .sidebar-wrapper .has-arrow:after {
+            display: block !important;
+        }
+
+        .wrapper.toggled .sidebar-wrapper .menu-title-logout {
+            display: inline !important;
+        }
+    }
 </style>
