@@ -35,14 +35,14 @@
                 <div class="col-lg-12">
                     <div class="card border-top border-0 border-3 border-primary">
                         <div class="card-header">
-                            <h5 class="mb-0" data-bs-toggle="collapse" href="#collapseDetailTryOutInformation" aria-expanded="false" @click="toggleCollapseDetailTryOutInformation">
+                            <h5 class="mb-0" style="cursor: pointer;" @click="toggleCollapseDetailTryOutInformation">
                                 Informasi
-                                <a class="float-end" data-bs-toggle="collapse" href="#collapseDetailTryOutInformation" aria-expanded="false">
+                                <a class="float-end">
                                     <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseDetailTryOutInformation, 'bx bx-chevron-up': !collapseDetailTryOutInformation }"></i>
                                 </a>
                             </h5>
                         </div>
-                        <div class="collapse" :class="{ 'show': collapseDetailTryOutInformation, 'fade in': true}" id="collapseDetailTryOutInformation">
+                        <div v-show="collapseDetailTryOutInformation">
                             <div class="card-body">
                                 <div class="ck-content" v-html="exam.description"></div>
                             </div>
@@ -53,14 +53,14 @@
                 <div class="col-lg-12">
                     <div class="card border-top border-0 border-3 border-primary">
                         <div class="card-header">
-                            <h5 class="mb-0" data-bs-toggle="collapse" href="#collapseDetailTryOutExam" aria-expanded="false" @click="toggleCollapseDetailTryOutExam">
+                            <h5 class="mb-0" style="cursor: pointer;" @click="toggleCollapseDetailTryOutExam">
                                 Detail Latihan Soal
-                                <a class="float-end" data-bs-toggle="collapse" href="#collapseDetailTryOutExam" aria-expanded="false">
+                                <a class="float-end">
                                     <i class="text-white btn btn-danger btn-sm" :class="{ 'bx bx-chevron-down': collapseDetailTryOutExam, 'bx bx-chevron-up': !collapseDetailTryOutExam }"></i>
                                 </a>
                             </h5>
                         </div>
-                        <div class="collapse" :class="{ 'show': collapseDetailTryOutExam, 'fade in': true}" id="collapseDetailTryOutExam">
+                        <div v-show="collapseDetailTryOutExam">
                             <div class="card-body">
                                 <table class="table">
                                     <tbody>
@@ -214,8 +214,9 @@
             grade: Object,
         },
         setup(props) {
-            const collapseDetailTryOutInformation = ref(localStorage.getItem('collapseDetailTryOutInformation') !== null ? JSON.parse(localStorage.getItem('collapseDetailTryOutInformation')) : true);
-            const collapseDetailTryOutExam = ref(localStorage.getItem('collapseDetailTryOutExam') !== null ? JSON.parse(localStorage.getItem('collapseDetailTryOutExam')) : true);
+            // Always open by default to avoid stale localStorage state hiding content.
+            const collapseDetailTryOutInformation = ref(true);
+            const collapseDetailTryOutExam = ref(true);
 
             const toggleCollapseDetailTryOutInformation = () => {
                 collapseDetailTryOutInformation.value = !collapseDetailTryOutInformation.value;
