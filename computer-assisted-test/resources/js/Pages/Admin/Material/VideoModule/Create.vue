@@ -22,7 +22,7 @@
 
             <div class="card border-top border-0 border-3 border-primary">
                 <div class="card-body">
-                    <div v-if="Object.keys(errors).length > 0" class="alert alert-danger border-0 alert-dismissible fade show mb-3 p-0 px-3 py-2">
+                    <div v-if="Object.keys(errors || {}).length > 0" class="alert alert-danger border-0 alert-dismissible fade show mb-3 p-0 px-3 py-2">
                         <strong>Perhatian, pastikan inputan diisi dengan benar.</strong>
                         <ul class="mt-3">
                             <li v-for="error in errors">{{ error }}</li>
@@ -50,7 +50,7 @@
                             <label class="form-label">Kategori Member (Khusus Untuk Membership Bulanan, Kosongkan Jika Tidak Ada)</label>
                             <multiselect
                                 v-model="form.member_category_ids"
-                                :options="memberCategories"
+                                :options="Array.isArray(memberCategories) ? memberCategories : []"
                                 :multiple="true"
                                 label="name"
                                 :close-on-select="true"
@@ -213,11 +213,11 @@
 
         //props
         props: {
-            errors: Object,
-            user_id: Object,
-            users: Object,
-            categories: Object,
-            memberCategories: Object
+            errors: { type: Object, default: () => ({}) },
+            user_id: { type: String, default: '' },
+            users: { type: Array, default: () => [] },
+            categories: { type: Array, default: () => [] },
+            memberCategories: { type: Array, default: () => [] }
         },
 
         // initialization composition API
@@ -235,7 +235,7 @@
                 period_type: '',
                 active_period: '',
                 status: '',
-                member_category_ids: '',
+                member_category_ids: [],
             });
 
             // submit method
@@ -253,7 +253,7 @@
                     price_type: form.price_type,
                     price_before_discount: form.price_before_discount,
                     price_after_discount: form.price_after_discount,
-                    period_type: form.price_after_discount,
+                    period_type: form.period_type,
                     active_period: form.active_period,
                     status: form.status,
                     member_category_ids: form.member_category_ids

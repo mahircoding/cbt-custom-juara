@@ -68,7 +68,7 @@ class ClassroomController extends Controller
                 $classroom->memberCategories->pluck('id')->toArray() // Mengonversi koleksi menjadi array
             );
 
-            if($salesType == 1 && count($classroom->userAccess) > 0) {
+            if($salesType == 1 && (count($classroom->userAccess) > 0 || $classroom->price_type == 1)) {
                 $checkAcess = true;
             }
 
@@ -76,7 +76,7 @@ class ClassroomController extends Controller
                 $checkAcess = true;
             }
 
-            if($salesType == 3 && (count($classroom->userAccess) > 0 || $checkMemberCategories == true)) {
+            if($salesType == 3 && (count($classroom->userAccess) > 0 || $checkMemberCategories == true || $classroom->price_type == 1)) {
                 $checkAcess = true;
             }
 

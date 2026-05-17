@@ -84,7 +84,7 @@ class VideoModuleController extends Controller
                 $videoModule->memberCategories->pluck('id')->toArray() // Mengonversi koleksi menjadi array
             );
 
-            if($salesType == 1 && count($videoModule->userAccess) > 0) {
+            if($salesType == 1 && (count($videoModule->userAccess) > 0 || $videoModule->price_type == 1)) {
                 $checkAcess = true;
             }
 
@@ -92,7 +92,7 @@ class VideoModuleController extends Controller
                 $checkAcess = true;
             }
 
-            if($salesType == 3 && (count($videoModule->userAccess) > 0 || $checkMemberCategories == true)) {
+            if($salesType == 3 && (count($videoModule->userAccess) > 0 || $checkMemberCategories == true || $videoModule->price_type == 1)) {
                 $checkAcess = true;
             }
 

@@ -26,12 +26,12 @@
                         Modul / Materi {{ category.name }}
                     </h6>
                     <a>
-                        <i class="text-white btn btn-danger btn-sm" @click="toggleCollapse(category.id)" :class="collapseStatus[category.id] ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"></i>
+                        <i class="text-white btn btn-danger btn-sm" @click="toggleCollapse(category.id)" :class="isExpanded(category.id) ? 'bx bx-chevron-up' : 'bx bx-chevron-down'"></i>
                     </a>
                 </div>
 
                 <transition name="fade" mode="out-in">
-                    <div v-show="collapseStatus[category.id]" :id="'collapse'+category.id" class="collapse show">
+                    <div v-show="isExpanded(category.id)" :id="'collapse'+category.id" class="show" style="display:block;">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4" v-for="materialModule in category.module" :key="materialModule.id">
@@ -52,15 +52,15 @@
                                             </div>
 
                                             <div v-if="$page.props.auth.user.member_type == 2 && $page.props.setting.enable_module_material_sales == 1" class="text-center">
-                                                <tempate v-if="$page.props.setting.module_material_sales_type == 1">
-                                                    <span v-if="(materialModule.user_access.length > 0)" class="badge bg-warning text-dark">Enrolled</span>
-                                                </tempate>
-                                                <tempate v-if="$page.props.setting.module_material_sales_type == 2">
+                                                <template v-if="$page.props.setting.module_material_sales_type == 1">
+                                                    <span v-if="(materialModule.user_access?.length > 0)" class="badge bg-warning text-dark">Enrolled</span>
+                                                </template>
+                                                <template v-if="$page.props.setting.module_material_sales_type == 2">
                                                     <span v-if="checkMemberCategories(materialModule.member_categories) == true" class="badge bg-warning text-dark">Enrolled</span>
-                                                </tempate>
-                                                <tempate v-if="$page.props.setting.module_material_sales_type == 3">
-                                                    <span v-if="(materialModule.user_access.length > 0 || checkMemberCategories(materialModule.member_categories) == true)" class="badge bg-warning text-dark">Enrolled</span>
-                                                </tempate>
+                                                </template>
+                                                <template v-if="$page.props.setting.module_material_sales_type == 3">
+                                                    <span v-if="(materialModule.user_access?.length > 0 || checkMemberCategories(materialModule.member_categories) == true)" class="badge bg-warning text-dark">Enrolled</span>
+                                                </template>
                                             </div>
                                         </div>
                                         <div class="card-footer text-center">
@@ -97,7 +97,7 @@
 <script>
 import LayoutUser from '../../../../Layouts/Layout.vue';
 import { Link, Head } from '@inertiajs/inertia-vue3';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 export default {
     layout: LayoutUser,
@@ -111,21 +111,30 @@ export default {
     },
     setup(props) {
         const collapseStatus = ref({});
+        const normalizedUserMemberCategories = computed(() => Array.isArray(props.userMemberCategories)
+            ? props.userMemberCategories
+            : Object.values(props.userMemberCategories || {}));
 
         onMounted(() => {
-            props.categoryModules.forEach(category => {
-                collapseStatus.value[category.id] = true; // Open by default
+            (props.categoryModules || []).forEach(category => {
+                collapseStatus.value[category.id] = true;
             });
         });
 
+        const isExpanded = (categoryId) => collapseStatus.value[categoryId] !== false;
+
         const toggleCollapse = (categoryId) => {
-            collapseStatus.value[categoryId] = !collapseStatus.value[categoryId];
+            collapseStatus.value[categoryId] = !isExpanded(categoryId);
         };
 
         const checkMemberCategories = (categories) => {
-            if (categories.length > 0) {
-                const categoryIds = categories.map(category => category.id);
-                return props.userMemberCategories.some(entry => categoryIds.includes(entry.member_category_id));
+            const normalizedCategories = Array.isArray(categories)
+                ? categories
+                : Object.values(categories || {});
+
+            if (normalizedCategories.length > 0) {
+                const categoryIds = normalizedCategories.map(category => category.id);
+                return normalizedUserMemberCategories.value.some(entry => categoryIds.includes(entry.member_category_id));
             } else {
                 return true;
             }
@@ -133,6 +142,7 @@ export default {
 
         return {
             collapseStatus,
+            isExpanded,
             toggleCollapse,
             checkMemberCategories
         };

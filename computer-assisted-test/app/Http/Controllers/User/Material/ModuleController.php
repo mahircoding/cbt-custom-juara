@@ -84,7 +84,7 @@ class ModuleController extends Controller
                 $module->memberCategories->pluck('id')->toArray() // Mengonversi koleksi menjadi array
             );
 
-            if($salesType == 1 && count($module->userAccess) > 0) {
+            if($salesType == 1 && (count($module->userAccess) > 0 || $module->price_type == 1)) {
                 $checkAcess = true;
             }
 
@@ -92,7 +92,7 @@ class ModuleController extends Controller
                 $checkAcess = true;
             }
 
-            if($salesType == 3 && (count($module->userAccess) > 0 || $checkMemberCategories == true)) {
+            if($salesType == 3 && (count($module->userAccess) > 0 || $checkMemberCategories == true || $module->price_type == 1)) {
                 $checkAcess = true;
             }
 

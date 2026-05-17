@@ -30,7 +30,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="description" content="{{ $setting->meta_description ?? 'Deskripsi Aplikasi CAT' }}">
         <meta name="keywords" content="{{ $setting->meta_keywords ?? 'isi keywords' }}">
-        
+
         <meta property="og:title" content="{{ $setting->meta_title ?? 'Aplikasi CAT' }}">
         <meta property="og:description" content="{{ $setting->meta_description ?? 'Deskripsi Aplikasi CAT' }}">
         <meta property="og:image" content="{{ $setting->meta_image ? asset('storage/upload_files/settings/'.$setting->meta_image) : asset('assets/images/logo.png') }}">
@@ -42,7 +42,7 @@
         <meta name="twitter:description" content="{{ $setting->meta_description ?? 'Deskripsi Aplikasi CAT' }}">
         <meta name="twitter:image" content="{{ $setting->meta_favicon ? asset('storage/upload_files/settings/'.$setting->meta_favicon) : asset('assets/images/logo.png') }}">
         <meta name="twitter:url" content="{{ $setting->meta_url ?? url()->current() }}">
-        
+
         <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
         <style>

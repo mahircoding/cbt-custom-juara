@@ -96,18 +96,33 @@ class CategoryRepository extends BaseRepository implements CategoryInterface
 
     public function getCategoryModules()
     {
+        $moduleStatuses = is_array($this->setting->module_material_statuses ?? null)
+            ? array_values(array_filter($this->setting->module_material_statuses))
+            : [];
+
         $query = $this->setting->category_access == 1
             ? $this->model->where('development_status', 'production')->orderBy('order')
             : (Auth::user() ? Auth::user()->categories()->where('development_status', 'production')->orderBy('order') : null);
 
         return $query 
             ? $query->with(['module' => function ($query) {
-                    $query->whereIn('status', $this->setting->module_material_statuses)
-                        ->orderBy('order', 'ASC')
+                    $moduleStatuses = is_array($this->setting->module_material_statuses ?? null)
+                        ? array_values(array_filter($this->setting->module_material_statuses))
+                        : [];
+
+                    if (!empty($moduleStatuses)) {
+                        $query->whereIn('status', $moduleStatuses);
+                    }
+
+                    $query->orderBy('order', 'ASC')
                         ->with(['memberCategories', 'userAccess']);
                 }])
-                ->whereHas('module', function ($query) {
-                    $query->whereIn('status', $this->setting->module_material_statuses);
+                ->when(!empty($moduleStatuses), function ($query) use ($moduleStatuses) {
+                    $query->whereHas('module', function ($query) use ($moduleStatuses) {
+                        $query->whereIn('status', $moduleStatuses);
+                    });
+                }, function ($query) {
+                    $query->whereHas('module');
                 })
                 ->get()
             : collect();
@@ -115,18 +130,33 @@ class CategoryRepository extends BaseRepository implements CategoryInterface
 
     public function getCategoryVideoModules()
     {
+        $videoModuleStatuses = is_array($this->setting->video_module_statuses ?? null)
+            ? array_values(array_filter($this->setting->video_module_statuses))
+            : [];
+
         $query = $this->setting->category_access == 1
             ? $this->model->where('development_status', 'production')->orderBy('order')
             : (Auth::user() ? Auth::user()->categories()->where('development_status', 'production')->orderBy('order') : null);
 
         return $query 
             ? $query->with(['videoModule' => function ($query) {
-                    $query->whereIn('status', $this->setting->video_module_statuses)
-                        ->orderBy('order', 'ASC')
+                    $videoModuleStatuses = is_array($this->setting->video_module_statuses ?? null)
+                        ? array_values(array_filter($this->setting->video_module_statuses))
+                        : [];
+
+                    if (!empty($videoModuleStatuses)) {
+                        $query->whereIn('status', $videoModuleStatuses);
+                    }
+
+                    $query->orderBy('order', 'ASC')
                         ->with(['memberCategories', 'userAccess']);
                 }])
-                ->whereHas('videoModule', function ($query) {
-                    $query->whereIn('status', $this->setting->video_module_statuses);
+                ->when(!empty($videoModuleStatuses), function ($query) use ($videoModuleStatuses) {
+                    $query->whereHas('videoModule', function ($query) use ($videoModuleStatuses) {
+                        $query->whereIn('status', $videoModuleStatuses);
+                    });
+                }, function ($query) {
+                    $query->whereHas('videoModule');
                 })
                 ->get()
             : collect();
