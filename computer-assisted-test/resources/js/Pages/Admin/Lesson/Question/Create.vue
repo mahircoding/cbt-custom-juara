@@ -287,8 +287,6 @@
         Table, TableToolbar, TableCellProperties, TableProperties,
     } from 'ckeditor5';
 
-    import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
-
     import Multiselect from '@suadelabs/vue3-multiselect'
 
     export default {
@@ -316,12 +314,6 @@
                 editorData: '<p>Initial content</p>',
                 editorConfig: {
                     licenseKey: import.meta.env.VITE_CKEDITOR_LICENSE_KEY || 'GPL',
-                    mathTypeParameters: {
-                        serviceProviderProperties: {
-                            URI: import.meta.env.VITE_WIRIS_SERVICE_URL || 'https://www.wiris.net/demo/plugins/app',
-                            server: 'java'
-                        }
-                    },
                     plugins: [
                         Essentials, 
                         Alignment,
@@ -339,7 +331,6 @@
                         Image, ImageCaption, ImageStyle, ImageToolbar, LinkImage, ImageInsert, SimpleUploadAdapter, ImageResizeEditing, ImageResizeHandles, ImageResize,
                         CodeBlock,
                         Table, TableToolbar, TableCellProperties, TableProperties,
-                        MathType
                     ],
                     toolbar: {
                         items: [ 
@@ -349,7 +340,6 @@
                             'link', 'insertTable', 'insertImage', 'blockQuote', 'codeBlock','|',
                             'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent', '|',
                             'bold', 'italic', 'strikethrough', 'subscript', 'superscript','|',
-                            'MathType', 'ChemType'
                         ],
                         shouldNotGroupWhenFull: false
                     },
