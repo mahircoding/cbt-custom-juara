@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper.cdc0426e.js";import{o,c as s,p as n}from"./app.25381f73.js";const _={},a={class:"auth-layout min-vh-100 w-100"};function r(t,c,p,u,l,i){return o(),s("div",a,[n(t.$slots,"default")])}const m=e(_,[["render",r]]);export{m as L};

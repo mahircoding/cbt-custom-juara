@@ -102,8 +102,18 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table mb-0" style="font-size:10pt;">
-                            <thead class="table table-striped table-light">
+                        <table class="table mb-0 question-title-table" style="font-size:10pt;">
+                            <colgroup>
+                                <col class="question-title-col-no">
+                                <col class="question-title-col-category">
+                                <col class="question-title-col-name">
+                                <col class="question-title-col-lesson-category">
+                                <col class="question-title-col-lesson">
+                                <col class="question-title-col-question-category">
+                                <col class="question-title-col-assessment">
+                                <col class="question-title-col-actions">
+                            </colgroup>
+                            <thead class="table-light">
                                 <tr>
                                     <th>No</th>
                                     <th>Peminatan</th>
@@ -298,3 +308,33 @@
         }
     }
 </script>
+
+<style scoped>
+.question-title-table {
+    min-width: 1320px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.question-title-table th,
+.question-title-table td {
+    vertical-align: middle;
+}
+
+.question-title-table th {
+    white-space: nowrap;
+}
+
+.question-title-table td:not(:first-child) {
+    overflow-wrap: anywhere;
+}
+
+.question-title-col-no { width: 45px; }
+.question-title-col-category { width: 135px; }
+.question-title-col-name { width: 220px; }
+.question-title-col-lesson-category { width: 220px; }
+.question-title-col-lesson { width: 200px; }
+.question-title-col-question-category { width: 150px; }
+.question-title-col-assessment { width: 220px; }
+.question-title-col-actions { width: 110px; }
+</style>
