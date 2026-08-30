@@ -315,6 +315,12 @@
                 editorData: '<p>Initial content</p>',
                 editorConfig: {
                     licenseKey: import.meta.env.VITE_CKEDITOR_LICENSE_KEY || 'GPL',
+                    mathTypeParameters: {
+                        serviceProviderProperties: {
+                            URI: import.meta.env.VITE_WIRIS_SERVICE_URL || 'https://www.wiris.net/demo/plugins/app',
+                            server: 'java'
+                        }
+                    },
                     plugins: [
                         Essentials, 
                         Alignment,
